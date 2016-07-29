@@ -1150,25 +1150,25 @@ public final class ArielSettings {
                 "ariel_system_status";
 
         /**
+         * All systems normal
          */
         public static final int ARIEL_SYSTEM_STATUS_NORMAL = 0;
 
         /**
+         * Panic mode indicates that the user is in direct or indirect
+         * danger.
          */
-        public static final int ARIEL_SYSTEM_STATUS_LOCK = 1;
+        public static final int ARIEL_SYSTEM_STATUS_PANIC = 1;
 
         /**
+         * Indicates that device is potentially stolen.
          */
         public static final int ARIEL_SYSTEM_STATUS_THEFT = 2;
 
         /**
-         * Device phone number from Ariel DeviceConfiguration
+         * Device is fully locked for undefined period of time.
          */
-        public static final String ARIEL_PHONE_NUMBER
-                = "ariel_phone_number";
-
-        public static final String ARIEL_INTENT_FILTER_SERVICE =
-                "ariel_intent_filter_service";
+        public static final int ARIEL_SYSTEM_STATUS_LOCKDOWN = 3;
 
         // endregion
 

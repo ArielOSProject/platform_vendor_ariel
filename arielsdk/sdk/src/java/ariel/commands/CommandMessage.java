@@ -1,19 +1,22 @@
 package ariel.commands;
 
+import java.util.List;
+
 /**
  * Created by mikalackis on 6.7.16..
  */
-public class ArielCommandMessage {
+public class CommandMessage {
 
     private String action;
 
-    private String params;
+    private List<Param> params;
 
     public String getAction() {
         return action;
     }
 
-    public String getParams() {
+    public List<Param> getParams() {
         return params;
     }
+
 }

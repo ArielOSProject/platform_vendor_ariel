@@ -5,3 +5,8 @@ PRODUCT_PACKAGES += \
    Eleven \
    CMFileManager \
    ArielSettingsProvider
+
+# Make sure data roaming is off!
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.com.android.dataroaming=false
+
