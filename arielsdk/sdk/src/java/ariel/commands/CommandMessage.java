@@ -1,6 +1,6 @@
 package ariel.commands;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by mikalackis on 6.7.16..
@@ -9,13 +9,13 @@ public class CommandMessage {
 
     private String action;
 
-    private List<Param> params;
+    private ArrayList<Param> params;
 
     public String getAction() {
         return action;
     }
 
-    public List<Param> getParams() {
+    public ArrayList<Param> getParams() {
         return params;
     }
 

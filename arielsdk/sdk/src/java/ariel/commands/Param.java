@@ -3,11 +3,11 @@ package ariel.commands;
 /**
  * Created by mikalackis on 29.7.16..
  */
-public class Param{
+public class Param {
     final String paramName;
-    final Object value;
+    final String value;
 
-    public Param(String paramName, Object value) {
+    public Param(String paramName, String value) {
         this.paramName = paramName;
         this.value = value;
     }
@@ -19,4 +19,5 @@ public class Param{
     public Object getValue() {
         return value;
     }
+
 }

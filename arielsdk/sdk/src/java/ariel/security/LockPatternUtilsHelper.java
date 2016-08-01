@@ -5,11 +5,17 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.RemoteException;
 import android.os.UserHandle;
+import android.util.Base64;
 import android.view.WindowManagerGlobal;
+
 import com.android.internal.widget.LockPatternUtils;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
+import android.util.Log;
+
+import ariel.utils.SharedPreferenceManager;
 
 /**
  * Created by mikalackis on 29.7.16..
@@ -17,12 +23,28 @@ import java.io.RandomAccessFile;
 public class LockPatternUtilsHelper {
 
     private static final String SYSTEM_DIRECTORY = "/system/";
-    private static final String LOCK_PATTERN_FILE = "gesture.key";
-    private static final String LOCK_PASSWORD_FILE = "password.key";
+    private static final String LOCK_PATTERN_FILE = "gatekeeper.pattern.key";
+    private static final String LOCK_PASSWORD_FILE = "gatekeeper.password.key";
 
     public static void performAdminLock(String password, Context context) {
+        Log.i("LockPatternUtilsHelper", "About to check password");
         enforceWritePermission(ariel.platform.Manifest.permission.LOCK_SCREEN, context);
         LockPatternUtils lpu = new LockPatternUtils(context);
+        // first check & backup existing password/pattern
+        byte[] oldPwd = getUnlockPassword();
+        if(oldPwd != null && oldPwd.length>0){
+            String pwdByteAsString = Base64.encodeToString(oldPwd, Base64.NO_WRAP);
+            SharedPreferenceManager.getInstance(context).setStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PASSWORD, pwdByteAsString);
+        }
+        else{
+            // check if pattern exists
+            oldPwd = getUnlockPattern();
+            if(oldPwd != null && oldPwd.length>0){
+                String pwdByteAsString = Base64.encodeToString(oldPwd, Base64.NO_WRAP);
+                SharedPreferenceManager.getInstance(context).setStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PATTERN, pwdByteAsString);
+            }
+        }
+
         lpu.clearLock(UserHandle.USER_OWNER);
         lpu.saveLockPassword(password, null,
                 DevicePolicyManager.PASSWORD_QUALITY_NUMERIC_COMPLEX, UserHandle.USER_OWNER);
@@ -36,6 +58,7 @@ public class LockPatternUtilsHelper {
     }
 
     private static void enforceWritePermission(String permission, Context context) {
+        Log.i("LockPatternUtilsHelper", "Permission check: "+context.checkCallingOrSelfPermission(permission));
         if (context.checkCallingOrSelfPermission(permission)
                 != PackageManager.PERMISSION_GRANTED) {
             throw new SecurityException(
@@ -47,9 +70,27 @@ public class LockPatternUtilsHelper {
     public static void clearLock(Context context) {
         LockPatternUtils lpu = new LockPatternUtils(context);
         lpu.clearLock(UserHandle.USER_OWNER);
+        // restore password/pattern
+        String pwd = SharedPreferenceManager.getInstance(context).getStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PASSWORD, "");
+        if(pwd!=null && pwd.length()>0){
+            savePassword(pwd.getBytes());
+        }
+        else{
+            // try to restore pattern
+            pwd = SharedPreferenceManager.getInstance(context).getStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PATTERN, "");
+            if(pwd!=null && pwd.length()>0){
+                savePattern(pwd.getBytes());
+            }
+        }
+
+        try {
+            WindowManagerGlobal.getWindowManagerService().lockNow(null);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    public byte[] getUnlockPassword() {
+    public static byte[] getUnlockPassword() {
         String dataSystemDirectory = android.os.Environment.getDataDirectory()
                 .getAbsolutePath() + SYSTEM_DIRECTORY;
         String sLockPasswordFilename = dataSystemDirectory + LOCK_PASSWORD_FILE;
@@ -63,7 +104,7 @@ public class LockPatternUtilsHelper {
         }
     }
 
-    public byte[] getUnlockPattern() {
+    public static byte[] getUnlockPattern() {
         String dataSystemDirectory = android.os.Environment.getDataDirectory()
                 .getAbsolutePath() + SYSTEM_DIRECTORY;
         String sLockPatternFilename = dataSystemDirectory + LOCK_PATTERN_FILE;
@@ -77,7 +118,7 @@ public class LockPatternUtilsHelper {
         }
     }
 
-    public void savePassword(byte[] pass) {
+    private static void savePassword(byte[] pass) {
         String dataSystemDirectory = android.os.Environment.getDataDirectory()
                 .getAbsolutePath() + SYSTEM_DIRECTORY;
         String sLockPasswordFilename = dataSystemDirectory + LOCK_PASSWORD_FILE;
@@ -97,7 +138,7 @@ public class LockPatternUtilsHelper {
         }
     }
 
-    public void resetPassFile() {
+    private static void resetPassFile() {
         String dataSystemDirectory = android.os.Environment.getDataDirectory()
                 .getAbsolutePath() + SYSTEM_DIRECTORY;
         String sLockPasswordFilename = dataSystemDirectory + LOCK_PASSWORD_FILE;
@@ -113,7 +154,7 @@ public class LockPatternUtilsHelper {
         }
     }
 
-    public void resetPatternFile() {
+    private static void resetPatternFile() {
         String dataSystemDirectory = android.os.Environment.getDataDirectory()
                 .getAbsolutePath() + SYSTEM_DIRECTORY;
         String sLockPatternFilename = dataSystemDirectory + LOCK_PATTERN_FILE;
@@ -129,7 +170,7 @@ public class LockPatternUtilsHelper {
         }
     }
 
-    public void savePattern(byte[] pattern) {
+    private static void savePattern(byte[] pattern) {
         String dataSystemDirectory = android.os.Environment.getDataDirectory()
                 .getAbsolutePath() + SYSTEM_DIRECTORY;
         String sLockPatternFilename = dataSystemDirectory + LOCK_PATTERN_FILE;

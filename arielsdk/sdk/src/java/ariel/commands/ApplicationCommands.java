@@ -10,31 +10,21 @@ public final class ApplicationCommands {
     // application commands
     public static final String APPLICATION_UPDATE_COMMAND = "app_update";
 
-    public enum PARAMS{
-        PACKAGE_NAME("package_name");
+    // application params
+    public static final String PARAM_PACKAGE_NAME = "package_name";
 
-        private String param;
-        PARAMS(String param){
-            this.param = param;
+    public static class ApplicationParamBuilder{
+        private ArrayList<Param> params;
+
+        public ApplicationParamBuilder(final String packageName){
+            params = new ArrayList<Param>();
+            params.add(new Param(PARAM_PACKAGE_NAME, packageName));
         }
 
-        public String getParam(){
-            return param;
+        public ArrayList<Param> build(){
+            return params;
         }
+
     }
-
-//    public static class ApplicationParamBuilder{
-//        private ArrayList<Param> params;
-//
-//        public ApplicationParamBuilder(final String packageName){
-//            params = new ArrayList<Param>();
-//            params.add(new Param(PARAMS.PACKAGE_NAME.getParam(), packageName));
-//        }
-//
-//        public ArrayList<Param> build(){
-//            return params;
-//        }
-//
-//    }
 
 }
