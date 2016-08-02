@@ -18,12 +18,6 @@ public final class LocationCommands {
     // command parameters
     public static final String PARAM_SMS_LOCATION_REPORT = "sms_location_report";
 
-    /**
-     * Napraviti tako da ova klasa moze da se instancira, tako da se definise
-     * koja je komanda u pitanju kao i parametri koji idu uz tu komandu a pomocu
-     * builder paterna.
-     */
-
     public static class LocationParamBuilder{
         private ArrayList<Param> mParams;
 
