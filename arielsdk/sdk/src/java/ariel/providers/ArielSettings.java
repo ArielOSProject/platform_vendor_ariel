@@ -44,7 +44,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * CMSettings contains CM specific preferences in System, Secure, and Global.
+ * ArielSettings contains ArielOS specific preferences in System, Secure, and Global.
  */
 public final class ArielSettings {
     private static final String TAG = "ArielSettings";
@@ -1138,6 +1138,11 @@ public final class ArielSettings {
         // endregion
 
         // region Secure Settings
+
+        /**
+         * Delimited list of string IDs that can manipulate the device
+         */
+        public static final String ARIEL_MASTERS = "ariel_master";
 
         /**
          * Ariel OS system status. Integer value that can be:

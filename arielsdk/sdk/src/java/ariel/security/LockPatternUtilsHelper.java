@@ -83,11 +83,6 @@ public class LockPatternUtilsHelper {
             }
         }
 
-        try {
-            WindowManagerGlobal.getWindowManagerService().lockNow(null);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     public static byte[] getUnlockPassword() {
