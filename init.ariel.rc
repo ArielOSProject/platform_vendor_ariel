@@ -1,0 +1,4 @@
+# Ariel init script
+
+on post-fs-data
+    mkdir /data/system/ifw 0700 system system
