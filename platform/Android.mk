@@ -148,8 +148,8 @@ $(full_target): $(cm_framework_built) $(gen)
 
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
-include $(call first-makefiles-under,$(LOCAL_PATH))
-#include $(call all-makefiles-under, $(LOCAL_PATH))
+#include $(call first-makefiles-under,$(LOCAL_PATH))
+include $(call all-makefiles-under, $(LOCAL_PATH))
 
 # Cleanup temp vars
 # ===========================================================

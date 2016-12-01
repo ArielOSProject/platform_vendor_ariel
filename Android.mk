@@ -1,5 +1,3 @@
-$(call inherit-product, vendor/ariel/ariel-sdk.mk)
-$(call inherit-product, vendor/ariel/sepolicy/sepolicy.mk)
 
 PRODUCT_PACKAGES += \
    ArielGuardian \
@@ -18,4 +16,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Copy .rc files
 PRODUCT_COPY_FILES += \
     vendor/ariel/init.ariel.rc:root/init.ariel.rc
+
+include $(call first-makefiles-under,$(LOCAL_PATH))
 
