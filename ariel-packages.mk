@@ -1,4 +1,8 @@
 
+include vendor/ariel/platform/ariel-platform.mk
+include vendor/ariel/sepolicy/sepolicy.mk
+
+
 PRODUCT_PACKAGES += \
    ArielGuardian \
 #   Eleven \
@@ -17,6 +21,5 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_COPY_FILES += \
     vendor/ariel/init.ariel.rc:root/init.ariel.rc
 
-include $(call first-makefiles-under,$(LOCAL_PATH))
 # mozda probati i sa include <Putanja do mk fajla>
 
