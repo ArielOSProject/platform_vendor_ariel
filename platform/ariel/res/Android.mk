@@ -30,7 +30,7 @@ $(info $(LOCAL_RESOURCE_DIR))
 # since these resources will be used by many apps.
 
 # 0x3f/one less than app id NOTE: 63 missing next to -x
-LOCAL_AAPT_FLAGS += -x 65
+LOCAL_AAPT_FLAGS += -x
 
 LOCAL_MODULE_TAGS := optional
 
