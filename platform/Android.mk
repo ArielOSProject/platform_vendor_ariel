@@ -24,23 +24,29 @@ LOCAL_PATH := $(call my-dir)
 ariel_platform_res := APPS/com.ariel.platform-res_intermediates/src
 
 # List of packages used in cm-api-stubs and cm-system-api-stubs
-ariel_stub_packages := ariel.providers
+ariel_stub_packages := ariel.providers:ariel.platform
 
-# The CyanogenMod Platform Framework Library
+# The Ariel Platform Framework Library
 # ============================================================
 include $(CLEAR_VARS)
 
 ariel_sdk_src := sdk/src/java/ariel
+library_src := ariel/lib/main/java
 
 LOCAL_MODULE := com.ariel.platform
 LOCAL_MODULE_TAGS := optional
 
+LOCAL_JAVA_LIBRARIES := \
+    services
+
 LOCAL_SRC_FILES := \
-    $(call all-java-files-under, $(ariel_sdk_src))
+    $(call all-java-files-under, $(ariel_sdk_src)) \
+    $(call all-java-files-under, $(library_src))
 
 arielplat_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/ariel/platform/R.java \
-    $(ariel_platform_res)/ariel/platform/Manifest.java
+    $(ariel_platform_res)/ariel/platform/Manifest.java \
+    $(ariel_platform_res)/com/ariel/platform/internal/R.java
 
 LOCAL_INTERMEDIATE_SOURCES := \
     $(arielplat_LOCAL_INTERMEDIATE_SOURCES)
@@ -81,6 +87,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= com.ariel.platform.sdk
 LOCAL_MODULE_TAGS := optional
+LOCAL_REQUIRED_MODULES := services
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, $(ariel_sdk_src))
@@ -133,13 +140,16 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= com.ariel.platform.internal
 LOCAL_MODULE_TAGS := optional
+LOCAL_REQUIRED_MODULES := services
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, $(ariel_sdk_src))
 
 cmsdk_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/ariel/platform/R.java \
-    $(ariel_platform_res)/ariel/platform/Manifest.java
+    $(ariel_platform_res)/ariel/platform/Manifest.java \
+    $(ariel_platform_res)/com/ariel/platform/internal/R.java \
+    $(ariel_platform_res)/com/ariel/platform/internal/Manifest.java
 
 LOCAL_INTERMEDIATE_SOURCES := \
     $(cmsdk_LOCAL_INTERMEDIATE_SOURCES)
@@ -149,7 +159,6 @@ $(full_target): $(cm_framework_built) $(gen)
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
 include $(call first-makefiles-under,$(LOCAL_PATH))
-#include $(call all-makefiles-under, $(LOCAL_PATH))
 
 # Cleanup temp vars
 # ===========================================================

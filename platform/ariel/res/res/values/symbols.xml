@@ -17,7 +17,6 @@
 <resources>
     <!-- We don't want to publish private symbols in cyanogenmod.R as part of the
          SDK.  Instead, put them here. -->
-    <private-symbols package="org.cyanogenmod.platform.internal" />
 
     <java-symbol type="bool" name="config_enableAppSuggestOverlay"/>
     <java-symbol type="string" name="config_appSuggestProviderPackageName"/>
@@ -26,7 +25,6 @@
     <java-symbol type="string" name="custom_tile_listener_binding_label" />
 
     <!-- Profiles -->
-    <java-symbol type="xml" name="profile_default" />
     <java-symbol type="string" name="wildcardProfile" />
 
     <!-- Performance Profiles -->
@@ -61,14 +59,7 @@
     <java-symbol type="string" name="live_display_night_summary" />
     <java-symbol type="string" name="live_display_outdoor" />
     <java-symbol type="string" name="live_display_outdoor_summary" />
-    <java-symbol type="drawable" name="ic_livedisplay_notif" />
 
-    <java-symbol type="array" name="live_display_announcement" />
-    <java-symbol type="array" name="live_display_description" />
-    <java-symbol type="array" name="live_display_drawables" />
-    <java-symbol type="array" name="live_display_entries" />
-    <java-symbol type="array" name="live_display_summaries" />
-    <java-symbol type="array" name="live_display_values" />
     <java-symbol type="integer" name="config_dayColorTemperature" />
     <java-symbol type="integer" name="config_nightColorTemperature" />
     <java-symbol type="integer" name="config_outdoorAmbientLux" />
@@ -112,10 +103,12 @@
     <java-symbol type="string" name="theme_reset_notification_message" />
 
     <!-- External CM specific core services -->
-    <java-symbol type="array" name="config_externalCMServices" />
+    <java-symbol type="array" name="config_externalArielServices" />
+
+     <!-- CM system server -->
+    <java-symbol type="string" name="config_externalSystemServer" />
 
     <!-- Themes tile -->
     <java-symbol type="string" name="qs_themes_label" />
     <java-symbol type="string" name="qs_themes_content_description" />
-    <java-symbol type="drawable" name="ic_qs_themes" />
 </resources>

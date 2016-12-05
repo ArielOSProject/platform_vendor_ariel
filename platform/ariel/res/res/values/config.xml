@@ -31,7 +31,7 @@
 
     <!-- Package name providing app suggest support. Used only when
          config_enableAppSuggestOverlay is false. -->
-    <string name="config_appSuggestProviderPackageName" translatable="false">com.cyanogen.app.suggest</string>
+    <string name="config_appSuggestProviderPackageName" translatable="false">com.ariel.platform.internal.ArielSystemServer</string>
 
     <!-- List of packages providing app suggest support. Used only when
     config_enableAppSuggestOverlay is true. -->
@@ -91,19 +91,10 @@
 
     <!-- Defines external services to be started by the SystemServer at boot. The service itself
          should publish as a binder services in its onStart -->
-    <string-array name="config_externalCMServices">
-        <item>org.cyanogenmod.platform.internal.CMStatusBarManagerService</item>
-        <item>org.cyanogenmod.platform.internal.ProfileManagerService</item>
-        <item>org.cyanogenmod.platform.internal.PartnerInterfaceService</item>
-        <item>org.cyanogenmod.platform.internal.CMTelephonyManagerService</item>
-        <item>org.cyanogenmod.platform.internal.CMHardwareService</item>
-        <item>org.cyanogenmod.platform.internal.AppSuggestManagerService</item>
-        <item>org.cyanogenmod.platform.internal.PerformanceManagerService</item>
-        <item>org.cyanogenmod.platform.internal.ThemeManagerService</item>
-        <item>org.cyanogenmod.platform.internal.IconCacheManagerService</item>
-        <item>org.cyanogenmod.platform.internal.LiveLockScreenServiceBroker</item>
-        <item>org.cyanogenmod.platform.internal.CMWeatherManagerService</item>
-        <item>org.cyanogenmod.platform.internal.display.LiveDisplayService</item>
-        <item>org.cyanogenmod.platform.internal.CMAudioService</item>
+    <string-array name="config_externalArielServices">
+        <item>com.ariel.platform.internal.ArielGestureLauncherService</item>
     </string-array>
+
+    <!-- The ArielSystemServer class that is invoked from Android's SystemServer -->
+    <string name="config_externalSystemServer" translatable="false">com.ariel.platform.internal.ArielSystemServer</string>
 </resources>
