@@ -24,6 +24,8 @@
 
     <!-- Ariel IntentFirewall broadcasts -->
     <protected-broadcast android:name="ariel.intent.action.APPLICATION_BLOCKED" />
+    <protected-broadcast android:name="ariel.intent.action.SERVICE_BLOCKED" />
+    <protected-broadcast android:name="ariel.intent.action.BROADCAST_BLOCKED" />
     <protected-broadcast android:name="ariel.intent.action.UPDATE_FW" />
 
     <!-- Allows an application to write to CM system settings -->

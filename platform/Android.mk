@@ -24,24 +24,22 @@ LOCAL_PATH := $(call my-dir)
 ariel_platform_res := APPS/com.ariel.platform-res_intermediates/src
 
 # List of packages used in cm-api-stubs and cm-system-api-stubs
-ariel_stub_packages := ariel.providers:ariel.platform
+ariel_stub_packages := ariel.providers
 
 # The Ariel Platform Framework Library
 # ============================================================
 include $(CLEAR_VARS)
 
 ariel_sdk_src := sdk/src/java/ariel
-library_src := ariel/lib/main/java
 
 LOCAL_MODULE := com.ariel.platform
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_JAVA_LIBRARIES := \
-    services
+#LOCAL_JAVA_LIBRARIES := \
+#    services
 
 LOCAL_SRC_FILES := \
-    $(call all-java-files-under, $(ariel_sdk_src)) \
-    $(call all-java-files-under, $(library_src))
+    $(call all-java-files-under, $(ariel_sdk_src))
 
 arielplat_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/ariel/platform/R.java \
@@ -87,7 +85,6 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= com.ariel.platform.sdk
 LOCAL_MODULE_TAGS := optional
-LOCAL_REQUIRED_MODULES := services
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, $(ariel_sdk_src))
@@ -140,7 +137,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= com.ariel.platform.internal
 LOCAL_MODULE_TAGS := optional
-LOCAL_REQUIRED_MODULES := services
+#LOCAL_REQUIRED_MODULES := services
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, $(ariel_sdk_src))

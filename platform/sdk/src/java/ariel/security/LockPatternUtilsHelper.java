@@ -10,6 +10,9 @@ import android.view.WindowManagerGlobal;
 
 import com.android.internal.widget.LockPatternUtils;
 
+import android.net.NetworkPolicyManager;
+
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -83,6 +86,12 @@ public class LockPatternUtilsHelper {
             }
         }
 
+    }
+
+    public static void disableNetworks(Context context, int uid){
+        NetworkPolicyManager mPolicyManager = NetworkPolicyManager.from(context);
+        Log.i("LockPatternUtilsHelper", "Policy: "+mPolicyManager.getUidPolicy(uid));
+        // some stupid comment so we can build the fucking library  sdfdsfsdfsdf
     }
 
     public static byte[] getUnlockPassword() {
