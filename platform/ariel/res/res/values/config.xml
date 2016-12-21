@@ -15,84 +15,11 @@
      limitations under the License.
 -->
 <resources>
-    <!-- Whether to enable app suggest overlay which allows app suggest
-         provider to be replaced by an app at run-time. When disabled, only
-         the config_appSuggestProviderPackageName will be searched for app
-         suggest provider, otherwise packages whos signature matches the
-         signature of config_appSuggestProviderPackageNames will be searched,
-         and the service with the highest version number will be picked.
-         Anyone who wants to disable the overlay mechanism can set it to false.
-
-         Note: There appears to be an issue with false if we reinstall the provider which causes
-         it to not get the update and fail to reconnect on package update.  It's safer to just
-         use the list version with config_appSuggestProviderPackageNames.
-         -->
-    <bool name="config_enableAppSuggestOverlay" translatable="false">true</bool>
-
-    <!-- Package name providing app suggest support. Used only when
-         config_enableAppSuggestOverlay is false. -->
-    <string name="config_appSuggestProviderPackageName" translatable="false">com.ariel.platform.internal.ArielSystemServer</string>
-
-    <!-- List of packages providing app suggest support. Used only when
-    config_enableAppSuggestOverlay is true. -->
-    <string-array name="config_appSuggestProviderPackageNames" translatable="false">
-        <item>com.cyanogen.app.suggest</item>
-    </string-array>
-
-    <!-- Automatic power profile management per app.
-         Each item should list the fully-qualified activity
-         name and the power profile id, separated by a comma. -->
-    <string-array name="config_auto_perf_activities" translatable="false">
-    </string-array>
-
-    <!-- Default value for proximity check on screen wake
-     NOTE ! - Enable for devices that have a fast response proximity sensor (ideally < 300ms)-->
-    <bool name="config_proximityCheckOnWake">false</bool>
-    <integer name="config_proximityCheckTimeout">250</integer>
-    <bool name="config_proximityCheckOnWakeEnabledByDefault">false</bool>
-
-    <!-- Default values for LiveDisplay -->
-    <integer name="config_dayColorTemperature">6500</integer>
-    <integer name="config_nightColorTemperature">4500</integer>
-    <integer name="config_outdoorAmbientLux">9000</integer>
-    <integer name="config_defaultLiveDisplayMode">0</integer>
-
-    <bool name="config_defaultAutoContrast">false</bool>
-    <bool name="config_defaultAutoOutdoorMode">true</bool>
-    <bool name="config_defaultColorEnhancement">true</bool>
-    <bool name="config_defaultCABC">true</bool>
-
-    <!-- Is the notification LED brightness adjustable ?
-         Used to decide if the user can set LED brightness -->
-    <bool name="config_adjustableNotificationLedBrightness">false</bool>
-
-    <!-- Does the device have multiple LEDs ?
-         Used to decide if the user can change the multiple LEDs settings -->
-    <bool name="config_multipleNotificationLeds">false</bool>
-
-    <!-- Should we send the battery level to the HAL as the lower 8 bits
-         of the color?  This should only be used if the HAL does special
-         handling of the value- a use case for this would be a segmented
-         LED that can function as a range bar -->
-    <bool name="config_useSegmentedBatteryLed">false</bool>
-
-    <!-- Default, comma-delimited, quick settings tiles. See QSConstants.java for a list of all available tiles -->
-    <string name="config_defaultQuickSettingsTiles">wifi,bt,dnd,cell,airplane,rotation,location,edit,flashlight,cast,hotspot,inversion,live_display</string>
-
-    <!-- Wifi Service -->
-    <!-- Whether to make default hotspot security NONE-->
-    <bool name="config_wifiHotspotSecurityNone">false</bool>
-    <!-- Default wi-fi hotspot ssid -->
-    <string name="config_wifiHotSpotSsid" translatable="false"></string>
-    <!-- Default wi-fi hotspot pass -->
-    <string name="config_wifiHotSpotPass" translatable="false"></string>
-    <!-- Default wi-fi direct name -->
-    <string name="config_wifiDirectName" translatable="false"></string>
 
     <!-- Defines external services to be started by the SystemServer at boot. The service itself
          should publish as a binder services in its onStart -->
     <string-array name="config_externalArielServices">
-        <item>com.ariel.platform.internal.ArielGestureLauncherService</item>
+        <!--<item>com.ariel.platform.internal.ArielGestureLauncherService</item>-->
     </string-array>
 
     <!-- The ArielSystemServer class that is invoked from Android's SystemServer -->

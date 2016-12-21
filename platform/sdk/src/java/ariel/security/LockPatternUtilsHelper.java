@@ -88,9 +88,11 @@ public class LockPatternUtilsHelper {
 
     }
 
-    public static void disableNetworks(Context context, int uid){
+    public static void disableNetworks(Context context, int uid, boolean restrictBackground){
         NetworkPolicyManager mPolicyManager = NetworkPolicyManager.from(context);
         Log.i("LockPatternUtilsHelper", "Policy: "+mPolicyManager.getUidPolicy(uid));
+        mPolicyManager.setUidPolicy(uid, NetworkPolicyManager.POLICY_REJECT_METERED_BACKGROUND);
+        mPolicyManager.setRestrictBackground(restrictBackground);
         // some stupid comment so we can build the fucking library  sdfdsfsdfsdf
     }
 
