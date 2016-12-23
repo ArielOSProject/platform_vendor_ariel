@@ -44,6 +44,9 @@
     <permission android:name="ariel.permission.WRITE_SECURE_SETTINGS"
                 android:protectionLevel="signature|privileged|development" />
 
+    <permission android:name="ariel.permission.APPLICATION_FIREWALL"
+        android:protectionLevel="signature|privileged|development"/>
+
     <application android:process="system"
                  android:persistent="true"
                  android:hasCode="false"                

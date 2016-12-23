@@ -19,7 +19,7 @@
     <!-- Defines external services to be started by the SystemServer at boot. The service itself
          should publish as a binder services in its onStart -->
     <string-array name="config_externalArielServices">
-        <!--<item>com.ariel.platform.internal.ArielGestureLauncherService</item>-->
+        <item>com.ariel.platform.internal.ArielFirewallService</item>
     </string-array>
 
     <!-- The ArielSystemServer class that is invoked from Android's SystemServer -->
