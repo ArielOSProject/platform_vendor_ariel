@@ -23,6 +23,7 @@ import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.util.Log;
 import android.util.Slog;
+import java.util.List;
 
 import ariel.app.IArielFirewallManager;
 
@@ -86,7 +87,7 @@ public class ArielFirewallManager {
         return sArielFirewallManagerInstance;
     }
 
-    public void applyIptablesRulesImpl(List<Integer> uidsWifi, List<Integer> uids3g, boolean showErrors) {
+    public void applyIptablesRulesImpl(int[] uidsWifi, int[] uids3g, boolean showErrors) {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielFirewallService");
             return;

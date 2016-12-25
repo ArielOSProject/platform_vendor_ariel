@@ -45,6 +45,7 @@ import ariel.app.ArielContextConstants;
 import ariel.app.IArielFirewallManager;
 import com.ariel.platform.internal.firewall.Api;
 import ariel.platform.Manifest;
+import java.util.List;
 
 import java.util.ArrayList;
 
@@ -80,7 +81,7 @@ public class ArielFirewallService extends ArielSystemService {
     private final IBinder mService = new IArielFirewallManager.Stub() {
 
         @Override
-        public void applyIptablesRulesImpl(List<Integer> uidsWifi, List<Integer> uids3g, boolean showErrors) {
+        public void applyIptablesRulesImpl(int[] uidsWifi, int[] uids3g, boolean showErrors) {
             if(isCallerSystem()) {
                 Api.applyIptablesRulesImpl(mContext, uidsWifi, uids3g, true);
             }

@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import android.Manifest;
@@ -178,7 +179,7 @@ public final class Api {
      * @param uids3g list of selected UIDs for 2G/3G to allow or disallow (depending on the working mode)
      * @param showErrors indicates if errors should be alerted
      */
-	private static boolean applyIptablesRulesImpl(Context ctx, List<Integer> uidsWifi, List<Integer> uids3g, boolean showErrors) {
+	public static boolean applyIptablesRulesImpl(Context ctx, int[] uidsWifiArray, int[] uids3gArray, boolean showErrors) {
 		if (ctx == null) {
 			return false;
 		}
@@ -190,6 +191,15 @@ public final class Api {
 		final boolean blacklist = !whitelist;
 		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, 0).getBoolean(PREF_LOGENABLED, false);
 		final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT, "");
+
+		List<Integer> uidsWifi = new ArrayList<Integer>();
+		for(int i=0;i<uidsWifiArray.length;i++){
+			uidsWifi.add(uidsWifiArray[i]);
+		}
+		List<Integer> uids3g = new ArrayList<Integer>();
+		for(int i=0;i<uids3gArray.length;i++){
+			uids3g.add(uids3gArray[i]);
+		}
 
     	final StringBuilder script = new StringBuilder();
 		try {
@@ -367,7 +377,8 @@ public final class Api {
 				}
 			}
 		}
-		return applyIptablesRulesImpl(ctx, uids_wifi, uids_3g, showErrors);
+		//return applyIptablesRulesImpl(ctx, uids_wifi, uids_3g, showErrors);
+		return false;
 	}
 	
     /**

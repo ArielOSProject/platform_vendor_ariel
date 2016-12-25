@@ -16,8 +16,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Label for the Ariel system components when they are shown to the user. -->
-    <string name="ariel_system_labelx">Ariel System</string>
+    <string name="ariel_system_label">Ariel System</string>
 
-    <string name="bt_enable_title"></string>
+    <string name="test_bre">Ariel System</string>
 
 </resources>

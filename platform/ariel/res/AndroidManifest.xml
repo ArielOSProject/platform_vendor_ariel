@@ -20,8 +20,7 @@
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     package="ariel.platform"
     coreApp="true" android:sharedUserId="android.uid.system"
-    android:sharedUserLabel="@string/bt_enable_title">
-    <!--android:sharedUserLabel="@string/ariel_system_label">-->
+    android:sharedUserLabel="@string/ariel_system_label_new">
 
     <!-- Ariel IntentFirewall broadcasts -->
     <protected-broadcast android:name="ariel.intent.action.APPLICATION_BLOCKED" />

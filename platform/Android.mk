@@ -43,6 +43,9 @@ LOCAL_SRC_FILES := \
     $(call all-java-files-under, $(ariel_sdk_src)) \
     $(call all-java-files-under, $(library_src))
 
+LOCAL_SRC_FILES += \
+    $(call all-Iaidl-files-under, $(ariel_sdk_src))
+
 arielplat_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/ariel/platform/R.java \
     $(ariel_platform_res)/ariel/platform/Manifest.java \
@@ -50,6 +53,10 @@ arielplat_LOCAL_INTERMEDIATE_SOURCES := \
 
 LOCAL_INTERMEDIATE_SOURCES := \
     $(arielplat_LOCAL_INTERMEDIATE_SOURCES)
+
+# Include aidl files from cyanogenmod.app namespace as well as internal src aidl files
+LOCAL_AIDL_INCLUDES := $(LOCAL_PATH)/sdk/src/java
+LOCAL_AIDL_FLAGS := -n
 
 
 include $(BUILD_JAVA_LIBRARY)
@@ -90,7 +97,11 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_REQUIRED_MODULES := services
 
 LOCAL_SRC_FILES := \
-    $(call all-java-files-under, $(ariel_sdk_src))
+    $(call all-java-files-under, $(ariel_sdk_src)) \
+    $(call all-Iaidl-files-under, $(ariel_sdk_src))
+
+# Included aidl files from cyanogenmod.app namespace
+LOCAL_AIDL_INCLUDES := $(LOCAL_PATH)/sdk/src/java
 
 cmsdk_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/ariel/platform/R.java \
@@ -143,7 +154,12 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_REQUIRED_MODULES := services
 
 LOCAL_SRC_FILES := \
-    $(call all-java-files-under, $(ariel_sdk_src))
+    $(call all-java-files-under, $(ariel_sdk_src)) \
+    $(call all-Iaidl-files-under, $(ariel_sdk_src))
+
+# Included aidl files from cyanogenmod.app namespace
+LOCAL_AIDL_INCLUDES := $(LOCAL_PATH)/sdk/src/java
+LOCAL_AIDL_FLAGS := -n
 
 cmsdk_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/ariel/platform/R.java \

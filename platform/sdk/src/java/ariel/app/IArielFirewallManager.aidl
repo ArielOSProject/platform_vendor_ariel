@@ -16,10 +16,7 @@
 
 package ariel.app;
 
-import java.util.List;
-
-/** @hide */
 interface IArielFirewallManager {
-    void applyIptablesRulesImpl(List<Integer> uidsWifi, List<Integer> uids3g, boolean showErrors);
+    void applyIptablesRulesImpl(in int[] uidsWifi, in int[] uids3g, boolean showErrors);
     void purgeIptables();
 }
