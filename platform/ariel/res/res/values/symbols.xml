@@ -22,4 +22,6 @@
      <!-- Ariel system server -->
     <java-symbol type="string" name="config_externalSystemServer" />
 
+    <java-symbol type="string" name="ariel_system_label_x" />
+
 </resources>

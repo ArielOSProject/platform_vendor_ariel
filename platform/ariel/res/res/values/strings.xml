@@ -14,9 +14,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources >
     <!-- Label for the Ariel system components when they are shown to the user. -->
-    <string name="ariel_system_label">Ariel System</string>
+    <string name="ariel_system_label_x">Ariel System</string>
 
     <string name="test_bre">Ariel System</string>
 

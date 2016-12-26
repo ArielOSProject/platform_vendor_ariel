@@ -167,6 +167,7 @@ cmsdk_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/com/ariel/platform/internal/R.java \
     $(ariel_platform_res)/com/ariel/platform/internal/Manifest.java
 
+
 LOCAL_INTERMEDIATE_SOURCES := \
     $(cmsdk_LOCAL_INTERMEDIATE_SOURCES)
 

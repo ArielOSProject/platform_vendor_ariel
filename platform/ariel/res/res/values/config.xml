@@ -25,5 +25,4 @@
     <!-- The ArielSystemServer class that is invoked from Android's SystemServer -->
     <string name="config_externalSystemServer" translatable="false">com.ariel.platform.internal.ArielSystemServer</string>
 
-    <string name="ariel_system_label_new">Ariel System</string>
 </resources>
