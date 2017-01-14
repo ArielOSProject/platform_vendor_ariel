@@ -1,5 +1,4 @@
 
-#include vendor/ariel/platform/ariel-platform.mk
 include vendor/ariel/sepolicy/sepolicy.mk
 
 # Ariel Platform Library
@@ -8,11 +7,17 @@ PRODUCT_PACKAGES += \
     com.ariel.platform \
     com.ariel.platform.xml
 
+PRODUCT_COPY_FILES += \
+    vendor/ariel/config/permissions/com.ariel.android.xml:system/etc/permissions/com.ariel.android.xml \
+    vendor/ariel/config/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml \
+    vendor/ariel/platform/scripts/ariel-iptables-flush.sh:system/bin/ariel-iptables-flush.sh
+
 #Eleven
 PRODUCT_PACKAGES += \
    ArielGuardian \
    CMFileManager \
-   ArielSettingsProvider
+   ArielSettingsProvider \
+   arielfw
 
 # Make sure data roaming is off!
 PRODUCT_PROPERTY_OVERRIDES += \

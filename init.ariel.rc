@@ -2,3 +2,10 @@
 
 on post-fs-data
     mkdir /data/system/ifw 0700 system system
+
+service arielfw /system/bin/arielfw
+   class core
+   user root
+   group root
+   socket arielfw stream 0600 system system
+   seclabel u:r:arielfw:s0

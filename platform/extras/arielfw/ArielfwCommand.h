@@ -1,11 +1,11 @@
-/**
- * Copyright (c) 2015, The CyanogenMod Project
+/*
+ * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
-package ariel.app;
+#ifndef _ARIELFW_COMMAND_H
+#define _ARIELFW_COMMAND_H
 
-interface IArielFirewallManager {
-    void disableNetworking(in String pids); // pids string with pids sepparated by space
-    void clearRules();
-}
+#include <sysutils/FrameworkCommand.h>
+
+class ArielfwCommand : public FrameworkCommand {
+public:
+    ArielfwCommand(const char *cmd);
+    virtual ~ArielfwCommand() {}
+};
+
+#endif

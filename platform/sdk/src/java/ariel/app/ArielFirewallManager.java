@@ -87,7 +87,7 @@ public class ArielFirewallManager {
         return sArielFirewallManagerInstance;
     }
 
-    public void applyIptablesRulesImpl(int[] uidsWifi, int[] uids3g, boolean showErrors) {
+    public void disableNetworking(String uids) {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielFirewallService");
             return;
@@ -95,13 +95,13 @@ public class ArielFirewallManager {
 
         if (localLOGV) Log.v(TAG, "Invoking firewall enable");
         try {
-            sService.applyIptablesRulesImpl(uidsWifi, uids3g, showErrors);
+            sService.disableNetworking(uids);
         } catch (RemoteException e) {
             Slog.w("ArielFirewallManager", "warning: no ariel firewal service");
         }
     }
 
-    public void purgeIptables() {
+    public void clearRules() {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielFirewallService");
             return;
@@ -109,7 +109,7 @@ public class ArielFirewallManager {
 
         if (localLOGV) Log.v(TAG, "Invoking purge iptables");
         try {
-            sService.purgeIptables();
+            sService.clearRules();
         } catch (RemoteException e) {
             Slog.w(TAG, "warning: no ariel firewal service");
         }

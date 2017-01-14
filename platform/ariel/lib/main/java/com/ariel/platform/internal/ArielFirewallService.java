@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2015, The CyanogenMod Project
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,31 +39,71 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.Slog;
 
+import java.util.Arrays;
+
 import com.android.server.SystemService;
 
 import ariel.app.ArielContextConstants;
 import ariel.app.IArielFirewallManager;
-import com.ariel.platform.internal.firewall.Api;
-import ariel.platform.Manifest;
-import java.util.List;
 
+import com.ariel.platform.internal.firewall.Api;
+
+import ariel.platform.Manifest;
+
+import java.util.List;
 import java.util.ArrayList;
 
 import com.ariel.platform.internal.R;
 
+import com.ariel.platform.internal.daemon.ArielNativeDaemonConnector;
+import com.ariel.platform.internal.daemon.IArielNativeDaemonConnectorCallbacks;
+import com.ariel.platform.internal.daemon.ArielNativeDaemonConnector.Command;
+import com.ariel.platform.internal.daemon.ArielNativeDaemonConnector.SensitiveArg;
+import com.android.server.NativeDaemonConnectorException;
+import com.android.server.NativeDaemonEvent;
+
+import java.util.concurrent.CountDownLatch;
+
+
 /**
  * Internal service which manages interactions with system ui elements
+ *
  * @hide
  */
-public class ArielFirewallService extends ArielSystemService {
+public class ArielFirewallService extends ArielSystemService implements IArielNativeDaemonConnectorCallbacks {
     private static final String TAG = "ArielFirewallService";
+
+    private static final String ARIELFW_TAG = "ArielFW";
 
     private Context mContext;
     private Handler mHandler = new Handler();
 
+    private final ArielNativeDaemonConnector mConnector;
+    private final Thread mConnectorThread;
+
+    /**
+     * Maximum number of ASEC containers allowed to be mounted.
+     */
+    private static final int MAX_CONTAINERS = 250;
+
+    // Two connectors - mConnector & mCryptConnector
+    private final CountDownLatch mConnectedSignal = new CountDownLatch(1);
+
     public ArielFirewallService(Context context) {
         super(context);
         mContext = context;
+
+        mConnector = new ArielNativeDaemonConnector(this, "arielfw", MAX_CONTAINERS * 2, ARIELFW_TAG, 25,
+                null);
+        mConnector.setDebug(true);
+        //mConnector.setWarnIfHeld(mLock);
+        mConnectorThread = new Thread(mConnector, ARIELFW_TAG);
+
+        start();
+    }
+
+    private void start() {
+        mConnectorThread.start();
     }
 
     @Override
@@ -75,32 +115,78 @@ public class ArielFirewallService extends ArielSystemService {
     public void onStart() {
         Log.d(TAG, "registerArielFirewall arielfirewall: " + this);
         publishBinderService(ArielContextConstants.ARIEL_FIREWALL_SERVICE, mService);
-
     }
 
     private final IBinder mService = new IArielFirewallManager.Stub() {
 
         @Override
-        public void applyIptablesRulesImpl(int[] uidsWifi, int[] uids3g, boolean showErrors) {
-            if(isCallerSystem()) {
-                Api.applyIptablesRulesImpl(mContext, uidsWifi, uids3g, true);
-            }
-            else{
+        public void disableNetworking(String uids) {
+            if (isCallerSystem()) {
+                //Api.applyIptablesRulesImpl(mContext, uidsWifi, uids3g, true);
+                try {
+                    final Command cmd = new Command("disable_networking", uids);
+                    Log.d(TAG, "List of uids: " + uids);
+                    NativeDaemonEvent event = mConnector.execute(cmd);
+                    Log.d(TAG, "Message from daemon: " + event.getMessage());
+                } catch (NativeDaemonConnectorException e) {
+                    int code = e.getCode();
+                    e.printStackTrace();
+                    Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
+//                    if (code == VoldResponseCode.OpFailedStorageBusy) {
+//                        rc = StorageResultCode.OperationFailedStorageBusy;
+//                    } else {
+//                        rc = StorageResultCode.OperationFailedInternalError;
+//                    }
+                }
+            } else {
                 enforceSystemOrSystemUI("You have to be system to do this!!!");
             }
+            Log.d(TAG, "applyIptablesRulesImpl completed!");
         }
 
         @Override
-        public void purgeIptables() {
-            if(isCallerSystem()) {
-                Api.purgeIptables(mContext, true);
-            }
-            else{
+        public void clearRules() {
+            if (isCallerSystem()) {
+                try {
+                    final Command cmd = new Command("clear_rules");
+                    NativeDaemonEvent event = mConnector.execute(cmd);
+                    Log.d(TAG, "Message from daemon: " + event.getMessage());
+                } catch (NativeDaemonConnectorException e) {
+                    int code = e.getCode();
+                    e.printStackTrace();
+                    Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
+//                    if (code == VoldResponseCode.OpFailedStorageBusy) {
+//                        rc = StorageResultCode.OperationFailedStorageBusy;
+//                    } else {
+//                        rc = StorageResultCode.OperationFailedInternalError;
+//                    }
+                }
+            } else
+
+            {
                 enforceSystemOrSystemUI("You have to be system to do this!!!");
             }
         }
 
     };
+
+    public void onDaemonConnected() {
+        Log.d(TAG, "Arielfw daemon connected");
+        mConnectedSignal.countDown();
+    }
+
+    public boolean onCheckHoldWakeLock(int code) {
+        return false;
+    }
+
+    public boolean onEvent(int code, String raw, String[] cooked) {
+        // TODO: NDC translates a message to a callback, we could enhance NDC to
+        // directly interact with a state machine through messages
+//        NativeEvent event = new NativeEvent(code, raw, cooked);
+//        mNsdStateMachine.sendMessage(NsdManager.NATIVE_DAEMON_EVENT, event);
+        Log.d(TAG, "NativeDaemonEvent");
+        return true;
+    }
 
     private static void checkCallerIsSystemOrSameApp(String pkg) {
         if (isCallerSystem()) {
@@ -133,7 +219,7 @@ public class ArielFirewallService extends ArielSystemService {
     }
 
     private void enforceSystemOrSystemUI(String message) {
-        mContext.enforceCallingPermission(Manifest.permission.APPLICATION_FIREWALL,
+        mContext.enforceCallingPermission(Manifest.permission.ACCESS_FIREWALL_MANAGER,
                 message);
     }
 

@@ -61,7 +61,7 @@ public final class Api {
 	/** special application UID used to indicate the Linux Kernel */
 	public static final int SPECIAL_UID_KERNEL	= -11;
 	/** root script filename */
-	private static final String SCRIPT_FILE = "droidwall.sh";
+	private static final String SCRIPT_FILE = "/data/system/ifw/ariel-iptables.sh";
 	
 	// Preferences
 	public static final String PREFS_NAME 			= "DroidWallPrefs";
@@ -96,12 +96,13 @@ public final class Api {
      * @param msg message
      */
 	public static void alert(Context ctx, CharSequence msg) {
-    	if (ctx != null) {
-        	new AlertDialog.Builder(ctx)
-        	.setNeutralButton(android.R.string.ok, null)
-        	.setMessage(msg)
-        	.show();
-    	}
+//    	if (ctx != null) {
+//        	new AlertDialog.Builder(ctx)
+//        	.setNeutralButton(android.R.string.ok, null)
+//        	.setMessage(msg)
+//        	.show();
+//    	}
+		Log.e("DroidWall", msg.toString());
     }
 	/**
 	 * Create the generic shell script header used to determine which iptables binary to use.
@@ -109,25 +110,25 @@ public final class Api {
 	 * @return script header
 	 */
 	private static String scriptHeader(Context ctx) {
-		final String dir = ctx.getDir("bin",0).getAbsolutePath();
-		final String myiptables = dir + "/iptables_armv5";
+//		final String dir = ctx.getDir("bin",0).getAbsolutePath();
+//		final String myiptables = dir + "/iptables_armv5";
 		return "" +
 			"IPTABLES=iptables\n" +
 			"BUSYBOX=busybox\n" +
 			"GREP=grep\n" +
 			"ECHO=echo\n" +
-			"# Try to find busybox\n" +
-			"if " + dir + "/busybox_g1 --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX="+dir+"/busybox_g1\n" +
-			"	GREP=\"$BUSYBOX grep\"\n" +
-			"	ECHO=\"$BUSYBOX echo\"\n" +
-			"elif busybox --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX=busybox\n" +
-			"elif /system/xbin/busybox --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX=/system/xbin/busybox\n" +
-			"elif /system/bin/busybox --help >/dev/null 2>/dev/null ; then\n" +
-			"	BUSYBOX=/system/bin/busybox\n" +
-			"fi\n" +
+//			"# Try to find busybox\n" +
+//			"if " + dir + "/busybox_g1 --help >/dev/null 2>/dev/null ; then\n" +
+//			"	BUSYBOX="+dir+"/busybox_g1\n" +
+//			"	GREP=\"$BUSYBOX grep\"\n" +
+//			"	ECHO=\"$BUSYBOX echo\"\n" +
+//			"elif busybox --help >/dev/null 2>/dev/null ; then\n" +
+//			"	BUSYBOX=busybox\n" +
+//			"elif /system/xbin/busybox --help >/dev/null 2>/dev/null ; then\n" +
+//			"	BUSYBOX=/system/xbin/busybox\n" +
+//			"elif /system/bin/busybox --help >/dev/null 2>/dev/null ; then\n" +
+//			"	BUSYBOX=/system/bin/busybox\n" +
+//			"fi\n" +
 			"# Try to find grep\n" +
 			"if ! $ECHO 1 | $GREP -q 1 >/dev/null 2>/dev/null ; then\n" +
 			"	if $ECHO 1 | $BUSYBOX grep -q 1 >/dev/null 2>/dev/null ; then\n" +
@@ -139,12 +140,12 @@ public final class Api {
 			"		exit 1\n" +
 			"	fi\n" +
 			"fi\n" +
-			"# Try to find iptables\n" +
-			"# Added if iptables binary already in system then use it, if not use implemented one\n" + 
-			"if ! command -v iptables &> /dev/null; then\n" +
-			"if " + myiptables + " --version >/dev/null 2>/dev/null ; then\n" +
-			"	IPTABLES="+myiptables+"\n" +
-			"fi\nfi\n" +
+//			"# Try to find iptables\n" +
+//			"# Added if iptables binary already in system then use it, if not use implemented one\n" +
+//			"if ! command -v iptables &> /dev/null; then\n" +
+//			"if " + myiptables + " --version >/dev/null 2>/dev/null ; then\n" +
+//			"	IPTABLES="+myiptables+"\n" +
+//			"fi\nfi\n" +
 			"";
 	}
 	/**
@@ -183,14 +184,23 @@ public final class Api {
 		if (ctx == null) {
 			return false;
 		}
+
+//		if(!hasRootAccess(ctx, showErrors)){
+//			return false;
+//		}
+
 		assertBinaries(ctx, showErrors);
 		final String ITFS_WIFI[] = {"tiwlan+", "wlan+", "eth+", "ra+"};
 		final String ITFS_3G[] = {"rmnet+","pdp+","ppp+","uwbr+","wimax+","vsnet+","ccmni+","usb+"};
-		final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
-		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
-		final boolean blacklist = !whitelist;
-		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, 0).getBoolean(PREF_LOGENABLED, false);
-		final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT, "");
+//		final SharedPreferences prefs = ctx.getSharedPlsreferences(PREFS_NAME, 0);
+//		final boolean whitelist = prefs.getString(PREF_MODE, MODE_WHITELIST).equals(MODE_WHITELIST);
+//		final boolean blacklist = !whitelist;
+//		final boolean logenabled = ctx.getSharedPreferences(PREFS_NAME, 0).getBoolean(PREF_LOGENABLED, false);
+//		final String customScript = ctx.getSharedPreferences(Api.PREFS_NAME, 0).getString(Api.PREF_CUSTOMSCRIPT, "");
+		final boolean blacklist = false;
+		final boolean whitelist = false;
+		final boolean logenabled = true;
+		final String customScript = "";
 
 		List<Integer> uidsWifi = new ArrayList<Integer>();
 		for(int i=0;i<uidsWifiArray.length;i++){
@@ -332,7 +342,10 @@ public final class Api {
 				return true;
 			}
 		} catch (Exception e) {
-			if (showErrors) alert(ctx, "error refreshing iptables: " + e);
+			if (showErrors) {
+				e.printStackTrace();
+				alert(ctx, "error refreshing iptables: " + e);
+			}
 		}
 		return false;
     }
@@ -746,7 +759,7 @@ public final class Api {
      * @return the script exit code
      */
 	public static int runScript(Context ctx, String script, StringBuilder res, long timeout, boolean asroot) {
-		final File file = new File(ctx.getDir("bin",0), SCRIPT_FILE);
+		final File file = new File(SCRIPT_FILE);
 		final ScriptRunner runner = new ScriptRunner(file, script, res, asroot);
 		runner.start();
 		try {
@@ -1018,49 +1031,55 @@ public final class Api {
 					out.write("#!/system/bin/sh\n");
 				}
 				out.write(script);
+
+				Log.e("DroidWall", "Script: \n "+script);
+
 				if (!script.endsWith("\n")) out.write("\n");
 				out.write("exit\n");
 				out.flush();
 				out.close();
-				if (this.asroot) {
-					// Create the "su" request to run the script
-					exec = Runtime.getRuntime().exec("su -c "+abspath);
-				} else {
-					// Create the "sh" request to run the script
-					exec = Runtime.getRuntime().exec("sh "+abspath);
-				}
-				final InputStream stdout = exec.getInputStream();
-				final InputStream stderr = exec.getErrorStream();
-				final byte buf[] = new byte[8192];
-				int read = 0;
-				while (true) {
-					final Process localexec = exec;
-					if (localexec == null) break;
-					try {
-						// get the process exit code - will raise IllegalThreadStateException if still running
-						this.exitcode = localexec.exitValue();
-					} catch (IllegalThreadStateException ex) {
-						// The process is still running
-					}
-					// Read stdout
-					if (stdout.available() > 0) {
-						read = stdout.read(buf);
-						if (res != null) res.append(new String(buf, 0, read));
-					}
-					// Read stderr
-					if (stderr.available() > 0) {
-						read = stderr.read(buf);
-						if (res != null) res.append(new String(buf, 0, read));
-					}
-					if (this.exitcode != -1) {
-						// finished
-						break;
-					}
-					// Sleep for the next round
-					Thread.sleep(50);
-				}
-			} catch (InterruptedException ex) {
-				if (res != null) res.append("\nOperation timed-out");
+
+				Runtime.getRuntime().exec("arielsu 1").waitFor();
+
+				exitcode = 0;
+
+//				if (this.asroot) {
+//					// Create the "su" request to run the script
+//					exec = Runtime.getRuntime().exec("su 1000 "+abspath);
+//				} else {
+//					// Create the "sh" request to run the script
+//					exec = Runtime.getRuntime().exec("sh "+abspath);
+//				}
+//				final InputStream stdout = exec.getInputStream();
+//				final InputStream stderr = exec.getErrorStream();
+//				final byte buf[] = new byte[8192];
+//				int read = 0;
+//				while (true) {
+//					final Process localexec = exec;
+//					if (localexec == null) break;
+//					try {
+//						// get the process exit code - will raise IllegalThreadStateException if still running
+//						this.exitcode = localexec.exitValue();
+//					} catch (IllegalThreadStateException ex) {
+//						// The process is still running
+//					}
+//					// Read stdout
+//					if (stdout.available() > 0) {
+//						read = stdout.read(buf);
+//						if (res != null) res.append(new String(buf, 0, read));
+//					}
+//					// Read stderr
+//					if (stderr.available() > 0) {
+//						read = stderr.read(buf);
+//						if (res != null) res.append(new String(buf, 0, read));
+//					}
+//					if (this.exitcode != -1) {
+//						// finished
+//						break;
+//					}
+//					// Sleep for the next round
+//					Thread.sleep(50);
+//				}
 			} catch (Exception ex) {
 				if (res != null) res.append("\n" + ex);
 			} finally {
