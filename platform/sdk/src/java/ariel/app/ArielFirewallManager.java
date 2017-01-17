@@ -93,8 +93,9 @@ public class ArielFirewallManager {
             return;
         }
 
-        if (localLOGV) Log.v(TAG, "Invoking firewall enable");
+        if (localLOGV) Log.v(TAG, "Invoking disableNetworking");
         try {
+            if (localLOGV) Log.v(TAG, "Passing uids: "+uids);
             sService.disableNetworking(uids);
         } catch (RemoteException e) {
             Slog.w("ArielFirewallManager", "warning: no ariel firewal service");
