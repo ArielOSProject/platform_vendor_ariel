@@ -20,9 +20,9 @@ include $(CLEAR_VARS)
 LOCAL_PACKAGE_NAME := com.ariel.platform-res
 LOCAL_CERTIFICATE := platform
 LOCAL_AAPT_FLAGS := --auto-add-overlay
-LOCAL_AAPT_FLAGS += --private-symbols com.ariel.platform.internal
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, res)
 $(info $(LOCAL_RESOURCE_DIR))
+$(info 'I AM BEING INVOKED')
 LOCAL_RESOURCE_DIR += $(LOCAL_PATH)/../../sdk/res/res
 
 # Tell aapt to create "extending (non-application)" resource IDs,

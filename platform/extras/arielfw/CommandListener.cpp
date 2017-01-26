@@ -30,7 +30,7 @@
 #include <inttypes.h>
 #include <ctype.h>
 #include <cutils/klog.h>
-#include <android-base/logging.h>
+#include <base/logging.h>
 #include <sstream>
 
 #define LOG_TAG "ArielfwCmdListener"

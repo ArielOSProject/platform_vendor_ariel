@@ -16,6 +16,9 @@
 -->
 <resources>
 
+    <!-- does not exist in N builds -->
+    <private-symbols package="com.ariel.platform.internal" />
+
     <!-- External Ariel specific core services -->
     <java-symbol type="array" name="config_externalArielServices" />
 
