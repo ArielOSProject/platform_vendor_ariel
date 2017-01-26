@@ -66,8 +66,7 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
     private OutputStream mOutputStream;
     private LocalLog mLocalLog;
 
-    private volatile boolean mDebug = true;
-    private volatile Object mWarnIfHeld;
+    private volatile boolean mDebug = false;
 
     private final ResponseQueue mResponseQueue;
 
@@ -89,14 +88,14 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
     private final int BUFFER_SIZE = 4096;
 
     public ArielNativeDaemonConnector(IArielNativeDaemonConnectorCallbacks callbacks, String socket,
-            int responseQueueSize, String logTag, int maxLogSize, PowerManager.WakeLock wl) {
+                          int responseQueueSize, String logTag, int maxLogSize, PowerManager.WakeLock wl) {
         this(callbacks, socket, responseQueueSize, logTag, maxLogSize, wl,
                 FgThread.get().getLooper());
     }
 
     private ArielNativeDaemonConnector(IArielNativeDaemonConnectorCallbacks callbacks, String socket,
-            int responseQueueSize, String logTag, int maxLogSize, PowerManager.WakeLock wl,
-            Looper looper) {
+                          int responseQueueSize, String logTag, int maxLogSize, PowerManager.WakeLock wl,
+                          Looper looper) {
         mCallbacks = callbacks;
         mSocket = socket;
         mResponseQueue = new ResponseQueue(responseQueueSize);
@@ -118,23 +117,6 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
         mDebug = debug;
     }
 
-    /**
-     * Like SystemClock.uptimeMillis, except truncated to an int so it will fit in a message arg.
-     * Inaccurate across 49.7 days of uptime, but only used for debugging.
-     */
-    private int uptimeMillisInt() {
-        return (int) SystemClock.uptimeMillis() & Integer.MAX_VALUE;
-    }
-
-    /**
-     * Yell loudly if someone tries making future {@link #execute(Command)}
-     * calls while holding a lock on the given object.
-     */
-    public void setWarnIfHeld(Object warnIfHeld) {
-        Preconditions.checkState(mWarnIfHeld == null);
-        mWarnIfHeld = Preconditions.checkNotNull(warnIfHeld);
-    }
-
     @Override
     public void run() {
         mCallbackHandler = new Handler(mLooper, this);
@@ -151,28 +133,16 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
 
     @Override
     public boolean handleMessage(Message msg) {
-        final String event = (String) msg.obj;
-        Log.d("ArielFw", event);
-        final int start = uptimeMillisInt();
-        final int sent = msg.arg1;
+        String event = (String) msg.obj;
         try {
             if (!mCallbacks.onEvent(msg.what, event, NativeDaemonEvent.unescapeArgs(event))) {
                 log(String.format("Unhandled event '%s'", event));
-                Log.d(TAG, String.format("Unhandled event '%s'", event));
             }
         } catch (Exception e) {
             loge("Error handling '" + event + "': " + e);
-            Log.e(TAG, String.format("Unhandled event '%s'", event));
         } finally {
             if (mCallbacks.onCheckHoldWakeLock(msg.what) && mWakeLock != null) {
                 mWakeLock.release();
-            }
-            final int end = uptimeMillisInt();
-            if (start > sent && start - sent > WARN_EXECUTE_DELAY_MS) {
-                loge(String.format("NDC event {%s} processed too late: %dms", event, start - sent));
-            }
-            if (end > start && end - start > WARN_EXECUTE_DELAY_MS) {
-                loge(String.format("NDC event {%s} took too long: %dms", event, end - start));
             }
         }
         return true;
@@ -206,7 +176,6 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
 
             mCallbacks.onDaemonConnected();
 
-            FileDescriptor[] fdList = null;
             byte[] buffer = new byte[BUFFER_SIZE];
             int start = 0;
 
@@ -216,7 +185,6 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
                     loge("got " + count + " reading with start = " + start);
                     break;
                 }
-                fdList = socket.getAncillaryFileDescriptors();
 
                 // Add our starting point to the count and reset the start.
                 count += start;
@@ -231,8 +199,8 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
 
                         boolean releaseWl = false;
                         try {
-                            final NativeDaemonEvent event =
-                                    NativeDaemonEvent.parseRawEvent(rawEvent, fdList);
+                            final NativeDaemonEvent event = NativeDaemonEvent.parseRawEvent(
+                                    rawEvent);
 
                             log("RCV <- {" + event + "}");
 
@@ -243,9 +211,8 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
                                     mWakeLock.acquire();
                                     releaseWl = true;
                                 }
-                                Message msg = mCallbackHandler.obtainMessage(
-                                        event.getCode(), uptimeMillisInt(), 0, event.getRawEvent());
-                                if (mCallbackHandler.sendMessage(msg)) {
+                                if (mCallbackHandler.sendMessage(mCallbackHandler.obtainMessage(
+                                        event.getCode(), event.getRawEvent()))) {
                                     releaseWl = false;
                                 }
                             } else {
@@ -255,7 +222,7 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
                             log("Problem parsing message " + e);
                         } finally {
                             if (releaseWl) {
-                                mWakeLock.release();
+                                mWakeLock.acquire();
                             }
                         }
 
@@ -325,7 +292,7 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
      */
     @VisibleForTesting
     static void makeCommand(StringBuilder rawBuilder, StringBuilder logBuilder, int sequenceNumber,
-            String cmd, Object... args) {
+                            String cmd, Object... args) {
         if (cmd.indexOf('\0') >= 0) {
             throw new IllegalArgumentException("Unexpected command: " + cmd);
         }
@@ -353,30 +320,6 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
         }
 
         rawBuilder.append('\0');
-    }
-
-    /**
-     * Method that waits until all asychronous notifications sent by the native daemon have
-     * been processed. This method must not be called on the notification thread or an
-     * exception will be thrown.
-     */
-    public void waitForCallbacks() {
-        if (Thread.currentThread() == mLooper.getThread()) {
-            throw new IllegalStateException("Must not call this method on callback thread");
-        }
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        mCallbackHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                latch.countDown();
-            }
-        });
-        try {
-            latch.await();
-        } catch (InterruptedException e) {
-            Slog.wtf(TAG, "Interrupted while waiting for unsolicited response handling", e);
-        }
     }
 
     /**
@@ -461,11 +404,6 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
      */
     public NativeDaemonEvent[] executeForList(long timeoutMs, String cmd, Object... args)
             throws NativeDaemonConnectorException {
-        if (mWarnIfHeld != null && Thread.holdsLock(mWarnIfHeld)) {
-            Slog.wtf(TAG, "Calling thread " + Thread.currentThread().getName() + " is holding 0x"
-                    + Integer.toHexString(System.identityHashCode(mWarnIfHeld)), new Throwable());
-        }
-
         final long startTime = SystemClock.elapsedRealtime();
 
         final ArrayList<NativeDaemonEvent> events = Lists.newArrayList();
@@ -661,12 +599,12 @@ public final class ArielNativeDaemonConnector implements Runnable, Handler.Callb
                     while (mPendingCmds.size() >= mMaxCount) {
                         Slog.e("NativeDaemonConnector.ResponseQueue",
                                 "more buffered than allowed: " + mPendingCmds.size() +
-                                " >= " + mMaxCount);
+                                        " >= " + mMaxCount);
                         // let any waiter timeout waiting for this
                         PendingCmd pendingCmd = mPendingCmds.remove();
                         Slog.e("NativeDaemonConnector.ResponseQueue",
                                 "Removing request: " + pendingCmd.logCmd + " (" +
-                                pendingCmd.cmdNum + ")");
+                                        pendingCmd.cmdNum + ")");
                     }
                     found = new PendingCmd(cmdNum, null);
                     mPendingCmds.add(found);
