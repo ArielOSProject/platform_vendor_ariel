@@ -9,8 +9,7 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     vendor/ariel/config/permissions/com.ariel.android.xml:system/etc/permissions/com.ariel.android.xml \
-    vendor/ariel/config/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml \
-    vendor/ariel/platform/scripts/ariel-iptables-flush.sh:system/bin/ariel-iptables-flush.sh
+    vendor/ariel/config/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml
 
 #Eleven
 PRODUCT_PACKAGES += \
