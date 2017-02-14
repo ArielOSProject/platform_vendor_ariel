@@ -14,51 +14,27 @@
  * limitations under the License.
  */
 
-package com.ariel.platform.internal;
+package com.ariel.platform.internal.firewall;
 
-import android.app.ActivityManager;
 import android.app.AppGlobals;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.IPackageManager;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.IInterface;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.text.TextUtils;
-import android.util.ArrayMap;
 import android.util.Log;
-import android.util.Slog;
-
-import java.util.Arrays;
-
-import com.android.server.SystemService;
 
 import ariel.app.ArielContextConstants;
 import ariel.app.IArielFirewallManager;
 
-import com.ariel.platform.internal.firewall.Api;
-
 import ariel.platform.Manifest;
 
-import java.util.List;
-import java.util.ArrayList;
-
-import com.ariel.platform.internal.R;
-
+import com.ariel.platform.internal.ArielSystemService;
 import com.ariel.platform.internal.daemon.ArielNativeDaemonConnector;
 import com.ariel.platform.internal.daemon.IArielNativeDaemonConnectorCallbacks;
 import com.ariel.platform.internal.daemon.ArielNativeDaemonConnector.Command;
-import com.ariel.platform.internal.daemon.ArielNativeDaemonConnector.SensitiveArg;
 import com.android.server.NativeDaemonConnectorException;
 import com.android.server.NativeDaemonEvent;
 
