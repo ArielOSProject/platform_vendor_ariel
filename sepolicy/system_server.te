@@ -1,0 +1,6 @@
+# Allow system_server to write rules fir Intent firewall
+allow system_server system_data_ifw:file create_file_perms;
+allow system_server system_data_ifw:dir create_dir_perms;
+
+allow system_server arielfw:unix_stream_socket connectto;
+allow system_server socket_device:sock_file write;
