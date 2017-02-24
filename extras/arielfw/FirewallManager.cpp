@@ -34,14 +34,14 @@
 FirewallManager *FirewallManager::sInstance = NULL;
 
 FirewallManager *FirewallManager::Instance() {
-    if (!sInstance)
-        sInstance = new FirewallManager();
-    return sInstance;
+        if (!sInstance)
+                sInstance = new FirewallManager();
+        return sInstance;
 }
 
 FirewallManager::FirewallManager() {
-    setenv("ANDROID_LOG_TAGS", "*:v", 1);
-    android::base::InitLogging(NULL, android::base::LogdLogger(android::base::SYSTEM));
+        setenv("ANDROID_LOG_TAGS", "*:v", 1);
+        android::base::InitLogging(NULL, android::base::LogdLogger(android::base::SYSTEM));
 // constructor
 }
 
@@ -50,165 +50,165 @@ FirewallManager::~FirewallManager() {
 }
 
 int FirewallManager::prepareFirewall() {
-    std::stringstream ss;
-    //Create the arielfw chains if necessary
-    ss << "iptables -L arielfw >/dev/null 2>/dev/null || iptables --new arielfw || exit 2" << "&&"
-       << "iptables -L arielfw-3g >/dev/null 2>/dev/null || iptables --new arielfw-3g || exit 3" << "&&"
-       << "iptables -L arielfw-wifi >/dev/null 2>/dev/null || iptables --new arielfw-wifi || exit 4" << "&&"
-       << "iptables -L arielfw-reject >/dev/null 2>/dev/null || iptables --new arielfw-reject || exit 5" << "&&"
-       // Add arielfw chain to OUTPUT chain if necessary
-       // PROBAJ DA DODAS I INPUT PRAVILO ZA ARIELFW
-       << "iptables -L OUTPUT | grep -q arielfw || iptables -A OUTPUT -j arielfw || exit 6" << "&&"
-       << "iptables -L INPUT | grep -q arielfw || iptables -A INPUT -j arielfw || exit 7" << "&&"
-       // Flush existing rules
-       << "iptables -F arielfw || exit 8" << "&&"
-       << "iptables -F arielfw-3g || exit 9" << "&&"
-       << "iptables -F arielfw-wifi || exit 10" << "&&"
-       << "iptables -F arielfw-reject || exit 11" << "&&"
-       //create reject rule with log support
-       << "iptables -A arielfw-reject -j LOG --log-prefix \"[ARIELFW] \" --log-uid" << "&&"
-       << "iptables -A arielfw-reject -j REJECT || exit 12" << "&&"
-       // allow local connections (like local sockets)
-       << "iptables -A INPUT -i lo -j ACCEPT || exit 13" << "&&"
-       << "iptables -A OUTPUT -o lo -j ACCEPT || exit 14";
+        std::stringstream ss;
+        //Create the arielfw chains if necessary
+        ss << "iptables -L arielfw >/dev/null 2>/dev/null || iptables --new arielfw || exit 2" << "&&"
+           << "iptables -L arielfw-3g >/dev/null 2>/dev/null || iptables --new arielfw-3g || exit 3" << "&&"
+           << "iptables -L arielfw-wifi >/dev/null 2>/dev/null || iptables --new arielfw-wifi || exit 4" << "&&"
+           << "iptables -L arielfw-reject >/dev/null 2>/dev/null || iptables --new arielfw-reject || exit 5" << "&&"
+        // Add arielfw chain to OUTPUT chain if necessary
+        // PROBAJ DA DODAS I INPUT PRAVILO ZA ARIELFW
+        << "iptables -L OUTPUT | grep -q arielfw || iptables -A OUTPUT -j arielfw || exit 6" << "&&"
+        << "iptables -L INPUT | grep -q arielfw || iptables -A INPUT -j arielfw || exit 7" << "&&"
+        // Flush existing rules
+        << "iptables -F arielfw || exit 8" << "&&"
+        << "iptables -F arielfw-3g || exit 9" << "&&"
+        << "iptables -F arielfw-wifi || exit 10" << "&&"
+        << "iptables -F arielfw-reject || exit 11" << "&&"
+        //create reject rule with log support
+        << "iptables -A arielfw-reject -j LOG --log-prefix \"[ARIELFW] \" --log-uid" << "&&"
+        << "iptables -A arielfw-reject -j REJECT || exit 12" << "&&"
+        // allow local connections (like local sockets)
+        << "iptables -A INPUT -i lo -j ACCEPT || exit 13" << "&&"
+        << "iptables -A OUTPUT -o lo -j ACCEPT || exit 14";
 
-    //# Main rules (per interface)
-    for(const std::string &protocol : ITFS_3G){
-        ss << "&&"
-           << "iptables -A arielfw -o " << protocol << " -j arielfw-3g || exit" << "&&"
-           << "iptables -A arielfw -i " << protocol << " -j arielfw-3g || exit";
-    }
+        //# Main rules (per interface)
+        for(const std::string &protocol : ITFS_3G) {
+                ss << "&&"
+                   << "iptables -A arielfw -o " << protocol << " -j arielfw-3g || exit" << "&&"
+                   << "iptables -A arielfw -i " << protocol << " -j arielfw-3g || exit";
+        }
 
-    for(const std::string &protocol : ITFS_WIFI){
-            ss << "&&"
-               << "iptables -A arielfw -o " << protocol << " -j arielfw-wifi || exit" << "&&"
-               << "iptables -A arielfw -i " << protocol << " -j arielfw-wifi || exit";
-    }
+        for(const std::string &protocol : ITFS_WIFI) {
+                ss << "&&"
+                   << "iptables -A arielfw -o " << protocol << " -j arielfw-wifi || exit" << "&&"
+                   << "iptables -A arielfw -i " << protocol << " -j arielfw-wifi || exit";
+        }
 
-    // enable processes dhcp and wifi
-    //ss << "&&"
-    //   << "iptables -A arielfw-wifi -m owner --uid-owner 1014 -j RETURN || exit"
-    //   << "&&"
-    //   << "iptables -A arielfw-wifi -m owner --uid-owner 1010 -j RETURN || exit";
+        // enable processes dhcp and wifi
+        //ss << "&&"
+        //   << "iptables -A arielfw-wifi -m owner --uid-owner 1014 -j RETURN || exit"
+        //   << "&&"
+        //   << "iptables -A arielfw-wifi -m owner --uid-owner 1010 -j RETURN || exit";
 
-    // execute commands
-    int returnValue = system(ss.str().c_str());
-    return returnValue;
+        // execute commands
+        int returnValue = system(ss.str().c_str());
+        return returnValue;
 }
 
 int FirewallManager::indexOf(int array[], int length, int seek) {
-    for (int i = 0; i < length; i++)
-    {
-       if (array[i] == seek) return i;
-    }
-    return -1;
+        for (int i = 0; i < length; i++)
+        {
+                if (array[i] == seek) return i;
+        }
+        return -1;
 }
 
 int FirewallManager::disableWifi(int pid[], int pid_size) {
 
-    // first we need to clear out existing rules
-    //int initFw = prepareFirewall();
+        // first we need to clear out existing rules
+        //int initFw = prepareFirewall();
 
 
-            std::stringstream ss;
+        std::stringstream ss;
 
-            bool all_apps = indexOf(pid, pid_size, SPECIAL_UID_ANY) > -1;
+        bool all_apps = indexOf(pid, pid_size, SPECIAL_UID_ANY) > -1;
 
-            LOG(INFO) << "disableWifi all_apps : " << all_apps;
-            if(all_apps){
-                 LOG(INFO) << "I am disabling your wifi man.";
-                 /* block any application on this interface */
-                 ss << "iptables -A arielfw-wifi -j arielfw-reject || exit";
-            } else {
-                 LOG(INFO) << "Disable wifi per application";
-                 /* release/block individual applications on this interface */
-                 for (int i = 0; i < pid_size; i++)
-                 {
-                    int processId = pid[i];
+        LOG(INFO) << "disableWifi all_apps : " << all_apps;
+        if(all_apps) {
+                LOG(INFO) << "I am disabling your wifi man.";
+                /* block any application on this interface */
+                ss << "iptables -A arielfw-wifi -j arielfw-reject || exit";
+        } else {
+                LOG(INFO) << "Disable wifi per application";
+                /* release/block individual applications on this interface */
+                for (int i = 0; i < pid_size; i++)
+                {
+                        int processId = pid[i];
 
-                    if(processId >= 0){
-                        ss << "iptables -A arielfw-wifi -m owner --uid-owner " << processId
-                           << " -j arielfw-reject || exit";
-                        if(i<pid_size-1){
-                           ss << " && ";
+                        if(processId >= 0) {
+                                ss << "iptables -A arielfw-wifi -m owner --uid-owner " << processId
+                                   << " -j arielfw-reject || exit";
+                                if(i<pid_size-1) {
+                                        ss << " && ";
+                                }
                         }
-                    }
-                 }
-            }
+                }
+        }
 
-            // execute commands
-            int returnValue = system(ss.str().c_str());
-            LOG(INFO) << "disableWifi all_apps error : " << errno << " and return value " << returnValue;
-            return returnValue;
+        // execute commands
+        int returnValue = system(ss.str().c_str());
+        LOG(INFO) << "disableWifi all_apps error : " << errno << " and return value " << returnValue;
+        return returnValue;
 
 }
 
 int FirewallManager::enableWifi(int pid[], int pid_size) {
-    return 0;
+        return 0;
 }
 
 int FirewallManager::disableData(int pid[], int pid_size) {
-      std::stringstream ss;
+        std::stringstream ss;
 
-           bool all_apps = indexOf(pid, pid_size, SPECIAL_UID_ANY) > -1;
+        bool all_apps = indexOf(pid, pid_size, SPECIAL_UID_ANY) > -1;
 
-                LOG(INFO) << "disableData all_apps : " << all_apps;
-                if(all_apps){
-                     LOG(INFO) << "I am disabling your data man.";
-                     /* block any application on this interface */
-                     ss << "iptables -A arielfw-3g -j arielfw-reject || exit";
-                } else {
-                     LOG(INFO) << "Disable data per application";
-                     /* release/block individual applications on this interface */
-                     for (int i = 0; i < pid_size; i++)
-                     {
+        LOG(INFO) << "disableData all_apps : " << all_apps;
+        if(all_apps) {
+                LOG(INFO) << "I am disabling your data man.";
+                /* block any application on this interface */
+                ss << "iptables -A arielfw-3g -j arielfw-reject || exit";
+        } else {
+                LOG(INFO) << "Disable data per application";
+                /* release/block individual applications on this interface */
+                for (int i = 0; i < pid_size; i++)
+                {
                         int processId = pid[i];
 
-                        if(processId >= 0){
-                            ss << "iptables -A arielfw-3g -m owner --uid-owner " << processId
-                               << " -j arielfw-reject || exit";
-                            if(i<pid_size-1){
-                               ss << " && ";
-                            }
+                        if(processId >= 0) {
+                                ss << "iptables -A arielfw-3g -m owner --uid-owner " << processId
+                                   << " -j arielfw-reject || exit";
+                                if(i<pid_size-1) {
+                                        ss << " && ";
+                                }
                         }
-                     }
                 }
+        }
 
-                // execute commands
-                int returnValue = system(ss.str().c_str());
-                LOG(INFO) << "disableWifi all_apps error : " << errno << " and return value " << returnValue;
-                return returnValue;
+        // execute commands
+        int returnValue = system(ss.str().c_str());
+        LOG(INFO) << "disableWifi all_apps error : " << errno << " and return value " << returnValue;
+        return returnValue;
 
 }
 
 int FirewallManager::enableData(int pid[], int pid_size) {
-    return 0;
+        return 0;
 }
 
 int FirewallManager::disableNetworking(int pid[], int pid_size) {
-    int initFw = prepareFirewall();
+        int initFw = prepareFirewall();
 
-    if(initFw < 0){
-        // something is terribly wrong!
-        return FW_ERROR;
-    }
-    else{
-        int res = disableWifi(pid, pid_size);
-        res = disableData(pid, pid_size);
-        return res;
-    }
-    return 0;
+        if(initFw < 0) {
+                // something is terribly wrong!
+                return FW_ERROR;
+        }
+        else{
+                int res = disableWifi(pid, pid_size);
+                res = disableData(pid, pid_size);
+                return res;
+        }
+        return 0;
 }
 
 int FirewallManager::clearRules() {
-    std::stringstream ss;
+        std::stringstream ss;
 
-    // purge arielfw rules
-    ss << "iptables -F arielfw" << "&&"
-       << "iptables -F arielfw-reject" << "&&"
-       << "iptables -F arielfw-3g" << "&&"
-       << "iptables -F arielfw-wifi";
+        // purge arielfw rules
+        ss << "iptables -F arielfw" << "&&"
+           << "iptables -F arielfw-reject" << "&&"
+           << "iptables -F arielfw-3g" << "&&"
+           << "iptables -F arielfw-wifi";
 
-    int returnValue = system(ss.str().c_str());
-    return returnValue;
+        int returnValue = system(ss.str().c_str());
+        return returnValue;
 }
