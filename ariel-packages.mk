@@ -11,10 +11,8 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/config/permissions/com.ariel.android.xml:system/etc/permissions/com.ariel.android.xml \
     vendor/ariel/config/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml
 
-#Eleven
 PRODUCT_PACKAGES += \
    ArielGuardian \
-   CMFileManager \
    ArielSettingsProvider \
    arielfw
 
