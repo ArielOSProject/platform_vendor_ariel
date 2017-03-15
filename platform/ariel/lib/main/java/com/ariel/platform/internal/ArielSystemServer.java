@@ -41,9 +41,6 @@ import android.util.Slog;
 import com.android.server.LocalServices;
 import com.android.server.SystemServiceManager;
 
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-
 import com.ariel.platform.internal.common.ArielSystemServiceHelper;
 
 /**
@@ -80,69 +77,10 @@ public class ArielSystemServer {
         try {
             Slog.i(TAG, "ArielSystemServer starting services...");
             startServices();
-            setDeviceOwner();
         } catch (Throwable ex) {
             Slog.e("System", "******************************************");
             Slog.e("System", "************ Failure starting cm system services", ex);
             throw ex;
-        }
-    }
-
-    private void setDeviceOwner() {
-        final Context context = mSystemContext;
-        DevicePolicyManager mDPM =
-                (DevicePolicyManager) mSystemContext.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        Slog.i(TAG, "Setting device owner info...");
-        ComponentName cn = new ComponentName("com.ariel.guardian",
-                "com.ariel.guardian.receivers.ArielDeviceAdminReceiver");
-
-        if(mDPM.isDeviceOwnerApp("com.ariel.guardian")){
-            Slog.i(TAG, "We are the owner, all cool");
-        }
-        else{
-            Slog.i(TAG, "We are not the owner, take us in");
-            try {
-                // first, we need to set ourselves as active admin
-                mDPM.setActiveAdmin(cn, true);
-
-                // second, set ourselves as device owner
-                // btw at this point bellow code wont work
-                // because the upper statement will cause an exception :)
-                boolean result = mDPM.setDeviceOwner(cn, "ArielGuardian");
-                if (result) {
-                    Slog.i(TAG, "Setting device owner success!");
-                } else {
-                    Slog.i(TAG, "Setting device owner failed...");
-                }
-
-                Slog.i(TAG, "New device owner: " + mDPM.getDeviceOwner());
-            } catch (IllegalStateException e) {
-                Slog.e("ArielSystemServer", "Set active admin failed!!");
-                e.printStackTrace();
-
-                //we nuke this exception and continue
-                try{
-                    //if the admin is activated, set the owner
-                    if(mDPM.isAdminActive(cn)){
-                        boolean result = mDPM.setDeviceOwner(cn, "ArielGuardian");
-                        if (result) {
-                            Slog.i(TAG, "Setting device owner success!");
-                        } else {
-                            Slog.i(TAG, "Setting device owner failed...");
-                        }
-                    }
-                }
-                catch(IllegalStateException ex){
-                    Slog.e("ArielSystemServer", "IllegalState device owner!!!!!!");
-                    ex.printStackTrace();
-                }
-
-                Slog.i(TAG, "New device owner: " + mDPM.getDeviceOwner());
-            }
-            catch(Exception e){
-                Slog.e("ArielSystemServer", "Error setting device owner!!!!!!");
-                e.printStackTrace();
-            }
         }
     }
 

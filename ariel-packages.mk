@@ -14,6 +14,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
    ArielGuardian \
    ArielSettingsProvider \
+   ArielSetupWizard \
    arielfw
 
 # Make sure data roaming is off!
