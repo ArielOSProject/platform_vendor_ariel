@@ -103,7 +103,7 @@ public class DefaultActivity extends Activity {
             // second, set ourselves as device owner
             // btw at this point bellow code wont work
             // because the upper statement will cause an exception :)
-            boolean result = mDPM.setDeviceOwner(cn, "ArielGuardian");
+            boolean result = mDPM.setDeviceOwner(cn.getPackageName());
             if (result) {
                 Slog.i(TAG, "Setting device owner success!");
             } else {
