@@ -8,8 +8,9 @@ PRODUCT_PACKAGES += \
     com.ariel.platform.xml
 
 PRODUCT_COPY_FILES += \
-    vendor/ariel/config/permissions/com.ariel.android.xml:system/etc/permissions/com.ariel.android.xml \
-    vendor/ariel/config/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml
+    vendor/ariel/system/etc/permissions/com.ariel.android.xml:system/etc/permissions/com.ariel.android.xml \
+    vendor/ariel/system/etc/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml \
+    vendor/ariel/system/etc/sysconfig/ariel.xml:system/etc/sysconfig/ariel.xml
 
 #Eleven
 PRODUCT_PACKAGES += \
@@ -29,7 +30,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Copy .rc files
 PRODUCT_COPY_FILES += \
-    vendor/ariel/init.ariel.rc:root/init.ariel.rc
+    vendor/ariel/root/init.ariel.rc:root/init.ariel.rc
 
 include $(call first-makefiles-under,$(LOCAL_PATH))
 
