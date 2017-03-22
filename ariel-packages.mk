@@ -1,6 +1,8 @@
 
 include vendor/ariel/sepolicy/sepolicy.mk
 
+PRODUCT_PACKAGE_OVERLAYS :=  vendor/ariel/overlay $(PRODUCT_PACKAGE_OVERLAYS)
+
 # Ariel Platform Library
 PRODUCT_PACKAGES += \
     com.ariel.platform-res \
