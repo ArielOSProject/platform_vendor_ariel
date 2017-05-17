@@ -30,6 +30,12 @@ import android.app.backup.IBackupManager;
 import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.os.RemoteException;
+import android.os.RecoverySystem;
+import android.widget.Button;
+import java.io.File;
+import android.os.Environment;
+import java.io.IOException;
+import android.content.pm.ApplicationInfo;
 
 /**
  * Application that sets the provisioned bit, like SetupWizard does.
@@ -45,26 +51,69 @@ public class DefaultActivity extends Activity {
 
         setContentView(R.layout.main);
 
+        Button btnGapps = (Button)findViewById(R.id.btn_install_gapps);
+
+        boolean isGoogleApsPresent = checkApplication("com.google.android.gsf");
+        if(isGoogleApsPresent){
+            btnGapps.setVisibility(View.GONE);
+        }
+        else{
+            btnGapps.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    public boolean checkApplication(String packageName) {
+        PackageManager packageManager = getPackageManager();
+        ApplicationInfo applicationInfo = null;
+        try {
+            applicationInfo = packageManager.getApplicationInfo(packageName, 0);
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (applicationInfo == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void onGappsButtonClick(View v){
+        try {
+            File updateFile = new File(Environment.getExternalStorageDirectory()+"/updates/open_gapps-arm64-7.1-mini-20170414.zip");
+            if(updateFile.exists()){
+                RecoverySystem.installPackage(this, updateFile);
+            }
+            else{
+                Slog.i(TAG, "Package doesnt exist: "+updateFile.getAbsolutePath());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void onContinueButtonClick(View v) {
 
-        setDeviceOwner();
-
-        try {
-            IBackupManager ibm = IBackupManager.Stub.asInterface(
-                    ServiceManager.getService(Context.BACKUP_SERVICE));
-            ibm.setBackupServiceActive(UserHandle.USER_OWNER, true);
-        } catch (RemoteException e) {
-            throw new IllegalStateException("Failed activating backup service.", e);
-        }
-
         PackageManager pm = getPackageManager();
 
-        if(!isPackageInstalled("com.google.android.setupwizard", pm)){
-            // provisioning complete!
-            Settings.Global.putInt(getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 1);
-            Settings.Secure.putInt(getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 1);
+        int isDeviceProvisioned = Settings.Global.getInt(getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 0);
+
+        if(isDeviceProvisioned==0){
+            setDeviceOwner();
+            try {
+                IBackupManager ibm = IBackupManager.Stub.asInterface(
+                        ServiceManager.getService(Context.BACKUP_SERVICE));
+                ibm.setBackupServiceActive(UserHandle.USER_OWNER, true);
+            } catch (RemoteException e) {
+                throw new IllegalStateException("Failed activating backup service.", e);
+            }
+
+            if(!isPackageInstalled("com.google.android.setupwizard", pm)){
+                // provisioning complete!
+                Settings.Global.putInt(getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 1);
+                Settings.Secure.putInt(getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 1);
+            }
         }
 
         // Add a persistent setting to allow other apps to know the device has been provisioned.
@@ -112,6 +161,9 @@ public class DefaultActivity extends Activity {
 
             Slog.i(TAG, "New device owner: " + mDPM.getDeviceOwner());
         } catch (IllegalStateException e) {
+            Slog.e("ArielSystemServer", "Set active admin failed!!");
+            e.printStackTrace();
+        } catch (Exception e){
             Slog.e("ArielSystemServer", "Set active admin failed!!");
             e.printStackTrace();
         }
