@@ -22,6 +22,8 @@
 
     <string name="btn_continue">Continue</string>
 
+    <string name="btn_install_gapps">Install google apps</string>
+
     <string name="welcome_text">Welcome to ArielOS!</string>
 
 </resources>

@@ -21,6 +21,17 @@ import android.os.SystemProperties;
 import android.util.Slog;
 import com.android.server.LocalServices;
 import com.android.server.SystemServiceManager;
+import com.android.server.SystemConfig;
+import android.util.ArraySet;
+import java.util.Iterator;
+
+import android.os.IDeviceIdleController;
+import android.os.PowerManager;
+import android.os.ServiceManager;
+import android.app.backup.IBackupManager;
+import android.os.UserHandle;
+
+import android.os.RemoteException;
 
 import com.ariel.platform.internal.common.ArielSystemServiceHelper;
 
@@ -36,6 +47,10 @@ public class ArielSystemServer {
 
     private static final String ENCRYPTING_STATE = "trigger_restart_min_framework";
     private static final String ENCRYPTED_STATE = "1";
+
+    private static final String DEVICE_IDLE_SERVICE = "deviceidle";
+
+    private IDeviceIdleController mDeviceIdleService;
 
     public ArielSystemServer(Context systemContext) {
         Slog.i(TAG, "ArielSystemServer initialized");
@@ -57,11 +72,50 @@ public class ArielSystemServer {
         // Start services.
         try {
             Slog.i(TAG, "ArielSystemServer starting services...");
+            try {
+                            IBackupManager ibm = IBackupManager.Stub.asInterface(
+                                    ServiceManager.getService(Context.BACKUP_SERVICE));
+                            ibm.setBackupServiceActive(UserHandle.USER_OWNER, true);
+                        } catch (RemoteException e) {
+                            throw new IllegalStateException("Failed activating backup service.", e);
+                        }
             startServices();
+            SystemConfig sysConfig = SystemConfig.getInstance();
+            ArraySet<String> allowPower = sysConfig.getAllowInPowerSave();
+            if(allowPower!=null && allowPower.size()>0){
+                Slog.i(TAG, "Power save enabled apps:");
+                Iterator<String> it = allowPower.iterator();
+                while(it.hasNext()){
+                    String packageName = it.next();
+                    Slog.i(TAG, "Power save enabled package: "+packageName);
+                }
+            }
+            else{
+                Slog.i(TAG, "No power save enabled apps.");
+            }
+            configureGuardianApp();
         } catch (Throwable ex) {
             Slog.e("System", "******************************************");
             Slog.e("System", "************ Failure starting cm system services", ex);
             throw ex;
+        }
+    }
+
+    private void configureGuardianApp(){
+        mDeviceIdleService = IDeviceIdleController.Stub.asInterface(
+                        ServiceManager.getService(DEVICE_IDLE_SERVICE));
+
+        PowerManager power = mSystemContext.getSystemService(PowerManager.class);
+        if (power.isIgnoringBatteryOptimizations("com.ariel.guardian")) {
+            Slog.i(TAG, "ArielGuardian is already ignoring battery optimizations...");
+            return;
+        }
+
+        try {
+            mDeviceIdleService.addPowerSaveWhitelistApp("com.ariel.guardian");
+            Slog.i(TAG, "ArielGuardian is now ignoring battery optimizations...");
+        } catch (RemoteException e) {
+            Slog.w(TAG, "Unable to reach IDeviceIdleController", e);
         }
     }
 
