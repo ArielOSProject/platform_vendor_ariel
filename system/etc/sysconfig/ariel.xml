@@ -21,7 +21,7 @@
 
     <!-- ArielGuardian must always have network access. -->
     <allow-in-power-save package="com.ariel.guardian" />
-    <allow-in-power-save-except-idle package="com.ariel.guardian" />
     <allow-in-data-usage-save package="com.ariel.guardian" />
+    <system-user-whitelisted-app package="com.ariel.guardian" />
 
 </config>
