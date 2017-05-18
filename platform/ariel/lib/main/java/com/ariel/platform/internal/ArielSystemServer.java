@@ -14,6 +14,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * <p>
+ * Copyright (C) 2016 The CyanogenMod Project
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
@@ -41,7 +55,9 @@ import android.util.Slog;
 import com.android.server.LocalServices;
 import com.android.server.SystemServiceManager;
 import com.android.server.SystemConfig;
+
 import android.util.ArraySet;
+
 import java.util.Iterator;
 
 import android.os.IDeviceIdleController;
@@ -92,49 +108,17 @@ public class ArielSystemServer {
         try {
             Slog.i(TAG, "ArielSystemServer starting services...");
             try {
-                            IBackupManager ibm = IBackupManager.Stub.asInterface(
-                                    ServiceManager.getService(Context.BACKUP_SERVICE));
-                            ibm.setBackupServiceActive(UserHandle.USER_OWNER, true);
-                        } catch (RemoteException e) {
-                            throw new IllegalStateException("Failed activating backup service.", e);
-                        }
+                IBackupManager ibm = IBackupManager.Stub.asInterface(
+                        ServiceManager.getService(Context.BACKUP_SERVICE));
+                ibm.setBackupServiceActive(UserHandle.USER_OWNER, true);
+            } catch (RemoteException e) {
+                throw new IllegalStateException("Failed activating backup service.", e);
+            }
             startServices();
-            SystemConfig sysConfig = SystemConfig.getInstance();
-            ArraySet<String> allowPower = sysConfig.getAllowInPowerSave();
-            if(allowPower!=null && allowPower.size()>0){
-                Slog.i(TAG, "Power save enabled apps:");
-                Iterator<String> it = allowPower.iterator();
-                while(it.hasNext()){
-                    String packageName = it.next();
-                    Slog.i(TAG, "Power save enabled package: "+packageName);
-                }
-            }
-            else{
-                Slog.i(TAG, "No power save enabled apps.");
-            }
-            configureGuardianApp();
         } catch (Throwable ex) {
             Slog.e("System", "******************************************");
             Slog.e("System", "************ Failure starting cm system services", ex);
             throw ex;
-        }
-    }
-
-    private void configureGuardianApp(){
-        mDeviceIdleService = IDeviceIdleController.Stub.asInterface(
-                        ServiceManager.getService(DEVICE_IDLE_SERVICE));
-
-        PowerManager power = mSystemContext.getSystemService(PowerManager.class);
-        if (power.isIgnoringBatteryOptimizations("com.ariel.guardian")) {
-            Slog.i(TAG, "ArielGuardian is already ignoring battery optimizations...");
-            return;
-        }
-
-        try {
-            mDeviceIdleService.addPowerSaveWhitelistApp("com.ariel.guardian");
-            Slog.i(TAG, "ArielGuardian is now ignoring battery optimizations...");
-        } catch (RemoteException e) {
-            Slog.w(TAG, "Unable to reach IDeviceIdleController", e);
         }
     }
 
