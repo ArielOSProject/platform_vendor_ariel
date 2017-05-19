@@ -11,7 +11,7 @@ import android.os.UserHandle;
 public class SystemContextHelper {
 
     public static void startService(final Context context, final Intent intent){
-        context.startServiceAsUser(intent, UserHandle.SYSTEM);
+        context.startServiceAsUser(intent, UserHandle.OWNER);
     }
 
 }
