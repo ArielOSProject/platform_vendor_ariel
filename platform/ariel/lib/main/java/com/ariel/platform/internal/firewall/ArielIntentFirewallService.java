@@ -55,7 +55,7 @@ public class ArielIntentFirewallService extends ArielSystemService{
     private Context mContext;
     private Handler mHandler = new Handler();
 
-    public ArielFirewallService(Context context) {
+    public ArielIntentFirewallService(Context context) {
         super(context);
         mContext = context;
     }

@@ -102,7 +102,7 @@ public class ArielIntentFirewallManager {
         }
     }
 
-    public void enableApp() {
+    public void enableApp(String packageName) {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielIntentFirewallService");
             return;
