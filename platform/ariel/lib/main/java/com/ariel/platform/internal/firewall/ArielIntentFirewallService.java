@@ -76,6 +76,7 @@ public class ArielIntentFirewallService extends ArielSystemService{
         @Override
         public void disableApp(String packageName) {
             if (isCallerSystem()) {
+                removeRuleFile(packageName);
             } else {
                 enforceSystemOrSystemUI("You have to be system to do this!!!");
             }
@@ -85,6 +86,7 @@ public class ArielIntentFirewallService extends ArielSystemService{
         @Override
         public void enableApp(String packageName) {
             if (isCallerSystem()) {
+                createRuleFile(packageName);
             } else {
                 enforceSystemOrSystemUI("You have to be system to do this!!!");
             }
