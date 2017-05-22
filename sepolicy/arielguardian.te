@@ -1,6 +1,0 @@
-type arielguardian, domain, mlstrustedobject;
-
-allow arielguardian system_data_ifw:file create_file_perms;
-allow arielguardian system_data_ifw:dir create_dir_perms;
-
-file_type_auto_trans(arielguardian, system_app_data_file, system_data_ifw)
