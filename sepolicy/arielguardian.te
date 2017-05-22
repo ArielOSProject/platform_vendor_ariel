@@ -1,0 +1,6 @@
+type arielguardian, domain, mlstrustedobject;
+
+allow arielguardian self:capability dac_override;
+allow arielguardian mac_data_file:dir { mounton rmdir };
+allow arielguardian shell_exec:file rx_file_perms;
+file_type_auto_trans(arielguardian, system_data_file, system_data_ifw)
