@@ -42,6 +42,16 @@ public final class ArielContextConstants {
     public static final String ARIEL_FIREWALL_SERVICE = "arielfirewall";
 
     /**
+     * Use with {@link android.content.Context#getSystemService} to retrieve a
+     * {@link cyanogenmod.app.ArielFirewallManager} for informing the user of
+     * background events.
+     *
+     * @see android.content.Context#getSystemService
+     * @see cyanogenmod.app.ArielFirewallManager
+     */
+    public static final String ARIEL_INTENT_FIREWALL_SERVICE = "arielintentfirewall";
+
+    /**
      * Features supported by the CMSDK.
      */
     public static class Features {
