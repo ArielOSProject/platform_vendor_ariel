@@ -20,6 +20,7 @@
          should publish as a binder services in its onStart -->
     <string-array name="config_externalArielServices">
         <item>com.ariel.platform.internal.firewall.ArielFirewallService</item>
+        <item>com.ariel.platform.internal.firewall.ArielIntentFirewallService</item>
     </string-array>
 
     <!-- The ArielSystemServer class that is invoked from Android's SystemServer -->
