@@ -10,6 +10,7 @@ PRODUCT_PACKAGES += \
     com.ariel.platform.xml
 
 PRODUCT_COPY_FILES += \
+    vendor/ariel/system/etc/default-permissions/ariel-permissions.xml:system/etc/default-permissions/ariel-permissions.xml \
     vendor/ariel/system/etc/permissions/com.ariel.android.xml:system/etc/permissions/com.ariel.android.xml \
     vendor/ariel/system/etc/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml \
     vendor/ariel/system/etc/sysconfig/ariel.xml:system/etc/sysconfig/ariel.xml
@@ -37,4 +38,3 @@ PRODUCT_COPY_FILES += \
 include $(call first-makefiles-under,$(LOCAL_PATH))
 
 # mozda probati i sa include <Putanja do mk fajla>
-
