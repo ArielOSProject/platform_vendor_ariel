@@ -75,21 +75,25 @@ public class ArielIntentFirewallService extends ArielSystemService{
 
         @Override
         public void disableApp(String packageName) {
-            if (isCallerSystem()) {
-                removeRuleFile(packageName);
-            } else {
-                enforceSystemOrSystemUI("You have to be system to do this!!!");
-            }
+            //if (isCallerSystem()) {
+                Log.d(TAG, "I am system");
+                createRuleFile(packageName);
+            //} else {
+              //  Log.d(TAG, "Im not system");
+              //  enforceSystemOrSystemUI("You have to be system to do this!!!");
+           // }
             Log.d(TAG, "applyIptablesRulesImpl completed!");
         }
 
         @Override
         public void enableApp(String packageName) {
-            if (isCallerSystem()) {
-                createRuleFile(packageName);
-            } else {
+            //if (isCallerSystem()) {
+                Log.d(TAG, "I am system");
+                removeRuleFile(packageName);
+            /*} else {
+                Log.d(TAG, "Im not system");
                 enforceSystemOrSystemUI("You have to be system to do this!!!");
-            }
+            }*/
             Log.d(TAG, "applyIptablesRulesImpl completed!");
         }
 
@@ -97,6 +101,7 @@ public class ArielIntentFirewallService extends ArielSystemService{
 
     private boolean createRuleFile(final String packageName){
         try {
+            Log.d(TAG, "Creating file");
             File rulesDir = new File(RULES_DIR, String.format(RULE_FILE,packageName));
             FileOutputStream fos = new FileOutputStream(rulesDir);
             StringBuffer sb = new StringBuffer();
@@ -131,6 +136,7 @@ public class ArielIntentFirewallService extends ArielSystemService{
 
     private boolean removeRuleFile(final String packageName){
         try {
+            Log.d(TAG, "Creating file");
             File rulesDir = new File(RULES_DIR, String.format(RULE_FILE,packageName));
             rulesDir.delete();
             return true;
