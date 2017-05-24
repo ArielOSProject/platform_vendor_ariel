@@ -97,50 +97,33 @@ public class ArielFirewallService extends ArielSystemService implements IArielNa
 
         @Override
         public void disableNetworking(String uids) {
-            if (isCallerSystem()) {
-                //Api.applyIptablesRulesImpl(mContext, uidsWifi, uids3g, true);
-                try {
-                    final Command cmd = new Command("disable_networking", uids);
-                    Log.d(TAG, "List of uids: " + uids);
-                    NativeDaemonEvent event = mConnector.execute(cmd);
-                    Log.d(TAG, "Message from daemon: " + event.getMessage());
-                } catch (NativeDaemonConnectorException e) {
-                    int code = e.getCode();
-                    e.printStackTrace();
-                    Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
-//                    if (code == VoldResponseCode.OpFailedStorageBusy) {
-//                        rc = StorageResultCode.OperationFailedStorageBusy;
-//                    } else {
-//                        rc = StorageResultCode.OperationFailedInternalError;
-//                    }
-                }
-            } else {
-                enforceSystemOrSystemUI("You have to be system to do this!!!");
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.ACCESS_FIREWALL_MANAGER, null);
+            try {
+                final Command cmd = new Command("disable_networking", uids);
+                Log.d(TAG, "List of uids: " + uids);
+                NativeDaemonEvent event = mConnector.execute(cmd);
+                Log.d(TAG, "Message from daemon: " + event.getMessage());
+            } catch (NativeDaemonConnectorException e) {
+                int code = e.getCode();
+                e.printStackTrace();
+                Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
             }
-            Log.d(TAG, "applyIptablesRulesImpl completed!");
+            Log.d(TAG, "disableNetworking completed!");
         }
 
         @Override
         public void clearRules() {
-            if (isCallerSystem()) {
-                try {
-                    final Command cmd = new Command("clear_rules");
-                    NativeDaemonEvent event = mConnector.execute(cmd);
-                    Log.d(TAG, "Message from daemon: " + event.getMessage());
-                } catch (NativeDaemonConnectorException e) {
-                    int code = e.getCode();
-                    e.printStackTrace();
-                    Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
-//                    if (code == VoldResponseCode.OpFailedStorageBusy) {
-//                        rc = StorageResultCode.OperationFailedStorageBusy;
-//                    } else {
-//                        rc = StorageResultCode.OperationFailedInternalError;
-//                    }
-                }
-            } else
-
-            {
-                enforceSystemOrSystemUI("You have to be system to do this!!!");
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.ACCESS_FIREWALL_MANAGER, null);
+            try {
+                final Command cmd = new Command("clear_rules");
+                NativeDaemonEvent event = mConnector.execute(cmd);
+                Log.d(TAG, "Message from daemon: " + event.getMessage());
+            } catch (NativeDaemonConnectorException e) {
+                int code = e.getCode();
+                e.printStackTrace();
+                Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
             }
         }
 
@@ -162,41 +145,6 @@ public class ArielFirewallService extends ArielSystemService implements IArielNa
 //        mNsdStateMachine.sendMessage(NsdManager.NATIVE_DAEMON_EVENT, event);
         Log.d(TAG, "NativeDaemonEvent");
         return true;
-    }
-
-    private static void checkCallerIsSystemOrSameApp(String pkg) {
-        if (isCallerSystem()) {
-            return;
-        }
-        final int uid = Binder.getCallingUid();
-        try {
-            ApplicationInfo ai = AppGlobals.getPackageManager().getApplicationInfo(
-                    pkg, 0, UserHandle.getCallingUserId());
-            if (ai == null) {
-                throw new SecurityException("Unknown package " + pkg);
-            }
-            if (!UserHandle.isSameApp(ai.uid, uid)) {
-                throw new SecurityException("Calling uid " + uid + " gave package"
-                        + pkg + " which is owned by uid " + ai.uid);
-            }
-        } catch (RemoteException re) {
-            throw new SecurityException("Unknown package " + pkg + "\n" + re);
-        }
-    }
-
-    private static boolean isUidSystem(int uid) {
-        final int appid = UserHandle.getAppId(uid);
-        return (appid == android.os.Process.SYSTEM_UID
-                || uid == 0);
-    }
-
-    private static boolean isCallerSystem() {
-        return isUidSystem(Binder.getCallingUid());
-    }
-
-    private void enforceSystemOrSystemUI(String message) {
-        mContext.enforceCallingPermission(Manifest.permission.ACCESS_FIREWALL_MANAGER,
-                message);
     }
 
 }
