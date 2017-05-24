@@ -87,33 +87,35 @@ public class ArielIntentFirewallManager {
         return sArielIntentFirewallManagerInstance;
     }
 
-    public void disableApp(String packageName) {
+    public boolean disableApp(String packageName) {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielIntentFirewallService");
-            return;
+            return false;
         }
 
         if (localLOGV) Log.v(TAG, "Invoking disableApp");
         try {
             if (localLOGV) Log.v(TAG, "Passing packageName: "+packageName);
-            sService.disableApp(packageName);
+            return sService.disableApp(packageName);
         } catch (RemoteException e) {
             Slog.w("ArielIntentFirewallManager", "warning: no ariel intent firewall service");
+            return false;
         }
     }
 
-    public void enableApp(String packageName) {
+    public boolean enableApp(String packageName) {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielIntentFirewallService");
-            return;
+            return false;
         }
 
         if (localLOGV) Log.v(TAG, "Invoking enableApp");
         try {
             if (localLOGV) Log.v(TAG, "Passing packageName: "+packageName);
-            sService.enableApp(packageName);
+            return sService.enableApp(packageName);
         } catch (RemoteException e) {
             Slog.w("ArielIntentFirewallManager", "warning: no ariel intent firewall service");
+            return false;
         }
     }
 
