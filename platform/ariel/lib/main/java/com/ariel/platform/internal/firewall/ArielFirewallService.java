@@ -96,35 +96,43 @@ public class ArielFirewallService extends ArielSystemService implements IArielNa
     private final IBinder mService = new IArielFirewallManager.Stub() {
 
         @Override
-        public void disableNetworking(String uids) {
+        public boolean disableNetworking(String uids) {
             mContext.enforceCallingOrSelfPermission(
                     Manifest.permission.ACCESS_FIREWALL_MANAGER, null);
+            boolean result = false;
             try {
                 final Command cmd = new Command("disable_networking", uids);
                 Log.d(TAG, "List of uids: " + uids);
                 NativeDaemonEvent event = mConnector.execute(cmd);
                 Log.d(TAG, "Message from daemon: " + event.getMessage());
+                result = true;
             } catch (NativeDaemonConnectorException e) {
                 int code = e.getCode();
                 e.printStackTrace();
                 Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
+                result = false;
             }
             Log.d(TAG, "disableNetworking completed!");
+            return result;
         }
 
         @Override
-        public void clearRules() {
+        public boolean clearRules() {
             mContext.enforceCallingOrSelfPermission(
                     Manifest.permission.ACCESS_FIREWALL_MANAGER, null);
+            boolean result = false;
             try {
                 final Command cmd = new Command("clear_rules");
                 NativeDaemonEvent event = mConnector.execute(cmd);
                 Log.d(TAG, "Message from daemon: " + event.getMessage());
+                result = true;
             } catch (NativeDaemonConnectorException e) {
                 int code = e.getCode();
                 e.printStackTrace();
                 Log.d(TAG, "Arielfw excetion: " + code + ", msg: " + e.getMessage());
+                result = false;
             }
+            return result;
         }
 
     };

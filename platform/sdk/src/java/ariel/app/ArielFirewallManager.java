@@ -87,32 +87,34 @@ public class ArielFirewallManager {
         return sArielFirewallManagerInstance;
     }
 
-    public void disableNetworking(String uids) {
+    public boolean disableNetworking(String uids) {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielFirewallService");
-            return;
+            return false;
         }
 
         if (localLOGV) Log.v(TAG, "Invoking disableNetworking");
         try {
             if (localLOGV) Log.v(TAG, "Passing uids: "+uids);
-            sService.disableNetworking(uids);
+            return sService.disableNetworking(uids);
         } catch (RemoteException e) {
             Slog.w("ArielFirewallManager", "warning: no ariel firewal service");
+            return false;
         }
     }
 
-    public void clearRules() {
+    public boolean clearRules() {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielFirewallService");
-            return;
+            return false;
         }
 
         if (localLOGV) Log.v(TAG, "Invoking purge iptables");
         try {
-            sService.clearRules();
+            return sService.clearRules();
         } catch (RemoteException e) {
             Slog.w(TAG, "warning: no ariel firewal service");
+            return false;
         }
     }
 

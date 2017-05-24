@@ -17,6 +17,6 @@
 package ariel.app;
 
 interface IArielIntentFirewallManager {
-    void disableApp(in String packageName);
-    void enableApp(in String packageName);
+    boolean disableApp(in String packageName);
+    boolean enableApp(in String packageName);
 }

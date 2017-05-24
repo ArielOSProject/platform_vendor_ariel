@@ -74,19 +74,17 @@ public class ArielIntentFirewallService extends ArielSystemService {
     private final IBinder mService = new IArielIntentFirewallManager.Stub() {
 
         @Override
-        public void disableApp(String packageName) {
+        public boolean disableApp(String packageName) {
             mContext.enforceCallingOrSelfPermission(
                     Manifest.permission.INTENT_FIREWALL, null);
-            createRuleFile(packageName);
-            Log.d(TAG, "disableApp completed!");
+            return createRuleFile(packageName);
         }
 
         @Override
-        public void enableApp(String packageName) {
+        public boolean enableApp(String packageName) {
             mContext.enforceCallingOrSelfPermission(
                     Manifest.permission.INTENT_FIREWALL, null);
-            removeRuleFile(packageName);
-            Log.d(TAG, "enableApp completed!");
+            return removeRuleFile(packageName);
         }
 
     };
