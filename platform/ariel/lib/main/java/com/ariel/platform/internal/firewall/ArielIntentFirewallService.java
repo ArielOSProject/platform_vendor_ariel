@@ -44,10 +44,10 @@ import java.lang.StringBuffer;
  *
  * @hide
  */
-public class ArielIntentFirewallService extends ArielSystemService{
-    private static final String TAG = "ArielFirewallService";
+public class ArielIntentFirewallService extends ArielSystemService {
+    private static final String TAG = "ArielIntentFirewallService";
 
-    private static final String ARIELFW_TAG = "ArielFW";
+    private static final String ARIELFW_TAG = "ArielIntentFW";
 
     private final String RULES_DIR = "/data/system/ifw";
     private final String RULE_FILE = "%s.xml";
@@ -75,51 +75,43 @@ public class ArielIntentFirewallService extends ArielSystemService{
 
         @Override
         public void disableApp(String packageName) {
-            //if (isCallerSystem()) {
-                Log.d(TAG, "I am system");
-                createRuleFile(packageName);
-            //} else {
-              //  Log.d(TAG, "Im not system");
-              //  enforceSystemOrSystemUI("You have to be system to do this!!!");
-           // }
-            Log.d(TAG, "applyIptablesRulesImpl completed!");
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.INTENT_FIREWALL, null);
+            createRuleFile(packageName);
+            Log.d(TAG, "disableApp completed!");
         }
 
         @Override
         public void enableApp(String packageName) {
-            //if (isCallerSystem()) {
-                Log.d(TAG, "I am system");
-                removeRuleFile(packageName);
-            /*} else {
-                Log.d(TAG, "Im not system");
-                enforceSystemOrSystemUI("You have to be system to do this!!!");
-            }*/
-            Log.d(TAG, "applyIptablesRulesImpl completed!");
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.INTENT_FIREWALL, null);
+            removeRuleFile(packageName);
+            Log.d(TAG, "enableApp completed!");
         }
 
     };
 
-    private boolean createRuleFile(final String packageName){
+    private boolean createRuleFile(final String packageName) {
         try {
             Log.d(TAG, "Creating file");
-            File rulesDir = new File(RULES_DIR, String.format(RULE_FILE,packageName));
+            File rulesDir = new File(RULES_DIR, String.format(RULE_FILE, packageName));
             FileOutputStream fos = new FileOutputStream(rulesDir);
             StringBuffer sb = new StringBuffer();
             sb.append("<rules>\n");
             // write activity rules
             sb.append("<activity block=\"true\" log=\"true\">\n");
             sb.append("<intent-filter />\n");
-            sb.append("<package-filter name=\""+packageName+"\" />\n");
+            sb.append("<package-filter name=\"" + packageName + "\" />\n");
             sb.append("</activity>\n");
             // write service rules
             sb.append("<service block=\"true\" log=\"true\">\n");
             sb.append("<intent-filter />\n");
-            sb.append("<package-filter name=\""+packageName+"\" />\n");
+            sb.append("<package-filter name=\"" + packageName + "\" />\n");
             sb.append("</service>\n");
             // write broadcast rules
             sb.append("<broadcast block=\"true\" log=\"true\">\n");
             sb.append("<intent-filter />\n");
-            sb.append("<package-filter name=\""+packageName+"\" />\n");
+            sb.append("<package-filter name=\"" + packageName + "\" />\n");
             sb.append("</broadcast>\n");
 
             sb.append("</rules>");
@@ -127,21 +119,19 @@ public class ArielIntentFirewallService extends ArielSystemService{
             fos.flush();
             fos.close();
             return true;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    private boolean removeRuleFile(final String packageName){
+    private boolean removeRuleFile(final String packageName) {
         try {
             Log.d(TAG, "Creating file");
-            File rulesDir = new File(RULES_DIR, String.format(RULE_FILE,packageName));
+            File rulesDir = new File(RULES_DIR, String.format(RULE_FILE, packageName));
             rulesDir.delete();
             return true;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -151,39 +141,30 @@ public class ArielIntentFirewallService extends ArielSystemService{
         return false;
     }
 
-    private static void checkCallerIsSystemOrSameApp(String pkg) {
-        if (isCallerSystem()) {
-            return;
-        }
-        final int uid = Binder.getCallingUid();
-        try {
-            ApplicationInfo ai = AppGlobals.getPackageManager().getApplicationInfo(
-                    pkg, 0, UserHandle.getCallingUserId());
-            if (ai == null) {
-                throw new SecurityException("Unknown package " + pkg);
-            }
-            if (!UserHandle.isSameApp(ai.uid, uid)) {
-                throw new SecurityException("Calling uid " + uid + " gave package"
-                        + pkg + " which is owned by uid " + ai.uid);
-            }
-        } catch (RemoteException re) {
-            throw new SecurityException("Unknown package " + pkg + "\n" + re);
-        }
-    }
+//    private static void checkCallerIsSystemOrSameApp(String pkg) {
+//        if (isCallerSystem()) {
+//            return;
+//        }
+//        final int uid = Binder.getCallingUid();
+//        try {
+//            ApplicationInfo ai = AppGlobals.getPackageManager().getApplicationInfo(
+//                    pkg, 0, UserHandle.getCallingUserId());
+//            if (ai == null) {
+//                throw new SecurityException("Unknown package " + pkg);
+//            }
+//            if (!UserHandle.isSameApp(ai.uid, uid)) {
+//                throw new SecurityException("Calling uid " + uid + " gave package"
+//                        + pkg + " which is owned by uid " + ai.uid);
+//            }
+//        } catch (RemoteException re) {
+//            throw new SecurityException("Unknown package " + pkg + "\n" + re);
+//        }
+//    }
 
-    private static boolean isUidSystem(int uid) {
-        final int appid = UserHandle.getAppId(uid);
-        return (appid == android.os.Process.SYSTEM_UID
-                || uid == 0);
-    }
-
-    private static boolean isCallerSystem() {
-        return isUidSystem(Binder.getCallingUid());
-    }
-
-    private void enforceSystemOrSystemUI(String message) {
-        mContext.enforceCallingPermission(Manifest.permission.ACCESS_FIREWALL_MANAGER,
-                message);
-    }
+//    private static boolean isUidSystem(int uid) {
+//        final int appid = UserHandle.getAppId(uid);
+//        return (appid == android.os.Process.SYSTEM_UID
+//                || uid == 0);
+//    }
 
 }
