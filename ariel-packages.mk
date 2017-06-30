@@ -7,7 +7,9 @@ PRODUCT_PACKAGE_OVERLAYS :=  vendor/ariel/overlay $(PRODUCT_PACKAGE_OVERLAYS)
 PRODUCT_PACKAGES += \
     com.ariel.platform-res \
     com.ariel.platform \
-    com.ariel.platform.xml
+    com.ariel.platform.xml \
+    com.ariel.hardware \
+    com.ariel.hardware.xml
 
 PRODUCT_COPY_FILES += \
     vendor/ariel/system/etc/default-permissions/ariel-permissions.xml:system/etc/default-permissions/ariel-permissions.xml \
