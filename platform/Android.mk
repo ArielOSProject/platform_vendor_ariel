@@ -24,7 +24,7 @@ LOCAL_PATH := $(call my-dir)
 ariel_platform_res := APPS/com.ariel.platform-res_intermediates/src
 
 # List of packages used in cm-api-stubs and cm-system-api-stubs
-ariel_stub_packages := ariel.providers:ariel.platform
+ariel_stub_packages := ariel.providers:ariel.platform:com.ariel.hardware
 
 # The Ariel Platform Framework Library
 # ============================================================
@@ -39,16 +39,16 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_JAVA_LIBRARIES := \
     services \
-		com.ariel.hardware
+	com.ariel.hardware
 
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, $(ariel_sdk_src)) \
-		$(call all-java-files-under, $(ariel_sdk_internal_src)) \
+	$(call all-java-files-under, $(ariel_sdk_internal_src)) \
     $(call all-java-files-under, $(library_src))
 
 LOCAL_SRC_FILES += \
     $(call all-Iaidl-files-under, $(ariel_sdk_src)) \
-		$(call all-Iaidl-files-under, $(ariel_sdk_internal_src))
+	$(call all-Iaidl-files-under, $(ariel_sdk_internal_src))
 
 arielplat_LOCAL_INTERMEDIATE_SOURCES := \
     $(ariel_platform_res)/ariel/platform/R.java \
