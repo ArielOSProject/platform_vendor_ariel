@@ -18,4 +18,8 @@ package ariel.device;
 
 interface IArielHardwareManager {
     String getUniqueDeviceId();
+
+    // persistent storage methods
+    byte[] getPersistentData(String key);
+    boolean setPersistentData(String key, byte[] buffer);
 }
