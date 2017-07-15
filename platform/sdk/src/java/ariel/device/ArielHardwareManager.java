@@ -66,6 +66,32 @@ public class ArielHardwareManager {
         }
     }
 
+    public byte[] getPersistentData(String key) {
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return null;
+        }
+        try {
+            return sService.getPersistentData(key);
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return null;
+        }
+    }
+
+    public boolean setPersistentData(String key, byte[] buffer) {
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return null;
+        }
+        try {
+            return sService.setPersistentData(key, buffer);
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return null;
+        }
+    }
+
     /** @hide */
     public IArielHardwareManager getService() {
         if (sService != null) {

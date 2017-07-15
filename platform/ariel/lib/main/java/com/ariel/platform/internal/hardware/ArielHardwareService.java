@@ -28,6 +28,7 @@ import ariel.platform.Manifest;
 import ariel.device.IArielHardwareManager;
 
 import com.ariel.hardware.UniqueDeviceId;
+import com.ariel.hardware.PersistentStorage;
 
 
 /**
@@ -65,6 +66,23 @@ public class ArielHardwareService extends ArielSystemService {
                     Manifest.permission.READ_DEVICE_UID, null);
 
             return UniqueDeviceId.getUniqueDeviceId();
+        }
+
+        @Override
+        public byte[] getPersistentData(String key) {
+
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.READ_PERSISTENT_STORAGE, null);
+
+            return PersistentStorage.get(key);
+        }
+
+        @Override
+        public boolean setPersistentData(String key, byte[] buffer) {
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.WRITE_PERSISTENT_STORAGE, null);
+
+            return PersistentStorage.set(key, buffer);
         }
 
     };
