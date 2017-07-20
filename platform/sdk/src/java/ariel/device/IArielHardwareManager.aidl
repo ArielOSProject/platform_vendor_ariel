@@ -21,5 +21,5 @@ interface IArielHardwareManager {
 
     // persistent storage methods
     byte[] getPersistentData(String key);
-    boolean setPersistentData(String key, byte[] buffer);
+    boolean setPersistentData(String key, in byte[] buffer);
 }
