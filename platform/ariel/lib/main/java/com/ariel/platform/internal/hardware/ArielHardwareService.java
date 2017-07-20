@@ -69,6 +69,14 @@ public class ArielHardwareService extends ArielSystemService {
         }
 
         @Override
+        public String getUniquePseudoDeviceId() {
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.READ_DEVICE_UID, null);
+
+            return UniqueDeviceId.getUniquePseudoDeviceId();
+        }
+
+        @Override
         public byte[] getPersistentData(String key) {
 
             mContext.enforceCallingOrSelfPermission(

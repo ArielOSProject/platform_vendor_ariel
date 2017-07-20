@@ -66,6 +66,19 @@ public class ArielHardwareManager {
         }
     }
 
+    public String getUniquePseudoDeviceId() {
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return null;
+        }
+        try {
+            return sService.getUniquePseudoDeviceId();
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return null;
+        }
+    }
+
     public byte[] getPersistentData(String key) {
         if (sService == null) {
             Log.w(TAG, "not connected to ArielHardwareService");
