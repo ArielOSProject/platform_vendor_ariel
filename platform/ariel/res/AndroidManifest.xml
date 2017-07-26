@@ -55,6 +55,9 @@
     <permission android:name="ariel.permission.WRITE_PERSISTENT_STORAGE"
         android:protectionLevel="signature|privileged|development"/>
 
+    <permission android:name="ariel.permission.ACCESS_BATTERY_STATS"
+        android:protectionLevel="signature|privileged|development"/>
+
     <application android:process="system"
                  android:persistent="true"
                  android:hasCode="false"                

@@ -26,4 +26,7 @@ interface IArielHardwareManager {
 
     // battery stats
     long getRemainingBatteryTime();
+    long getChargeRemainingTime();
+    boolean isCharging();
+    long getAwakeTime();
 }
