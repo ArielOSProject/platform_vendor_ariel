@@ -97,10 +97,34 @@ public class ArielHardwareService extends ArielSystemService {
 
         @Override
         public long getRemainingBatteryTime() {
-//            mContext.enforceCallingOrSelfPermission(
-//                    Manifest.permission.WRITE_PERSISTENT_STORAGE, null);
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.ACCESS_BATTERY_STATS, null);
 
             return DeviceBattery.getRemainingBatteryTime();
+        }
+
+        @Override
+        public long getChargeRemainingTime() {
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.ACCESS_BATTERY_STATS, null);
+
+            return DeviceBattery.getChargeRemainingTime();
+        }
+
+        @Override
+        public boolean isCharging() {
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.ACCESS_BATTERY_STATS, null);
+
+            return DeviceBattery.isCharging();
+        }
+
+        @Override
+        public long getAwakeTime() {
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.ACCESS_BATTERY_STATS, null);
+
+            return DeviceBattery.getAwakeTime();
         }
 
     };

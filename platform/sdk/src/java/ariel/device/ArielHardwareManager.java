@@ -118,6 +118,45 @@ public class ArielHardwareManager {
         }
     }
 
+    public static long getChargeRemainingTime(){
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return -102;
+        }
+        try {
+            return sService.getChargeRemainingTime();
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return -102;
+        }
+    }
+
+    public static boolean isCharging(){
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return false;
+        }
+        try {
+            return sService.isCharging();
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return false;
+        }
+    }
+
+    public static long getAwakeTime(){
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return -102;
+        }
+        try {
+            return sService.getAwakeTime();
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return -102;
+        }
+    }
+
     /** @hide */
     public IArielHardwareManager getService() {
         if (sService != null) {
