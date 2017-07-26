@@ -105,6 +105,19 @@ public class ArielHardwareManager {
         }
     }
 
+    public long getRemainingBatteryTime() {
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return -102;
+        }
+        try {
+            return sService.getRemainingBatteryTime();
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return -102;
+        }
+    }
+
     /** @hide */
     public IArielHardwareManager getService() {
         if (sService != null) {

@@ -29,6 +29,8 @@ import ariel.device.IArielHardwareManager;
 
 import com.ariel.hardware.UniqueDeviceId;
 import com.ariel.hardware.PersistentStorage;
+import com.ariel.hardware.DeviceBattery;
+
 
 
 /**
@@ -91,6 +93,14 @@ public class ArielHardwareService extends ArielSystemService {
                     Manifest.permission.WRITE_PERSISTENT_STORAGE, null);
 
             return PersistentStorage.set(key, buffer);
+        }
+
+        @Override
+        public long getRemainingBatteryTime() {
+//            mContext.enforceCallingOrSelfPermission(
+//                    Manifest.permission.WRITE_PERSISTENT_STORAGE, null);
+
+            return DeviceBattery.getRemainingBatteryTime();
         }
 
     };

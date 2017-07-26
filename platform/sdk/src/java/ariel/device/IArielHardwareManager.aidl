@@ -23,4 +23,7 @@ interface IArielHardwareManager {
     // persistent storage methods
     byte[] getPersistentData(String key);
     boolean setPersistentData(String key, in byte[] buffer);
+
+    // battery stats
+    long getRemainingBatteryTime();
 }
