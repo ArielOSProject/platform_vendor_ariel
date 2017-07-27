@@ -118,7 +118,7 @@ public class ArielHardwareManager {
         }
     }
 
-    public static long getChargeRemainingTime(){
+    public long getChargeRemainingTime(){
         if (sService == null) {
             Log.w(TAG, "not connected to ArielHardwareService");
             return -102;
@@ -131,7 +131,7 @@ public class ArielHardwareManager {
         }
     }
 
-    public static boolean isCharging(){
+    public boolean isCharging(){
         if (sService == null) {
             Log.w(TAG, "not connected to ArielHardwareService");
             return false;
@@ -144,7 +144,7 @@ public class ArielHardwareManager {
         }
     }
 
-    public static long getAwakeTime(){
+    public long getAwakeTime(){
         if (sService == null) {
             Log.w(TAG, "not connected to ArielHardwareService");
             return -102;
