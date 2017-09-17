@@ -17,6 +17,8 @@
 package com.ariel.platform.internal.hardware;
 
 import android.content.Context;
+import android.os.BatteryStats;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -31,7 +33,11 @@ import com.ariel.hardware.UniqueDeviceId;
 import com.ariel.hardware.PersistentStorage;
 import com.ariel.hardware.DeviceBattery;
 
+import com.android.internal.os.BatterySipper;
+import com.android.internal.os.BatterySipper.DrainType;
+import com.android.internal.os.BatteryStatsHelper;
 
+import java.util.List;
 
 /**
  * Internal service which manages interactions with system ui elements
@@ -43,6 +49,7 @@ public class ArielHardwareService extends ArielSystemService {
 
     private Context mContext;
     private Handler mHandler = new Handler();
+    private BatteryStatsHelper mStatsHelper;
 
     public ArielHardwareService(Context context) {
         super(context);
@@ -58,6 +65,16 @@ public class ArielHardwareService extends ArielSystemService {
     public void onStart() {
         Log.d(TAG, "register arielhardwareservice: " + this);
         publishBinderService(ArielContextConstants.ARIEL_HARDWARE_SERVICE, mService);
+    }
+
+    private BatterySipper findBatterySipperByType(List<BatterySipper> usageList, DrainType type) {
+        for (int i = 0, size = usageList.size(); i < size; i++) {
+            final BatterySipper sipper = usageList.get(i);
+            if (sipper.drainType == type) {
+                return sipper;
+            }
+        }
+        return null;
     }
 
     private final IBinder mService = new IArielHardwareManager.Stub() {
@@ -120,11 +137,11 @@ public class ArielHardwareService extends ArielSystemService {
         }
 
         @Override
-        public long getAwakeTime() {
+        public long getScreenOnTime() {
             mContext.enforceCallingOrSelfPermission(
                     Manifest.permission.ACCESS_BATTERY_STATS, null);
 
-            return DeviceBattery.getAwakeTime();
+            return DeviceBattery.getScreenOnTime();
         }
 
     };
