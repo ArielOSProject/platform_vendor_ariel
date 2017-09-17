@@ -144,13 +144,13 @@ public class ArielHardwareManager {
         }
     }
 
-    public long getAwakeTime(){
+    public long getScreenOnTime(){
         if (sService == null) {
             Log.w(TAG, "not connected to ArielHardwareService");
             return -102;
         }
         try {
-            return sService.getAwakeTime();
+            return sService.getScreenOnTime();
         } catch (RemoteException e) {
             Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
             return -102;
