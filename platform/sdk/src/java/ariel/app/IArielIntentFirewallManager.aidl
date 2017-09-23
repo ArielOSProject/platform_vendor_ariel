@@ -19,4 +19,7 @@ package ariel.app;
 interface IArielIntentFirewallManager {
     boolean disableApp(in String packageName);
     boolean enableApp(in String packageName);
+
+    boolean disableBroadcast(in String broadcast);
+    boolean enableBroadcast(in String broadcast);
 }
