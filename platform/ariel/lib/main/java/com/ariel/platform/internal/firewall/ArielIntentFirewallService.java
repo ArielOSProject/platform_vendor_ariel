@@ -77,7 +77,7 @@ public class ArielIntentFirewallService extends ArielSystemService {
         public boolean disableApp(String packageName) {
             mContext.enforceCallingOrSelfPermission(
                     Manifest.permission.INTENT_FIREWALL, null);
-            return createRuleFile(packageName);
+            return createAppRuleFile(packageName);
         }
 
         @Override
@@ -87,9 +87,23 @@ public class ArielIntentFirewallService extends ArielSystemService {
             return removeRuleFile(packageName);
         }
 
+        @Override
+        public boolean enableBroadcast(String broadcast) {
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.INTENT_FIREWALL, null);
+            return removeRuleFile(broadcast);
+        }
+
+        @Override
+        public boolean disableBroadcast(String broadcast) {
+            mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.INTENT_FIREWALL, null);
+            return createBroadcastRuleFile(broadcast);
+        }
+
     };
 
-    private boolean createRuleFile(final String packageName) {
+    private boolean createAppRuleFile(final String packageName) {
         try {
             Log.d(TAG, "Creating file");
             File rulesDir = new File(RULES_DIR, String.format(RULE_FILE, packageName));
@@ -123,11 +137,36 @@ public class ArielIntentFirewallService extends ArielSystemService {
         }
     }
 
-    private boolean removeRuleFile(final String packageName) {
+    private boolean removeRuleFile(final String fileName) {
         try {
             Log.d(TAG, "Creating file");
-            File rulesDir = new File(RULES_DIR, String.format(RULE_FILE, packageName));
+            File rulesDir = new File(RULES_DIR, String.format(RULE_FILE, fileName));
             rulesDir.delete();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean createBroadcastRuleFile(final String broadcast) {
+        try {
+            Log.d(TAG, "Creating broadcast file");
+            File rulesDir = new File(RULES_DIR, String.format(RULE_FILE, broadcast));
+            FileOutputStream fos = new FileOutputStream(rulesDir);
+            StringBuffer sb = new StringBuffer();
+            sb.append("<rules>\n");
+            // write broadcast rules
+            sb.append("<broadcast block=\"true\" log=\"true\">\n");
+            sb.append("<intent-filter>\n");
+            sb.append("<action name=\"" + broadcast + "\" />\n");
+            sb.append("</intent-filter>\n");
+            sb.append("</broadcast>\n");
+
+            sb.append("</rules>");
+            fos.write(sb.toString().getBytes());
+            fos.flush();
+            fos.close();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
