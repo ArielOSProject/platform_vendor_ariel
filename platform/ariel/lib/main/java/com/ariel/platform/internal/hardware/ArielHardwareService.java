@@ -37,6 +37,8 @@ import com.android.internal.os.BatterySipper;
 import com.android.internal.os.BatterySipper.DrainType;
 import com.android.internal.os.BatteryStatsHelper;
 
+import android.telephony.TelephonyManager;
+
 import java.util.List;
 
 /**
@@ -142,6 +144,12 @@ public class ArielHardwareService extends ArielSystemService {
                     Manifest.permission.ACCESS_BATTERY_STATS, null);
 
             return DeviceBattery.getScreenOnTime();
+        }
+
+        @Override
+        public void setDataEnabled(boolean enabled) {
+            TelephonyManager mTelephonyManager = TelephonyManager.from(mContext);
+            mTelephonyManager.setDataEnabled(enabled);
         }
 
     };

@@ -29,4 +29,7 @@ interface IArielHardwareManager {
     long getChargeRemainingTime();
     boolean isCharging();
     long getScreenOnTime();
+
+    // telephony management
+    void setDataEnabled(boolean enabled);
 }
