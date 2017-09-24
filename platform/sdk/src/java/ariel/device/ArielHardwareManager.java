@@ -157,6 +157,19 @@ public class ArielHardwareManager {
         }
     }
 
+    public void setDataEnabled(boolean enabled){
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielHardwareService");
+            return;
+        }
+        try {
+            sService.setDataEnabled(enabled);
+        } catch (RemoteException e) {
+            Slog.w("ArielHardwareManager", "warning: no ariel hardware service");
+            return;
+        }
+    }
+
     /** @hide */
     public IArielHardwareManager getService() {
         if (sService != null) {
