@@ -119,6 +119,38 @@ public class ArielIntentFirewallManager {
         }
     }
 
+    public boolean enableBroadcast(String broadcast) {
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielIntentFirewallService");
+            return false;
+        }
+
+        if (localLOGV) Log.v(TAG, "Invoking enableApp");
+        try {
+            if (localLOGV) Log.v(TAG, "Passing broadcast: "+broadcast);
+            return sService.enableBroadcast(broadcast);
+        } catch (RemoteException e) {
+            Slog.w("ArielIntentFirewallManager", "warning: no ariel intent firewall service");
+            return false;
+        }
+    }
+
+    public boolean disableBroadcast(String broadcast) {
+        if (sService == null) {
+            Log.w(TAG, "not connected to ArielIntentFirewallService");
+            return false;
+        }
+
+        if (localLOGV) Log.v(TAG, "Invoking enableApp");
+        try {
+            if (localLOGV) Log.v(TAG, "Passing broadcast: "+broadcast);
+            return sService.disableBroadcast(broadcast);
+        } catch (RemoteException e) {
+            Slog.w("ArielIntentFirewallManager", "warning: no ariel intent firewall service");
+            return false;
+        }
+    }
+
     /** @hide */
     public IArielIntentFirewallManager getService() {
         if (sService != null) {
