@@ -1,4 +1,4 @@
-package ariel.device;
+package ariel.hardware;
 
 import android.content.Context;
 
@@ -8,8 +8,7 @@ import android.os.ServiceManager;
 import android.util.Log;
 import android.util.Slog;
 
-import ariel.app.ArielContextConstants;
-import ariel.app.IArielFirewallManager;
+import ariel.context.ArielContextConstants;
 
 /**
  * Created by mikalackis on 29.7.16..

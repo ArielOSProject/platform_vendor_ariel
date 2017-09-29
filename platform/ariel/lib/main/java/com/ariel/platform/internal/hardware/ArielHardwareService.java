@@ -25,9 +25,9 @@ import android.util.Log;
 
 import com.ariel.platform.internal.ArielSystemService;
 
-import ariel.app.ArielContextConstants;
+import ariel.context.ArielContextConstants;
 import ariel.platform.Manifest;
-import ariel.device.IArielHardwareManager;
+import ariel.hardware.IArielHardwareManager;
 
 import com.ariel.hardware.UniqueDeviceId;
 import com.ariel.hardware.PersistentStorage;
@@ -148,6 +148,10 @@ public class ArielHardwareService extends ArielSystemService {
 
         @Override
         public void setDataEnabled(boolean enabled) {
+            /**
+             * TODO
+             * implement permission check here!!!!!!!!
+             */
             TelephonyManager mTelephonyManager = TelephonyManager.from(mContext);
             mTelephonyManager.setDataEnabled(enabled);
         }

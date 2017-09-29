@@ -1,4 +1,4 @@
-package ariel.app;
+package ariel.context;
 
 import android.content.Context;
 import android.content.Intent;
