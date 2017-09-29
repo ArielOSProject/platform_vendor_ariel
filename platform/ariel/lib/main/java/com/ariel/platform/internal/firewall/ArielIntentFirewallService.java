@@ -26,8 +26,8 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
 
-import ariel.app.ArielContextConstants;
-import ariel.app.IArielIntentFirewallManager;
+import ariel.context.ArielContextConstants;
+import ariel.firewall.IArielIntentFirewallManager;
 
 import ariel.platform.Manifest;
 

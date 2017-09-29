@@ -18,6 +18,4 @@
     <!-- Label for the Ariel system components when they are shown to the user. -->
     <string name="ariel_system_label">Ariel System</string>
 
-    <string name="test_bre">Ariel System</string>
-
 </resources>

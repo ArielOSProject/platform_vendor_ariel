@@ -22,6 +22,7 @@
         <item>com.ariel.platform.internal.firewall.ArielFirewallService</item>
         <item>com.ariel.platform.internal.firewall.ArielIntentFirewallService</item>
         <item>com.ariel.platform.internal.hardware.ArielHardwareService</item>
+        <item>com.ariel.platform.internal.security.ArielSecurityService</item>
     </string-array>
 
     <!-- The ArielSystemServer class that is invoked from Android's SystemServer -->

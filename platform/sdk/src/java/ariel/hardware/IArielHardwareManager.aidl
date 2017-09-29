@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ariel.device;
+package ariel.hardware;
 
 interface IArielHardwareManager {
     String getUniqueDeviceId();

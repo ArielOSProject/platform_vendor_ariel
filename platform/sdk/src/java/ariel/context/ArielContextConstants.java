@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ariel.app;
+package ariel.context;
 
 import android.annotation.SdkConstant;
 
@@ -62,6 +62,16 @@ public final class ArielContextConstants {
     public static final String ARIEL_HARDWARE_SERVICE = "arielhardwareservice";
 
     /**
+     * Use with {@link android.content.Context#getSystemService} to retrieve a
+     * {@link cyanogenmod.app.ArielFirewallManager} for informing the user of
+     * background events.
+     *
+     * @see android.content.Context#getSystemService
+     * @see cyanogenmod.app.ArielFirewallManager
+     */
+    public static final String ARIEL_SECURITY_SERVICE = "arielsecurityservice";
+
+    /**
      * Features supported by the CMSDK.
      */
     public static class Features {
@@ -81,6 +91,14 @@ public final class ArielContextConstants {
          */
         @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
         public static final String HARDWARE = "com.ariel.hardware";
+
+        /**
+         * Feature for {@link PackageManager#getSystemAvailableFeatures} and
+         * {@link PackageManager#hasSystemFeature}: The device includes the cm status bar service
+         * utilzed by the cmsdk.
+         */
+        @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
+        public static final String SECURITY = "com.ariel.security";
 
     }
 }

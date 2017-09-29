@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ariel.app;
+package ariel.firewall;
 
 import android.content.Context;
 import android.os.IBinder;
@@ -25,7 +25,7 @@ import android.util.Log;
 import android.util.Slog;
 import java.util.List;
 
-import ariel.app.IArielIntentFirewallManager;
+import ariel.context.ArielContextConstants;
 
 /**
  * The CMStatusBarManager allows you to publish and remove CustomTiles within the
@@ -68,7 +68,7 @@ public class ArielIntentFirewallManager {
         sService = getService();
 
         if (context.getPackageManager().hasSystemFeature(
-                ariel.app.ArielContextConstants.Features.FIREWALL) && sService == null) {
+                ArielContextConstants.Features.FIREWALL) && sService == null) {
             Log.wtf(TAG, "Unable to get ArielFirewallService. The service either" +
                     " crashed, was not started, or the interface has been called to early in" +
                     " SystemServer init");

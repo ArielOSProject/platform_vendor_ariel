@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package ariel.app;
+package ariel.firewall;
 
-interface IArielIntentFirewallManager {
-    boolean disableApp(in String packageName);
-    boolean enableApp(in String packageName);
-
-    boolean disableBroadcast(in String broadcast);
-    boolean enableBroadcast(in String broadcast);
+interface IArielFirewallManager {
+    boolean disableNetworking(in String pids); // pids string with pids sepparated by space
+    boolean clearRules();
 }
