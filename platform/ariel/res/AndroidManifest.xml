@@ -32,9 +32,6 @@
     <permission android:name="ariel.permission.WRITE_SETTINGS"
                 android:protectionLevel="signature|privileged" />
 
-    <permission android:name="ariel.permission.LOCK_SCREEN"
-        android:protectionLevel="signature|privileged" />
-
     <permission android:name="ariel.permission.INTENT_FIREWALL"
                 android:protectionLevel="signature|privileged|development" />
 
