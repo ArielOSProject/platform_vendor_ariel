@@ -31,7 +31,7 @@ public class LockPatternUtilsHelper {
 
     public static void performAdminLock(String password, Context context) {
         Log.i("LockPatternUtilsHelper", "About to check password");
-        enforceWritePermission(ariel.platform.Manifest.permission.LOCK_SCREEN, context);
+        //enforceWritePermission(ariel.platform.Manifest.permission.CONTROL_KEYGUARD, context);
         LockPatternUtils lpu = new LockPatternUtils(context);
         // first check & backup existing password/pattern
         byte[] oldPwd = getUnlockPassword();

@@ -76,7 +76,7 @@ public class ArielSecurityManager {
             Slog.w("ArielSecurityService", "warning: no ariel hardware service");
             return;
         }
-//    }
+    }
 
     /** @hide */
     public IArielSecurityManager getService() {
