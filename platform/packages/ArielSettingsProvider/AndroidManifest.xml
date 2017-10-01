@@ -7,6 +7,7 @@
                  android:label="@string/app_label"
                  android:process="system"
                  android:killAfterRestore="false"
+                 android:directBootAware="true"
                  android:icon="@mipmap/ic_launcher_settings">
                  
     <!-- todo add: android:neverEncrypt="true" -->
