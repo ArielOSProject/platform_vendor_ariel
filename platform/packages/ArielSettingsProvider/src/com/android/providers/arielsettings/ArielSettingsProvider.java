@@ -52,7 +52,7 @@ import android.util.SparseArray;
  * The CMSettingsProvider serves as a {@link ContentProvider} for CM specific settings
  */
 public class ArielSettingsProvider extends ContentProvider {
-    public static final String TAG = "CMSettingsProvider";
+    public static final String TAG = "ArielSettingsProvider";
     private static final boolean LOCAL_LOGV = false;
 
     private static final boolean USER_CHECK_THROWS = true;
