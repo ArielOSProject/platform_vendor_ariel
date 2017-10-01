@@ -16,6 +16,7 @@
 
 package ariel.firewall;
 
+/** @hide */
 interface IArielFirewallManager {
     boolean disableNetworking(in String pids); // pids string with pids sepparated by space
     boolean clearRules();

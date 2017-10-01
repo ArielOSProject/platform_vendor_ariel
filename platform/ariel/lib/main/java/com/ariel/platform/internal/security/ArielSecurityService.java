@@ -17,19 +17,15 @@
 package com.ariel.platform.internal.security;
 
 import android.content.Context;
-import android.os.BatteryStats;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.android.internal.widget.LockPatternUtils;
 import com.ariel.platform.internal.ArielSystemService;
 
 import ariel.context.ArielContextConstants;
-import ariel.platform.Manifest;
 import ariel.security.IArielSecurityManager;
-
-import java.util.List;
 
 /**
  * Internal service which manages interactions with system ui elements
@@ -42,9 +38,12 @@ public class ArielSecurityService extends ArielSystemService {
     private Context mContext;
     private Handler mHandler = new Handler();
 
+    private LockPatternUtils mLockPatternUtils;
+
     public ArielSecurityService(Context context) {
         super(context);
         mContext = context;
+        mLockPatternUtils = new LockPatternUtils(context);
     }
 
     @Override
