@@ -16,6 +16,7 @@
 
 package ariel.hardware;
 
+/** @hide */
 interface IArielHardwareManager {
     String getUniqueDeviceId();
     String getUniquePseudoDeviceId();

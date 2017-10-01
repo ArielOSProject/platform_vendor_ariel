@@ -16,6 +16,7 @@
 
 package ariel.firewall;
 
+/** @hide */
 interface IArielIntentFirewallManager {
     boolean disableApp(in String packageName);
     boolean enableApp(in String packageName);
