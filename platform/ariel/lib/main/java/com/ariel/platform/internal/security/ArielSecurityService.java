@@ -19,6 +19,7 @@ package com.ariel.platform.internal.security;
 import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.UserHandle;
 import android.util.Log;
 
 import com.android.internal.widget.LockPatternUtils;
@@ -60,10 +61,8 @@ public class ArielSecurityService extends ArielSystemService {
     private final IBinder mService = new IArielSecurityManager.Stub() {
 
         @Override
-        public void setFingerprintEnabled() {
-            /**
-             * TODO
-             */
+        public void clearLock() {
+            mLockPatternUtils.clearLock(UserHandle.USER_SYSTEM);
         }
 
 //        @Override

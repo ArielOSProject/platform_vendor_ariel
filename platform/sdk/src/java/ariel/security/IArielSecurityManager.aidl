@@ -19,6 +19,6 @@ package ariel.security;
 /** @hide */
 interface IArielSecurityManager {
 
-     void setFingerprintEnabled();
+     void clearLock();
 
 }

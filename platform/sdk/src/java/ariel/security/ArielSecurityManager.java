@@ -65,13 +65,13 @@ public class ArielSecurityManager {
 //        }
 //    }
 //
-    public void setFingerprintEnabled(){
+    public void clearLock(){
         if (sService == null) {
             Log.w(TAG, "not connected to ArielSecurityService");
             return;
         }
         try {
-            sService.setFingerprintEnabled();
+            sService.clearLock();
         } catch (RemoteException e) {
             Slog.w("ArielSecurityService", "warning: no ariel hardware service");
             return;
