@@ -62,7 +62,7 @@ public class ArielSecurityService extends ArielSystemService {
 
         @Override
         public void clearLock() {
-            mLockPatternUtils.clearLock(UserHandle.USER_SYSTEM);
+            mLockPatternUtils.clearLock(UserHandle.USER_OWNER);
         }
 
 //        @Override
