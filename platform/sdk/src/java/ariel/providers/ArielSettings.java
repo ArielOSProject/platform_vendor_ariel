@@ -1140,9 +1140,9 @@ public final class ArielSettings {
         // region Secure Settings
 
         /**
-         * Delimited list of string IDs that can manipulate the device
+         * Is device controlled by at least one administrator?
          */
-        public static final String ARIEL_MASTERS = "ariel_master";
+        public static final String ARIEL_MASTER_EXISTS = "ariel_master_exists";
 
         /**
          * Ariel OS system status. Integer value that can be:
