@@ -16,6 +16,7 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/system/etc/permissions/com.ariel.android.xml:system/etc/permissions/com.ariel.android.xml \
     vendor/ariel/system/etc/permissions/com.ariel.firewall.xml:system/etc/permissions/com.ariel.firewall.xml \
     vendor/ariel/system/etc/permissions/com.ariel.security.xml:system/etc/permissions/com.ariel.security.xml \
+    vendor/ariel/system/etc/permissions/privapp-permissions-ariel.xml:system/etc/permissions/privapp-permissions-ariel.xml \
     vendor/ariel/system/etc/sysconfig/ariel.xml:system/etc/sysconfig/ariel.xml
 
 PRODUCT_PACKAGES += \
@@ -27,6 +28,9 @@ PRODUCT_PACKAGES += \
 # Make sure data roaming is off!
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.com.android.dataroaming=false
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.control_privapp_permission=log
 
 # Copy IntentFirewall configuration file
 #PRODUCT_COPY_FILES += \
