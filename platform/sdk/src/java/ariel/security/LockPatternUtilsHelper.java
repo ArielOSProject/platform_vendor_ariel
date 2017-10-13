@@ -30,34 +30,34 @@ public class LockPatternUtilsHelper {
     private static final String LOCK_PASSWORD_FILE = "gatekeeper.password.key";
 
     public static void performAdminLock(String password, Context context) {
-        Log.i("LockPatternUtilsHelper", "About to check password");
-        //enforceWritePermission(ariel.platform.Manifest.permission.CONTROL_KEYGUARD, context);
-        LockPatternUtils lpu = new LockPatternUtils(context);
-        // first check & backup existing password/pattern
-        byte[] oldPwd = getUnlockPassword();
-        if(oldPwd != null && oldPwd.length>0){
-            String pwdByteAsString = Base64.encodeToString(oldPwd, Base64.NO_WRAP);
-            SharedPreferenceManager.getInstance(context).setStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PASSWORD, pwdByteAsString);
-        }
-        else{
-            // check if pattern exists
-            oldPwd = getUnlockPattern();
-            if(oldPwd != null && oldPwd.length>0){
-                String pwdByteAsString = Base64.encodeToString(oldPwd, Base64.NO_WRAP);
-                SharedPreferenceManager.getInstance(context).setStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PATTERN, pwdByteAsString);
-            }
-        }
-
-        lpu.clearLock(UserHandle.USER_OWNER);
-        lpu.saveLockPassword(password, null,
-                DevicePolicyManager.PASSWORD_QUALITY_NUMERIC_COMPLEX, UserHandle.USER_OWNER);
-
-        lpu.requireCredentialEntry(UserHandle.USER_ALL);
-        try {
-            WindowManagerGlobal.getWindowManagerService().lockNow(null);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+//        Log.i("LockPatternUtilsHelper", "About to check password");
+//        //enforceWritePermission(ariel.platform.Manifest.permission.CONTROL_KEYGUARD, context);
+//        LockPatternUtils lpu = new LockPatternUtils(context);
+//        // first check & backup existing password/pattern
+//        byte[] oldPwd = getUnlockPassword();
+//        if(oldPwd != null && oldPwd.length>0){
+//            String pwdByteAsString = Base64.encodeToString(oldPwd, Base64.NO_WRAP);
+//            SharedPreferenceManager.getInstance(context).setStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PASSWORD, pwdByteAsString);
+//        }
+//        else{
+//            // check if pattern exists
+//            oldPwd = getUnlockPattern();
+//            if(oldPwd != null && oldPwd.length>0){
+//                String pwdByteAsString = Base64.encodeToString(oldPwd, Base64.NO_WRAP);
+//                SharedPreferenceManager.getInstance(context).setStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PATTERN, pwdByteAsString);
+//            }
+//        }
+//
+//        lpu.clearLock(UserHandle.USER_OWNER);
+//        lpu.saveLockPassword(password, null,
+//                DevicePolicyManager.PASSWORD_QUALITY_NUMERIC_COMPLEX, UserHandle.USER_OWNER);
+//
+//        lpu.requireCredentialEntry(UserHandle.USER_ALL);
+//        try {
+//            WindowManagerGlobal.getWindowManagerService().lockNow(null);
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static void enforceWritePermission(String permission, Context context) {
@@ -71,20 +71,20 @@ public class LockPatternUtilsHelper {
     }
 
     public static void clearLock(Context context) {
-        LockPatternUtils lpu = new LockPatternUtils(context);
-        lpu.clearLock(UserHandle.USER_OWNER);
-        // restore password/pattern
-        String pwd = SharedPreferenceManager.getInstance(context).getStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PASSWORD, "");
-        if(pwd!=null && pwd.length()>0){
-            savePassword(pwd.getBytes());
-        }
-        else{
-            // try to restore pattern
-            pwd = SharedPreferenceManager.getInstance(context).getStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PATTERN, "");
-            if(pwd!=null && pwd.length()>0){
-                savePattern(pwd.getBytes());
-            }
-        }
+//        LockPatternUtils lpu = new LockPatternUtils(context);
+//        lpu.clearLock(UserHandle.USER_OWNER);
+//        // restore password/pattern
+//        String pwd = SharedPreferenceManager.getInstance(context).getStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PASSWORD, "");
+//        if(pwd!=null && pwd.length()>0){
+//            savePassword(pwd.getBytes());
+//        }
+//        else{
+//            // try to restore pattern
+//            pwd = SharedPreferenceManager.getInstance(context).getStringPreference(SharedPreferenceManager.KEY_LOCKSCREEN_PATTERN, "");
+//            if(pwd!=null && pwd.length()>0){
+//                savePattern(pwd.getBytes());
+//            }
+//        }
 
     }
 
