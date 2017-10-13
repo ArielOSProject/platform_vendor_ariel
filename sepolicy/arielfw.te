@@ -26,3 +26,5 @@ allow init socket_device:sock_file { setattr unlink };
 allow arielfw proc_net:file { open read };
 
 allow arielfw system_file:file execute_no_trans;
+
+allow arielfw system_file:file lock;
