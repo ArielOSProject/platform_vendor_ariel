@@ -12,5 +12,5 @@
 -->
 
 <permissions>
-    <feature name="com.ariel.security" />
+    <feature name="com.arielos.adblock" />
 </permissions>

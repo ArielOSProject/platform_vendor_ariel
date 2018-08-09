@@ -3,8 +3,11 @@
 PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/default-permissions/ariel-permissions.xml:system/etc/default-permissions/ariel-permissions.xml \
     vendor/ariel/prebuilt/common/etc/permissions/privapp-permissions-ariel.xml:system/etc/permissions/privapp-permissions-ariel.xml \
-    vendor/ariel/prebuilt/common/etc/sysconfig/ariel.xml:system/etc/sysconfig/ariel.xml \
-    vendor/ariel/prebuilt/common/etc/init.d/00banner:system/etc/init.d/00banner \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.android.xml:system/etc/permissions/com.arielos.android.xml \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.security.xml:system/etc/permissions/com.arielos.security.xml \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.adblock.xml:system/etc/permissions/com.arielos.adblock.xml \
+    vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:system/etc/sysconfig/ariel-sysconfig.xml \
     vendor/ariel/system/etc/hosts.ariel:system/etc/hosts.ariel
 
 

@@ -12,5 +12,5 @@
 -->
 
 <permissions>
-    <feature name="com.ariel.firewall" />
+    <feature name="com.arielos.security" />
 </permissions>

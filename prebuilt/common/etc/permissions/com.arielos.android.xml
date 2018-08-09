@@ -11,7 +11,7 @@
      limitations under the License.
 -->
 
-<!-- This feature shows that this is CyanogenMod -->
+<!-- This feature shows that this is ArielOS -->
 <permissions>
-    <feature name="com.ariel.android" />
+    <feature name="com.arielos.android" />
 </permissions>
