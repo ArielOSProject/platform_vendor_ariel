@@ -39,25 +39,31 @@ while read path || [ -n "$path" ];
     ret=$(repo sync -d -f --force-sync ${path} 2>&1);
     cd $path;
 
+
     if ! git rev-parse --git-dir &> /dev/null
     then
-        echo ".git directory not found. Please run this from the root directory of the Android repository you wish to set up."
+        echo ".git directory not found. Please run this from the root directory of the Android repository you wish to sync."
     else
         # make sure that environment is clean
         echo "Cleaning out repo..."
         ret=$(git merge --abort 2>&1);
+        echo "RET: $ret"
 
         echo "Removing lineage repo..."
         ret=$(git remote rm lineage 2>&1)
+        echo "RET: $ret"
 
         echo "Adding lineage repo..."
         ret=$(git remote add lineage https://github.com/LineageOS/$project 2>&1)
+        echo "RET: $ret"
 
-        echo "Fetching lineage $ref"
+        echo "Fetching $ref..."
         ret=$(git fetch lineage $ref 2>&1);
+        echo "RET: $ret"
 
         echo " -> Merging remote: https://github.com/LineageOS/$project ${ref}";
-        ret=$(git merge $ref --no-edit 2>&1);
+        ret=$(git merge lineage/$ref --no-edit 2>&1);
+        echo "RET: $ret"
 
         #ret=$(git pull https://github.com/LineageOS/$project ${ref} 2>&1);
 
@@ -70,7 +76,5 @@ while read path || [ -n "$path" ];
 
         cd - > /dev/null;
     fi
-
-    
 
 done < vendor/ariel/utils/lineage-forked-list;
