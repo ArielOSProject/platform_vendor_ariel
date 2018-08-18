@@ -58,19 +58,19 @@ while read path || [ -n "$path" ];
         echo "RET: $ret"
 
         echo "Fetching $ref..."
-        ret=$(git fetch lineage $ref 2>&1);
+        ret=$(git pull lineage ${ref} 2>&1);
         echo "RET: $ret"
 
-        echo " -> Merging remote: https://github.com/LineageOS/$project ${ref}";
-        ret=$(git merge lineage/$ref --no-edit 2>&1);
-        echo "RET: $ret"
+        # echo " -> Merging remote: https://github.com/LineageOS/$project ${ref}";
+        # ret=$(git merge lineage/$ref --no-edit 2>&1);
+        # echo "RET: $ret"
 
         #ret=$(git pull https://github.com/LineageOS/$project ${ref} 2>&1);
 
         if echo $ret | grep "CONFLICT (content)" > /dev/null ; then
             echo " -> WARNING!: MERGE CONFLICT";
         else
-            ret=$(git checkout ariel-$ref 2>&1);
+            ret=$(git checkout ariel-${ref} 2>&1);
             echo " -> DONE!";
         fi
 

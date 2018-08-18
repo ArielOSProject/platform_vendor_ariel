@@ -1,5 +1,2 @@
-#PRODUCT_PACKAGES += \
-#   ArielGuardian \
-#   ArielSettingsProvider \
-#   ArielSetupWizard \
-#   arielfw
+PRODUCT_PACKAGES += \
+  DuckDuckGo
