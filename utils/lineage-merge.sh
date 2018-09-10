@@ -61,11 +61,13 @@ while read path || [ -n "$path" ];
         ret=$(git pull lineage ${ref} 2>&1);
         echo "RET: $ret"
 
-        # echo " -> Merging remote: https://github.com/LineageOS/$project ${ref}";
-        # ret=$(git merge lineage/$ref --no-edit 2>&1);
-        # echo "RET: $ret"
+        echo "Checkout ariel-$ref..."
+        ret=$(git checkout ariel-${ref} 2>&1);
+        echo "RET: $ret"
 
-        #ret=$(git pull https://github.com/LineageOS/$project ${ref} 2>&1);
+        echo " -> Merging remote: https://github.com/LineageOS/$project ${ref}";
+        ret=$(git merge lineage/$ref --no-edit 2>&1);
+        echo "RET: $ret"
 
         if echo $ret | grep "CONFLICT (content)" > /dev/null ; then
             echo " -> WARNING!: MERGE CONFLICT";
