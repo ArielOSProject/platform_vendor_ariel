@@ -1,6 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) 2016 OmniROM Project
+# Copyright (C) 2018 ArielOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 echo -e "Enter the LineageOS ref to merge";
 read ref;
 
@@ -80,3 +82,7 @@ while read path || [ -n "$path" ];
     fi
 
 done < vendor/ariel/utils/lineage-forked-list;
+
+echo " -> Performing full sync again...";
+ret=$(repo sync 2>&1);
+echo "Sync complete: $ret"
