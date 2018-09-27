@@ -1,3 +1,5 @@
 PRODUCT_PACKAGES += \
   DuckDuckGo \
-  YalpStore
+  YalpStore \
+  GmsCore \
+  IchnaeaNlpBackend
