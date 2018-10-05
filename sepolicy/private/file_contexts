@@ -1,0 +1,3 @@
+/data/system/ifw(/.*)?              u:object_r:system_data_ifw:s0
+/system/bin/arielfw                 u:object_r:arielfw_exec:s0
+

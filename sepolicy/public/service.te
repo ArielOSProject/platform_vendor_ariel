@@ -1,4 +1,2 @@
 type ariel_firewall_service, system_api_service, system_server_service, service_manager_type;
 type ariel_intent_firewall_service, system_api_service, system_server_service, service_manager_type;
-type ariel_hardware_service, system_api_service, system_server_service, service_manager_type;
-type ariel_security_service, system_api_service, system_server_service, service_manager_type;
