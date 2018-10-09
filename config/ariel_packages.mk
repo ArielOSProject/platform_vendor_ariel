@@ -3,3 +3,4 @@ PRODUCT_PACKAGES += \
   YalpStore \
   GmsCore \
   IchnaeaNlpBackend
+  

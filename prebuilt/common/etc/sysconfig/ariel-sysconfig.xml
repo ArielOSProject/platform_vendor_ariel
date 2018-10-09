@@ -26,5 +26,6 @@
 
     <!-- Disable battery optimization for Microg -->
     <allow-in-power-save package="com.google.android.gms" />
+    <allow-in-data-usage-save package="com.google.android.gms" />
 
 </config>

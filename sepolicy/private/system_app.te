@@ -1,3 +1,8 @@
+# If your application runs in system_app domain
+# by using android.uid.system shared user id in your manifest file,
+# then use system_app domain. If not, use platform_app domain
+# instead.
+
 # allow system_app to write to ifw folder
 allow system_app system_data_ifw:file create_file_perms;
 allow system_app system_data_ifw:dir create_dir_perms;

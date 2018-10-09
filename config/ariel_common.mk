@@ -8,7 +8,7 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.security.xml:system/etc/permissions/com.arielos.security.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.adblock.xml:system/etc/permissions/com.arielos.adblock.xml \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:system/etc/sysconfig/ariel-sysconfig.xml \
-    vendor/ariel/system/etc/hosts.ariel:system/etc/hosts.ariel
+    vendor/ariel/prebuilt/common/etc/hosts.ariel:system/etc/hosts.ariel
 
 
 # Copy .rc files
@@ -19,6 +19,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.com.android.dataroaming=false
 
+# use this for user builds:
+# ro.control_privapp_permissions=enforce
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.control_privapp_permission=log
 
