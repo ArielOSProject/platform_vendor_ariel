@@ -2,4 +2,3 @@ lineage-sdk
 build
 system/core
 device/huawei/angler
-frameworks/base
