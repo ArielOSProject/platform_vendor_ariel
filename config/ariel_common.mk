@@ -28,8 +28,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 #PRODUCT_COPY_FILES += \
 #    vendor/ariel/firewall/ifw.config:data/system/ifw/ifw.config
 
-GAPPS_VARIANT := mini
-$(call inherit-product, vendor/google/build/opengapps-packages.mk)
+# GAPPS_VARIANT := mini
+# $(call inherit-product, vendor/google/build/opengapps-packages.mk)
 
 include vendor/ariel/sepolicy/sepolicy.mk
 
