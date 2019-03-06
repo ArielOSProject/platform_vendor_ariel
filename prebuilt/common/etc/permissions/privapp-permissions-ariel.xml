@@ -4,7 +4,7 @@
     <privapp-permissions package="com.ariel.guardian">
         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
         <!-- Usage stats -->
-        <permission name="android.permission.PACKAGE_USAGE_STATS">
+        <permission name="android.permission.PACKAGE_USAGE_STATS"/>
     </privapp-permissions>
 
     <privapp-permissions package="com.ariel.setupwizard">
