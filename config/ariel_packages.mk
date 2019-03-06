@@ -1,4 +1,5 @@
 PRODUCT_PACKAGES += \
   NetworkLocation \
-  DejaVu
+  DejaVu \
+  ArielGuardian
   
