@@ -40,9 +40,7 @@
         <!-- Storage -->
         <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
         <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
-        <permission name="android.permission.RECEIVE_BOOT_COMPLETED" fixed="true">
-        <!-- Usage stats -->
-        <permission name="android.permission.PACKAGE_USAGE_STATS" fixed="true">
+        <permission name="android.permission.RECEIVE_BOOT_COMPLETED" fixed="true"/>
     </exception>
 
     <exception
