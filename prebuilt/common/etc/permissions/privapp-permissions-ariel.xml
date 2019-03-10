@@ -13,7 +13,7 @@
         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
     </privapp-permissions>
 
-    <privapp-permissions package="com.github.yeriomin.yalpstore">
+    <privapp-permissions package="com.dragons.aurora">
         <permission name="android.permission.INSTALL_PACKAGES"/>
     </privapp-permissions>
 

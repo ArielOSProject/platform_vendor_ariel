@@ -1,5 +1,6 @@
 PRODUCT_PACKAGES += \
   NetworkLocation \
   DejaVu \
-  ArielGuardian
+  ArielGuardian \
+  AuroraStore
   
