@@ -300,4 +300,4 @@ else:
             print("Done")
             sys.exit()
 
-print("Repository for %s not found in the LineageOS Github repository list. If this is in error, you may need to manually add it to your local_manifests/roomservice.xml." % device)
+print("Repository for %s not found in the ArielOS Github repository list. If this is in error, you may need to manually add it to your local_manifests/roomservice.xml." % device)
