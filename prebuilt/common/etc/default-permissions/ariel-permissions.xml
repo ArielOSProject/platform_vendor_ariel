@@ -44,6 +44,13 @@
     </exception>
 
     <exception
+            package="com.dragons.aurora">
+        <!-- Storage -->
+        <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
+        <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
+    </exception>
+
+    <exception
             package="com.google.android.gms">
         <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
         <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
