@@ -1,3 +1,4 @@
 build
 system/core
 device/huawei/angler
+device/lge/bullhead
