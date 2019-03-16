@@ -52,7 +52,7 @@ endif
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := bootanimation.zip
-LOCAL_OVERRIDES_PACKAGES := bootanimation.zip
+PACKAGES.$(LOCAL_MODULE).OVERRIDES  := bootanimation.zip
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_PATH := $(TARGET_OUT)/media
 
