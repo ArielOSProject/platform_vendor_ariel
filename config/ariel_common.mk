@@ -7,7 +7,8 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.security.xml:system/etc/permissions/com.arielos.security.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.adblock.xml:system/etc/permissions/com.arielos.adblock.xml \
-    vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:system/etc/sysconfig/ariel-sysconfig.xml
+    vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:system/etc/sysconfig/ariel-sysconfig.xml \
+    vendor/ariel/prebuilt/bootanimation.zip:system/media/bootanimation.zip
 
 
 # Copy .rc files
@@ -24,8 +25,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.control_privapp_permission=log
 
 # Bootanimation
-PRODUCT_PACKAGES += \
-    bootanimation.zip
+#PRODUCT_PACKAGES += \
+#    bootanimation.zip
 
 # Copy IntentFirewall configuration file
 #PRODUCT_COPY_FILES += \
