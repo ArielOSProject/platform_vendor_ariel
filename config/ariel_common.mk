@@ -23,6 +23,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.control_privapp_permission=log
 
+# Bootanimation
+PRODUCT_PACKAGES += \
+    bootanimation.zip
+
 # Copy IntentFirewall configuration file
 #PRODUCT_COPY_FILES += \
 #    vendor/ariel/firewall/ifw.config:data/system/ifw/ifw.config
