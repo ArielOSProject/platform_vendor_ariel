@@ -19,10 +19,15 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/system/etc/sysconfig/ariel.xml:system/etc/sysconfig/ariel.xml
 
 PRODUCT_PACKAGES += \
-   ArielGuardian \
-   ArielSettingsProvider \
-   ArielSetupWizard \
-   arielfw
+    NetworkLocation \
+    DejaVu \
+    ArielGuardian \
+    AuroraStore \
+    DuckDuckGo
+#    ArielGuardian \
+#    ArielSettingsProvider \
+#    ArielSetupWizard \
+#    arielfw
 
 # Make sure data roaming is off!
 PRODUCT_PROPERTY_OVERRIDES += \
