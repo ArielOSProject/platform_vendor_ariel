@@ -3,5 +3,6 @@ PRODUCT_PACKAGES += \
   DejaVu \
   ArielGuardian \
   AuroraStore \
-  DuckDuckGo
+  DuckDuckGo \
+  arielfw
   
