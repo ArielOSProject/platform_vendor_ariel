@@ -15,7 +15,8 @@ LOCAL_SRC_FILES:= arielfw.cpp \
 
 LOCAL_SHARED_LIBRARIES := liblog \
                           libsysutils \
-                          libbase
+                          libbase \
+                          libcutils
 
 LOCAL_CLANG := true
 
