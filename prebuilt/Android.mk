@@ -5,4 +5,5 @@
 # to its correct location
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
+$(shell mkdir -p $(TARGET_OUT)/etc/)
 $(shell cp -rf $(LOCAL_PATH)/common/etc/hosts `pwd`/$(TARGET_OUT)/etc/)
