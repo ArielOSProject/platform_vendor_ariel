@@ -1,8 +1,8 @@
 PRODUCT_PACKAGES += \
-  NetworkLocation \
-  DejaVu \
   ArielGuardian \
   AuroraStore \
   DuckDuckGo \
   arielfw
+#  NetworkLocation
+#  DejaVu
   
