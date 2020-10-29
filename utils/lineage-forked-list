@@ -1,4 +1,4 @@
 build
-system/core
-device/huawei/angler
-device/lge/bullhead
+device/google/muskie
+device/google/wahoo
+device/google/walleye

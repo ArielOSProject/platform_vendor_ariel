@@ -27,6 +27,11 @@ while read path || [ -n "$path" ];
 
     project=`echo android_${path} | sed -e 's/\//\_/g'`;
 
+    if [ ! -d "${path}" ] ; then
+        echo "Path ${path} does not exist, skipping";
+        continue
+    fi
+
     if [ "${path}" == "build" ] ; then
         path="build/make";
     fi
@@ -83,6 +88,6 @@ while read path || [ -n "$path" ];
 
 done < vendor/ariel/utils/lineage-forked-list;
 
-echo " -> Performing full sync again...";
-ret=$(repo sync 2>&1);
-echo "Sync complete: $ret"
+# echo " -> Performing full sync again...";
+# ret=$(repo sync 2>&1);
+# echo "Sync complete: $ret"
