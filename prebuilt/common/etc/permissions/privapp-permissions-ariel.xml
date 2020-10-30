@@ -13,7 +13,7 @@
         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
     </privapp-permissions>
 
-    <privapp-permissions package="com.dragons.aurora">
+    <privapp-permissions package="com.aurora.store">
         <permission name="android.permission.INSTALL_PACKAGES"/>
     </privapp-permissions>
 

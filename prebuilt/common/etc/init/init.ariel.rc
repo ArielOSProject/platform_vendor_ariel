@@ -3,6 +3,7 @@
 on post-fs-data
     mkdir /data/system/ifw 0700 system system
 
+# disabled until we introduce daemon connector
 #service arielfw /system/bin/arielfw
 #   class core
 #   user root
