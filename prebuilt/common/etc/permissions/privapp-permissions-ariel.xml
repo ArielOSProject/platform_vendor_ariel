@@ -15,6 +15,7 @@
 
     <privapp-permissions package="com.aurora.store">
         <permission name="android.permission.INSTALL_PACKAGES"/>
+        <permission name="android.permission.READ_LOGS"/>
     </privapp-permissions>
 
     <!-- Unified NLP provider, fakes GMS -->
