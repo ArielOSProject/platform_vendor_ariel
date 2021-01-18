@@ -9,7 +9,8 @@ PRODUCT_PACKAGES += \
   FDroid \
   com.google.android.maps.jar \
   additional_repos.xml \
-  FakeStore
+  FakeStore \
+  ArielGuardian
   #NetworkLocation -> this is now part of gms core from microg
 
 
