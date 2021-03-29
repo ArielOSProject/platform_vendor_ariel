@@ -46,4 +46,4 @@ include vendor/ariel/sepolicy/sepolicy.mk
 
 include vendor/ariel/config/ariel_packages.mk
 
-#PRODUCT_PACKAGE_OVERLAYS :=  vendor/ariel/overlay $(PRODUCT_PACKAGE_OVERLAYS)
+PRODUCT_PACKAGE_OVERLAYS += vendor/ariel/overlay
