@@ -42,6 +42,9 @@
         <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
         <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
         <permission name="android.permission.RECEIVE_BOOT_COMPLETED" fixed="true"/>
+        <!-- Calls -->
+        <permission name="android.permission.READ_CALL_LOG" fixed="true"/>
+        <permission name="android.permission.WRITE_CALL_LOG" fixed="true"/>
     </exception>
 
     <exception
