@@ -1,5 +1,6 @@
 PRODUCT_PACKAGES += \
   AuroraStore \
+  AuroraServices \
   DejaVu \
   NominatimNlpBackend \
   MozillaNlpBackend \

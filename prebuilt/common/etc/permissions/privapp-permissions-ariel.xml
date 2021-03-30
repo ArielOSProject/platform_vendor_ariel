@@ -18,6 +18,11 @@
         <permission name="android.permission.READ_LOGS"/>
     </privapp-permissions>
 
+    <privapp-permissions package="com.aurora.services">
+        <permission name="android.permission.DELETE_PACKAGES" />
+        <permission name="android.permission.INSTALL_PACKAGES" />
+    </privapp-permissions>
+
     <!-- Unified NLP provider, fakes GMS -->
     <privapp-permissions package="com.google.android.gms">
         <permission name="android.permission.INSTALL_LOCATION_PROVIDER"/>
