@@ -5,6 +5,7 @@
         <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
         <!-- Usage stats -->
         <permission name="android.permission.PACKAGE_USAGE_STATS"/>
+        <permission name="android.permission.MODIFY_PHONE_STATE"/>
     </privapp-permissions>
 
     <privapp-permissions package="com.ariel.setupwizard">
@@ -15,12 +16,8 @@
 
     <privapp-permissions package="com.aurora.store">
         <permission name="android.permission.INSTALL_PACKAGES"/>
-        <permission name="android.permission.READ_LOGS"/>
-    </privapp-permissions>
-
-    <privapp-permissions package="com.aurora.services">
         <permission name="android.permission.DELETE_PACKAGES" />
-        <permission name="android.permission.INSTALL_PACKAGES" />
+        <permission name="android.permission.READ_LOGS"/>
     </privapp-permissions>
 
     <!-- Unified NLP provider, fakes GMS -->
