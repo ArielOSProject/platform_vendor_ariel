@@ -79,10 +79,10 @@ if not depsonly:
         result = json.loads(urllib.request.urlopen(githubreq).read().decode())
     except urllib.error.URLError:
         print("Failed to search GitHub")
-        sys.exit()
+        sys.exit(1)
     except ValueError:
         print("Failed to parse return data from GitHub")
-        sys.exit()
+        sys.exit(1)
     for res in result.get('items', []):
         repositories.append(res)
 
@@ -190,16 +190,21 @@ def add_to_manifest(repositories, fallback_branch = None):
         repo_target = repository['target_path']
         print('Checking if %s is fetched from %s' % (repo_target, repo_name))
         if is_in_manifest(repo_target):
-            print('ArielOSProject/%s already fetched to %s' % (repo_name, repo_target))
+            print('ArielOSProject|LineageOS/%s already fetched to %s' % (repo_name, repo_target))
             continue
 
-        print('Adding dependency: ArielOSProject/%s -> %s' % (repo_name, repo_target))
         if 'kernel' in repo_target:
+           print('Adding dependency: LineageOS/%s -> %s' % (repo_name, repo_target))
            project = ElementTree.Element("project", attrib = { "path": repo_target,
             "remote": "github", "name": "LineageOS/%s" % repo_name })
-        else:
-           project = ElementTree.Element("project", attrib = { "path": repo_target,
-            "remote": "ariel", "name": "ArielOSProject/%s" % repo_name })
+        elif device in repo_target:
+            print('Adding dependency: ArielOSProject/%s -> %s' % (repo_name, repo_target))
+            project = ElementTree.Element("project", attrib = { "path": repo_target,
+                "remote": "ariel", "name": "ArielOSProject/%s" % repo_name })
+        else: 
+            print('Adding dependency: LineageOS/%s -> %s' % (repo_name, repo_target))
+            project = ElementTree.Element("project", attrib = { "path": repo_target,
+               "remote": "github", "name": "LineageOS/%s" % repo_name })
 
         if 'branch' in repository:
             project.set('revision',repository['branch'])
