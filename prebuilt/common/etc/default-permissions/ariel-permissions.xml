@@ -53,6 +53,8 @@
         <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
         <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
         <permission name="android.permission.INSTALL_PACKAGES" fixed="true"/>
+        <permission name="android.permission.DELETE_PACKAGES" fixed="true"/>
+        <permission name="android.permission.REQUEST_DELETE_PACKAGES" fixed="true"/>
     </exception>
 
     <!-- microg GMS Core -->
@@ -78,6 +80,7 @@
         <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
         <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
         <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
+        <permission name="android.permission.READ_PHONE_STATE" fixed="true"/>
     </exception>
 
 </exceptions>
