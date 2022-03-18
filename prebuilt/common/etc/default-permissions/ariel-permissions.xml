@@ -54,10 +54,12 @@
         <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
     </exception>
 
+    <!-- microg GMS Core -->
     <exception
             package="com.google.android.gms">
         <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
         <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
+        <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
         <permission name="android.permission.FAKE_PACKAGE_SIGNATURE" fixed="true"/>
     </exception>
 
@@ -65,6 +67,15 @@
             package="org.fitchfamily.android.dejavu">
         <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
         <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
+        <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
+    </exception>
+
+    <!-- Mozilla NLP backend -->
+    <exception
+            package="org.microg.nlp.backend.ichnaea">
+        <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
+        <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
+        <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
     </exception>
 
 </exceptions>
