@@ -52,6 +52,7 @@
         <!-- Storage -->
         <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
         <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
+        <permission name="android.permission.INSTALL_PACKAGES" fixed="true"/>
     </exception>
 
     <!-- microg GMS Core -->
@@ -61,6 +62,7 @@
         <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
         <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
         <permission name="android.permission.FAKE_PACKAGE_SIGNATURE" fixed="true"/>
+        <permission name="android.permission.INSTALL_LOCATION_PROVIDER" fixed="true"/>
     </exception>
 
     <exception
