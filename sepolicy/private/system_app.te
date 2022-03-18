@@ -4,12 +4,12 @@
 # instead.
 
 # allow system_app to write to ifw folder
-allow system_app system_data_ifw:file create_file_perms;
-allow system_app system_data_ifw:dir create_dir_perms;
+#allow system_app system_data_ifw:file create_file_perms;
+#allow system_app system_data_ifw:dir create_dir_perms;
 
 # allow system_app to create named pipes (used for realm support)
-allow system_app fuse:fifo_file create;
-allow system_app system_app_data_file:fifo_file create;
-allow system_app system_app_data_file:fifo_file { read write };
-allow system_app system_app_data_file:fifo_file open;
+#allow system_app fuse:fifo_file create;
+#allow system_app system_app_data_file:fifo_file create;
+#allow system_app system_app_data_file:fifo_file { read write };
+#allow system_app system_app_data_file:fifo_file open;
 

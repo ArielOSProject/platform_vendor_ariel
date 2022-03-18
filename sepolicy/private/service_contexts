@@ -1,3 +1,3 @@
-arielfirewall                                   u:object_r:ariel_firewall_service:s0
-arielintentfirewall                             u:object_r:ariel_intent_firewall_service:s0
+#arielfirewall                                   u:object_r:ariel_firewall_service:s0
+#rielintentfirewall                             u:object_r:ariel_intent_firewall_service:s0
 
