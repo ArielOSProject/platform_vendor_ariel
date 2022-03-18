@@ -58,6 +58,7 @@
             package="com.google.android.gms">
         <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
         <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
+        <permission name="android.permission.FAKE_PACKAGE_SIGNATURE" fixed="true"/>
     </exception>
 
     <exception
