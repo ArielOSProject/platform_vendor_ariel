@@ -7,8 +7,8 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:system/etc/sysconfig/ariel-sysconfig.xml \
     vendor/ariel/prebuilt/common/etc/hosts:system/etc/hosts \
-    vendor/ariel/prebuilt/common/etc/microg.xml:system/etc/microg.xml
-    #vendor/ariel/prebuilt/bootanimation.zip:system/media/bootanimation.zip
+    vendor/ariel/prebuilt/common/etc/microg.xml:system/etc/microg.xml \
+    vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip
 
 
 # Copy .rc files

@@ -24,13 +24,13 @@ ifeq ($(TARGET_SCREEN_HEIGHT),)
     TARGET_SCREEN_HEIGHT := 1920
 endif
 
-TARGET_GENERATED_BOOTANIMATION := $(TARGET_OUT_INTERMEDIATES)/BOOTANIMATION/bootanimation.zip
-$(TARGET_GENERATED_BOOTANIMATION): INTERMEDIATES := $(TARGET_OUT_INTERMEDIATES)/BOOTANIMATION
-$(TARGET_GENERATED_BOOTANIMATION): $(SOONG_ZIP)
+TARGET_GENERATED_BOOTANIMATION_PRODUCT := $(TARGET_OUT_INTERMEDIATES)/BOOTANIMATION_PRODUCT/bootanimation.zip
+$(TARGET_GENERATED_BOOTANIMATION_PRODUCT): INTERMEDIATES := $(TARGET_OUT_INTERMEDIATES)/BOOTANIMATION_PRODUCT
+$(TARGET_GENERATED_BOOTANIMATION_PRODUCT): $(SOONG_ZIP)
 	@echo "Building bootanimation.zip"
 	@rm -rf $(dir $@)
 	@mkdir -p $(dir $@)
-	$(hide) tar xfp vendor/lineage/bootanimation/bootanimation.tar -C $(INTERMEDIATES)
+	$(hide) tar xfp vendor/ariel/bootanimation/bootanimation.tar -C $(INTERMEDIATES)
 	$(hide) if [ $(TARGET_SCREEN_HEIGHT) -lt $(TARGET_SCREEN_WIDTH) ]; then \
 	    IMAGEWIDTH=$(TARGET_SCREEN_HEIGHT); \
 	else \
@@ -48,19 +48,34 @@ $(TARGET_GENERATED_BOOTANIMATION): $(SOONG_ZIP)
 	done; \
 	prebuilts/tools-lineage/${HOST_OS}-x86/bin/mogrify -resize $$RESOLUTION -colors 250 $(INTERMEDIATES)/*/*.png; \
 	echo "$$IMAGESCALEWIDTH $$IMAGESCALEHEIGHT 60" > $(INTERMEDIATES)/desc.txt; \
-	cat vendor/lineage/bootanimation/desc.txt >> $(INTERMEDIATES)/desc.txt
-	$(hide) $(SOONG_ZIP) -L 0 -o $(TARGET_GENERATED_BOOTANIMATION) -C $(INTERMEDIATES) -D $(INTERMEDIATES)
+	cat vendor/ariel/bootanimation/desc.txt >> $(INTERMEDIATES)/desc.txt
+	$(hide) $(SOONG_ZIP) -L 0 -o $(TARGET_GENERATED_BOOTANIMATION_PRODUCT) -C $(INTERMEDIATES) -D $(INTERMEDIATES)
 
-ifeq ($(TARGET_BOOTANIMATION),)
-    TARGET_BOOTANIMATION := $(TARGET_GENERATED_BOOTANIMATION)
+ifeq ($(TARGET_BOOTANIMATION_PRODUCT),)
+    TARGET_BOOTANIMATION_PRODUCT := $(TARGET_GENERATED_BOOTANIMATION_PRODUCT)
 endif
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := bootanimation.zip
+LOCAL_MODULE := bootanimation_ariel.zip
 LOCAL_MODULE_CLASS := ETC
-LOCAL_MODULE_PATH := $(TARGET_OUT)/media
+LOCAL_MODULE_PATH := $(TARGET_OUT_PRODUCT)/media
 
 include $(BUILD_SYSTEM)/base_rules.mk
 
-$(LOCAL_BUILT_MODULE): $(TARGET_BOOTANIMATION)
-	@cp $(TARGET_BOOTANIMATION) $@
+#$(TARGET_OUT)/product/media/bootanimation.zip
+
+# Ovo ce napraviti kopiju sa dobrim imenom
+#@cp $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimationX.zip
+#@mv $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimation.zip    $(TARGET_OUT_PRODUCT)/media/bootanimation.zip
+# @cp $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimation.zip
+
+$(LOCAL_BUILT_MODULE): $(TARGET_BOOTANIMATION_PRODUCT)
+	$(hide) cp $(TARGET_BOOTANIMATION_PRODUCT) $@
+	$(hide) mkdir -p $(TARGET_OUT_PRODUCT)/media/tmp
+	$(hide) cp $@ $(TARGET_OUT_PRODUCT)/media/tmp/
+	$(hide) touch $(TARGET_OUT_PRODUCT)/media/tmp/bootanimation_ariel.zip
+	$(hide) mv $(TARGET_OUT_PRODUCT)/media/tmp/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimation.zip
+	$(hide) rm -R $(TARGET_OUT_PRODUCT)/media/tmp
+
+include $(CLEAR_VARS)
+$(shell rm -rvf $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip)
