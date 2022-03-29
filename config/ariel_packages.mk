@@ -1,12 +1,13 @@
 PRODUCT_PACKAGES += \
   AuroraStore \
   DejaVu \
-	GmsCore \
-	GsfProxy \
-	FakeStore \
-	IchnaeaNlpBackend \
-	NominatimGeocoderBackend \
-  ArielGuardian
+  GmsCore \
+  GsfProxy \
+  FakeStore \
+  IchnaeaNlpBackend \
+  NominatimGeocoderBackend \
+  ArielGuardian \
+  SongTube
   #NetworkLocation -> this is now part of gms core from microg
   #com.google.android.maps.jar \
 
