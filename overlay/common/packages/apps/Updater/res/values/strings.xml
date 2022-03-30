@@ -29,4 +29,6 @@
 
     <string name="list_build_version">ArielOS <xliff:g id="version" example="14.1">%1$s</xliff:g></string>
     <string name="list_build_version_date">ArielOS <xliff:g id="version" example="14.1">%1$s</xliff:g> - <xliff:g id="date" example="July 11, 2017">%2$s</xliff:g></string>
+
+    <string name="menu_changelog_url" translatable="false">https://ota.arielos.com/<xliff:g id="device_name">%1$s</xliff:g>/changes.txt</string>
 </resources>
