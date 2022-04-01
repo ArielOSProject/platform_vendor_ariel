@@ -67,6 +67,12 @@
         <permission name="android.permission.INSTALL_LOCATION_PROVIDER" fixed="true"/>
     </exception>
 
+    <!-- Fake store -->
+    <exception
+            package="com.android.vending">
+        <permission name="android.permission.FAKE_PACKAGE_SIGNATURE" fixed="true"/>
+    </exception>
+
     <exception
             package="org.fitchfamily.android.dejavu">
         <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>

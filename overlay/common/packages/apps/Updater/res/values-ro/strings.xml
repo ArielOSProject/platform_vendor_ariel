@@ -15,19 +15,7 @@
      limitations under the License.
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!--
-        Optional placeholders replaced at runtime:
-          {device} - Device name
-          {type} - Build type
-          {incr} - Incremental version
-    -->
-    <!-- <string name="updater_server_url" translatable="false">https://download.lineageos.org/api/v1/{device}/{type}/{incr}</string> -->
-    <!-- <string name="updater_server_url" translatable="false">https://ota.arielos.com/a5y17lte/UNOFFICIAL/index.json</string> -->
-    <string name="updater_server_url" translatable="false">https://ota.arielos.com/{device}/{type}/index.json</string>
-
     <string name="header_title_text">ArielOS\n%1$s</string>
     <string name="list_build_version">ArielOS <xliff:g id="version" example="14.1">%1$s</xliff:g></string>
     <string name="list_build_version_date">ArielOS <xliff:g id="version" example="14.1">%1$s</xliff:g> - <xliff:g id="date" example="July 11, 2017">%2$s</xliff:g></string>
-
-    <string name="menu_changelog_url" translatable="false">https://ota.arielos.com/<xliff:g id="device_name">%1$s</xliff:g>/changes.txt</string>
 </resources>
