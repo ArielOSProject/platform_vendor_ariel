@@ -49,3 +49,5 @@ include vendor/ariel/sepolicy/sepolicy.mk
 include vendor/ariel/config/ariel_packages.mk
 
 PRODUCT_PACKAGE_OVERLAYS += vendor/ariel/overlay/common/
+
+-include vendor/ariel-priv/keys.mk
