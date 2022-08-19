@@ -1,5 +1,3 @@
-
-
 PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/default-permissions/ariel-permissions.xml:system/etc/default-permissions/ariel-permissions.xml \
     vendor/ariel/prebuilt/common/etc/permissions/privapp-permissions-ariel.xml:system/etc/permissions/privapp-permissions-ariel.xml \
@@ -44,6 +42,12 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 
 # GAPPS_VARIANT := mini
 # $(call inherit-product, vendor/google/build/opengapps-packages.mk)
+
+# Lineage Platform Library
+PRODUCT_PACKAGES += \
+    com.arielos.platform-res \
+    com.arielos.platform \
+    com.arielos.platform.xml
 
 include vendor/ariel/sepolicy/sepolicy.mk
 

@@ -1,0 +1,3 @@
+# Ignore ArielOS SDK access to private resources
+-dontwarn arielos.**
+-dontnote arielos.**

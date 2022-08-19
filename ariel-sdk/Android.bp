@@ -15,15 +15,15 @@
 //
 
 android_app {
-    name: "org.lineageos.platform-res",
+    name: "com.arielos.platform-res",
     certificate: "platform",
     no_framework_libs: true,
-    manifest: "lineage/res/AndroidManifest.xml",
+    manifest: "ariel/res/AndroidManifest.xml",
 
     aaptflags: [
         "--auto-add-overlay",
         "--private-symbols",
-        "org.lineageos.platform.internal",
+        "com.arielos.platform.internal",
 
         // Framework doesn't need versioning since it IS the platform.
         "--no-auto-version",
@@ -33,12 +33,13 @@ android_app {
         "--allow-reserved-package-id",
         // Use id 0x3f (one less than app id).
         "--package-id",
-        "63",
+        "73",
     ],
 
     resource_dirs: [
-        "lineage/res/res",
-        "sdk/res/res",
+        "ariel/res/res",
+        "sdk/internal/res/res",
+        "sdk/public/res/res",
     ],
 
     // Create package-export.apk, which other packages can use to get
@@ -49,19 +50,9 @@ android_app {
 // The LineageOS Platform Framework Library
 // ============================================================
 
-lineage_sdk_src = "sdk/src/java/lineageos"
-lineage_sdk_internal_src = "sdk/src/java/org/lineageos/internal"
-library_src = "lineage/lib/main/java"
-
-lineage_sdk_LOCAL_STATIC_ANDROID_LIBRARIES = [
-    "androidx.preference_preference",
-]
-
-lineage_sdk_LOCAL_STATIC_JAVA_LIBRARIES = [
-    "vendor.lineage.livedisplay-V2.0-java",
-    "vendor.lineage.touch-V1.0-java",
-    "vendor.lineage.trust-V1.0-java",
-]
+ariel_sdk_src = "sdk/public/src/java/arielos"
+ariel_sdk_internal_src = "sdk/internal/src/java/com/arielos/internal"
+library_src = "ariel/lib/main/java"
 
 // READ ME: ########################################################
 //
@@ -75,27 +66,23 @@ lineage_sdk_LOCAL_STATIC_JAVA_LIBRARIES = [
 // READ ME: ########################################################
 
 java_library {
-    name: "org.lineageos.platform",
+    name: "com.arielos.platform",
     installable: true,
-    static_libs: [
-        "telephony-ext",
-    ] + lineage_sdk_LOCAL_STATIC_ANDROID_LIBRARIES + lineage_sdk_LOCAL_STATIC_JAVA_LIBRARIES,
-
     libs: [
         "services",
     ],
 
     srcs: [
-        lineage_sdk_src + "/**/*.java",
-        lineage_sdk_internal_src + "/**/*.java",
+        ariel_sdk_src + "/**/*.java",
+        ariel_sdk_internal_src + "/**/*.java",
         library_src + "/**/*.java",
-        lineage_sdk_src + "/**/I*.aidl",
-        lineage_sdk_internal_src + "/**/I*.aidl",
+        ariel_sdk_src + "/**/I*.aidl",
+        ariel_sdk_internal_src + "/**/I*.aidl",
     ],
 
     // Include aidl files from lineageos.app namespace as well as internal src aidl files
     aidl: {
-        local_include_dirs: ["sdk/src/java"],
+        local_include_dirs: ["sdk/internal/src/java", "sdk/public/src/java"],
     },
 }
 
@@ -103,21 +90,19 @@ java_library {
 // ============================================================
 
 java_library {
-    name: "org.lineageos.platform.internal",
+    name: "com.arielos.platform.internal",
     required: ["services"],
-    static_libs: [
-        "telephony-ext",
-    ] + lineage_sdk_LOCAL_STATIC_ANDROID_LIBRARIES + lineage_sdk_LOCAL_STATIC_JAVA_LIBRARIES,
 
     srcs: [
-        lineage_sdk_src + "/**/*.java",
-        lineage_sdk_internal_src + "/**/*.java",
-        lineage_sdk_src + "/**/I*.aidl",
-        lineage_sdk_internal_src + "/**/I*.aidl",
+        ariel_sdk_src + "/**/*.java",
+        ariel_sdk_internal_src + "/**/*.java",
+        ariel_sdk_src + "/**/I*.aidl",
+        ariel_sdk_internal_src + "/**/I*.aidl",
     ],
 
+    // Include aidl files from lineageos.app namespace as well as internal src aidl files
     aidl: {
-        local_include_dirs: ["sdk/src/java"],
+        local_include_dirs: ["sdk/internal/src/java", "sdk/public/src/java"],
     },
 }
 
@@ -127,16 +112,29 @@ java_library {
 // Included aidl files from lineageos.app namespace
 
 java_library {
-    name: "org.lineageos.platform.sdk",
+    name: "com.arielos.platform.sdk",
     required: ["services"],
-    static_libs: lineage_sdk_LOCAL_STATIC_ANDROID_LIBRARIES + lineage_sdk_LOCAL_STATIC_JAVA_LIBRARIES,
-
-    srcs: [
-        lineage_sdk_src + "/**/*.java",
-        lineage_sdk_src + "/**/I*.aidl",
+    libs: [
+        "com.arielos.platform.internal"
     ],
 
+    srcs: [
+        ariel_sdk_src + "/**/*.java",
+        ariel_sdk_src + "/**/I*.aidl",
+    ],
+
+    // Include aidl files from lineageos.app namespace as well as internal src aidl files
     aidl: {
-        local_include_dirs: ["sdk/src/java"],
+        local_include_dirs: ["sdk/internal/src/java", "sdk/public/src/java"],
     },
+}
+
+// Copy permission file to /system/etc/permissions
+// ============================================================
+prebuilt_etc {
+
+    name: "com.arielos.platform.xml",
+    src: "com.arielos.platform.xml",
+    sub_dir: "permissions",
+
 }

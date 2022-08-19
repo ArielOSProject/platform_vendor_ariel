@@ -6,6 +6,10 @@
         <!-- Usage stats -->
         <permission name="android.permission.PACKAGE_USAGE_STATS"/>
         <permission name="android.permission.MODIFY_PHONE_STATE"/>
+        <permission name="android.permission.MANAGE_USERS"/>
+        <permission name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
+        <permission name="android.permission.STORAGE_INTERNAL"/>
+        <permission name="android.permission.CONTROL_KEYGUARD"/>
     </privapp-permissions>
 
     <privapp-permissions package="com.ariel.setupwizard">
