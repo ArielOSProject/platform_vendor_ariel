@@ -32,6 +32,7 @@ import android.os.SystemProperties;
 import android.util.Log;
 import android.util.Pair;
 import android.text.TextUtils;
+import android.os.Bundle;
 
 import arielos.app.ArielContextConstants;
 import arielos.security.ISecurityInterface;
@@ -47,12 +48,20 @@ import java.util.NoSuchElementException;
 
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.LockPatternUtils.EscrowTokenStateChangeCallback;
+import com.android.internal.widget.LockscreenCredential;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_NONE;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PASSWORD;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PASSWORD_OR_PIN;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PATTERN;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PIN;
 import com.android.server.policy.keyguard.KeyguardServiceDelegate;
 import com.android.server.policy.keyguard.KeyguardStateMonitor.StateCallback;
 import com.android.internal.policy.IKeyguardDismissCallback;
+import com.android.server.policy.WindowManagerPolicy.OnKeyguardExitResult;
 import android.view.IWindowManager;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
+import android.app.trust.TrustManager;
 import com.android.server.SystemService;
 import android.os.UserHandle;
 import java.security.SecureRandom;
@@ -117,10 +126,6 @@ public class ArielSecurityService extends ArielSystemService {
                 "You do not have permissions to use the Security interface");
     }
 
-    private void clearUserLockLocked() {
-
-    }
-
     /**
      * Create an escrow token for the current user, which can later be used to unlock FBE
      * or change user password.
@@ -134,14 +139,9 @@ public class ArielSecurityService extends ArielSystemService {
      * @return a unique 64-bit token handle which is needed to refer to this token later.
      */
     private void generateEscrowTokenLocked(int userId, byte[] token, IEscrowTokenStateChangeCallback calllback) {
-        Log.e(TAG, "Got the token in  bytes: "+token);
-        Log.e(TAG, "Converting it to string shows: "+Base64.encode(token, Base64.DEFAULT));
         mLPU.addEscrowToken(token, userId, new EscrowTokenStateChangeCallback() {
             public void onEscrowTokenActivated(long handle, int userid) {
                 // todo store the token somewhere
-                Log.e(TAG, "Activated escrow token!!!");
-                Log.e(TAG, "Escrow handle: "+handle);
-                Log.e(TAG, "Escrow userid: "+userid);
                 try {
                     calllback.onEscrowTokenActivated(handle, userid);
                 }
@@ -158,58 +158,26 @@ public class ArielSecurityService extends ArielSystemService {
      * @return the chosen deadline.
      */
     public long setLockoutAttemptDeadlineLocked(int userId, int timeoutMs) {
-        return mLPU.setLockoutAttemptDeadline(userId, timeoutMs);
+        Log.d(TAG, "Setting lockout on user="+userId+" with timeoutMs="+timeoutMs);
+        long deadLine = mLPU.setLockoutAttemptDeadline(userId, timeoutMs);
+        Bundle options = new Bundle();
+        // this will force the keyguard to refresh itself
+        mKeyguardDelegate.doKeyguardTimeout(options);
+        return deadLine;
     }
+
+     /**
+     * Set and store the lockout deadline, meaning the user can't attempt his/her unlock
+     * pattern until the deadline has passed.
+     * @return the chosen deadline.
+     */
+    public long getLockoutAttemptDeadlineLocked(int userId) {
+        return mLPU.getLockoutAttemptDeadline(userId);
+    }
+
 
     private boolean hasPendingEscrowTokenLocked(int userId) {
         return mLPU.hasPendingEscrowToken(userId);
-    }
-
-        /**
-     * Unlock the specified user by an pre-activated escrow token. This should have the same effect
-     * on device encryption as the user entering his lockscreen credentials for the first time after
-     * boot, this includes unlocking the user's credential-encrypted storage as well as the keystore
-     *
-     * <p>This method is only available to code running in the system server process itself.
-     *
-     * @return {@code true} if the supplied token is valid and unlock succeeds,
-     *         {@code false} otherwise.
-     */
-    private boolean unlockUserWithTokenLocked(long tokenHandle, byte[] token, int userId) {
-        boolean isUnlocked = mLPU.unlockUserWithToken(tokenHandle, token, userId);
-        if(isUnlocked) {
-            Log.e(TAG, "lpu notified unlock");
-            // dismiss the keyguard here ( && mKeyguardDelegate.isShowing())
-            if (mKeyguardDelegate != null) {
-                Log.e(TAG, "mKeyguardDelegate not null");
-                // ask the keyguard to prompt the user to authenticate if necessary
-                try {
-                    mWindowManagerService.dismissKeyguard(new IKeyguardDismissCallback.Stub() {
-                        @Override
-                        public void onDismissError() throws RemoteException {
-                            Log.e(TAG, "keyguard: onDismissError");
-                        }
-        
-                        @Override
-                        public void onDismissSucceeded() throws RemoteException {
-                            Log.e(TAG, "keyguard: onDismissSucceeded");
-                        }
-        
-                        @Override
-                        public void onDismissCancelled() throws RemoteException {
-                            Log.e(TAG, "keyguard: onDismissCancelled");
-                        }
-                    }, "ariel_unlock");
-                }
-                catch(RemoteException e) {
-                    e.printStackTrace();
-                }
-            } else  {
-                // do nothing here
-                Log.e(TAG, "mKeyguardDelegate is null");
-            }
-        }
-        return isUnlocked;
     }
 
     /**
@@ -234,23 +202,49 @@ public class ArielSecurityService extends ArielSystemService {
         return mLPU.isEscrowTokenActive(handle, userId);
     }
 
-     /**
+    /**
      * Change a user's lock credential with a pre-configured escrow token.
      *
      * <p>This method is only available to code running in the system server process itself.
      *
      * @param credential The new credential to be set
-     * @param type Credential type: password / pattern / none.
-     * @param requestedQuality the requested password quality by DevicePolicyManager.
-     *        See {@link DevicePolicyManager#getPasswordQuality(android.content.ComponentName)}
      * @param tokenHandle Handle of the escrow token
      * @param token Escrow token
-     * @param userId The user who's lock credential to be changed
+     * @param userHandle The user who's lock credential to be changed
      * @return {@code true} if the operation is successful.
      */
-    public boolean setLockCredentialWithTokenLocked(byte[] credential, int type, int requestedQuality,
+    private boolean setLockCredentialWithTokenLocked(byte[] credential, int type,
             long tokenHandle, byte[] token, int userId) {
-        return mLPU.setLockCredentialWithToken(credential, type, requestedQuality, tokenHandle, token, userId);
+        // todo this implementation only considers PINS, this needs to be updated if we are to support other methods
+        // convert credential to string first
+        LockscreenCredential lockCredential;
+        if(type == CREDENTIAL_TYPE_NONE) {
+            // no pin to be set, will clear lock screen protection
+            lockCredential = LockscreenCredential.createNone();
+
+        } else if(type == CREDENTIAL_TYPE_PIN) {
+            // create a pin
+            CharSequence newPin = new String(credential);
+            lockCredential = LockscreenCredential.createPin(newPin);    
+        } else {
+            // abort, we do not support anything else yet
+            return false;
+        }
+        return mLPU.setLockCredentialWithToken(lockCredential, tokenHandle, token, userId);
+    }
+
+    private boolean startPeekingLocked() {
+        if (mKeyguardDelegate != null) {
+            mKeyguardDelegate.setKeyguardEnabled(false);
+        }
+        return true;
+    }
+
+    private boolean stopPeekingLocked() {
+        if (mKeyguardDelegate != null) {
+            mKeyguardDelegate.setKeyguardEnabled(true);
+        }
+        return true;
     }
 
     /* Service */
@@ -276,9 +270,9 @@ public class ArielSecurityService extends ArielSystemService {
         }
 
         @Override
-        public boolean unlockUserWithToken(long tokenHandle, byte[] token, int userId) {
+        public long getLockoutAttemptDeadline(int userId) {
             enforceSecurityPermission();
-            return unlockUserWithTokenLocked(tokenHandle, token, userId);
+            return getLockoutAttemptDeadlineLocked(userId);
         }
 
         @Override
@@ -294,10 +288,21 @@ public class ArielSecurityService extends ArielSystemService {
         }
 
         @Override
-        public boolean setLockCredentialWithToken(byte[] credential, int type, int requestedQuality,
-        long tokenHandle, byte[] token, int userId) {
+        public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId) {
             enforceSecurityPermission();
-            return setLockCredentialWithTokenLocked(credential, type, requestedQuality, tokenHandle, token, userId);
+            return setLockCredentialWithTokenLocked(credential, type, tokenHandle, token, userId);
+        }
+
+        @Override
+        public boolean startPeeking() {
+            enforceSecurityPermission();
+            return startPeekingLocked();
+        }
+
+        @Override
+        public boolean stopPeeking() {
+            enforceSecurityPermission();
+            return stopPeekingLocked();
         }
 
     };

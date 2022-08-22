@@ -24,8 +24,10 @@ interface ISecurityInterface {
     void generateEscrowToken(in int userId, in byte[] token, IEscrowTokenStateChangeCallback listener);
     boolean hasPendingEscrowToken(in int userId);
     long setLockoutAttemptDeadline(in int userId, in int timeoutMs);
-    boolean unlockUserWithToken(in long tokenHandle, in byte[] token, in int userId);
+    long getLockoutAttemptDeadline(in int userId);
     boolean removeEscrowToken(in long handle, in int userId);
     boolean isEscrowTokenActive(in long handle, in int userId);
-    boolean setLockCredentialWithToken(in byte[] credential, in int type, in int requestedQuality, in long tokenHandle, in byte[] token, in int userId);
+    boolean setLockCredentialWithToken(in byte[] credential, in int type, in long tokenHandle, in byte[] token, in int userId);
+    boolean stopPeeking();
+    boolean startPeeking();
 }

@@ -104,16 +104,16 @@ public class SecurityInterfaceImpl implements SecurityInterface {
     }
 
     @Override
-    public boolean unlockUserWithToken(long tokenHandle, byte[] token, int userId) {
+    public long getLockoutAttemptDeadline(int userId) {
         if (sService == null) {
-            return false;
+            return -1;
         }
         try {
-           return sService.unlockUserWithToken(tokenHandle, token, userId);
+           return sService.getLockoutAttemptDeadline(userId);
         } catch (RemoteException e) {
             Log.e(TAG, e.getLocalizedMessage(), e);
         }
-        return false;
+        return -1;
     }
 
     @Override
@@ -143,12 +143,38 @@ public class SecurityInterfaceImpl implements SecurityInterface {
     }
 
     @Override
-    public boolean setLockCredentialWithToken(byte[] credential, int type, int requestedQuality, long tokenHandle, byte[] token, int userId) {
+    public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId) {
         if (sService == null) {
             return false;
         }
         try {
-           return sService.setLockCredentialWithToken(credential, type, requestedQuality, tokenHandle, token, userId);
+           return sService.setLockCredentialWithToken(credential, type, tokenHandle, token, userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean startPeeking() {
+        if (sService == null) {
+            return false;
+        }
+        try {
+           return sService.startPeeking();
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean stopPeeking() {
+        if (sService == null) {
+            return false;
+        }
+        try {
+           return sService.stopPeeking();
         } catch (RemoteException e) {
             Log.e(TAG, e.getLocalizedMessage(), e);
         }
