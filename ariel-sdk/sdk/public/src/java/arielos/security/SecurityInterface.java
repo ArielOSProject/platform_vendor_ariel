@@ -45,5 +45,14 @@ public interface SecurityInterface {
     
     public boolean isEscrowTokenActive(long handle, int userId);
 
-    public boolean setLockCredentialWithToken(byte[] credential, int type, int requestedQuality, long tokenHandle, byte[] token, int userId);
+    public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId);
+
+    // NOTE: When modifying this, make sure credential sufficiency validation logic is intact.
+    public static final int CREDENTIAL_TYPE_NONE = -1;
+    public static final int CREDENTIAL_TYPE_PATTERN = 1;
+    // This is the legacy value persisted on disk. Never return it to clients, but internally
+    // we still need it to handle upgrade cases.
+    public static final int CREDENTIAL_TYPE_PASSWORD_OR_PIN = 2;
+    public static final int CREDENTIAL_TYPE_PIN = 3;
+    public static final int CREDENTIAL_TYPE_PASSWORD = 4;
 }

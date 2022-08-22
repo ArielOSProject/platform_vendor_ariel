@@ -47,6 +47,12 @@ import java.util.NoSuchElementException;
 
 import com.android.internal.widget.LockPatternUtils;
 import com.android.internal.widget.LockPatternUtils.EscrowTokenStateChangeCallback;
+import com.android.internal.widget.LockscreenCredential;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_NONE;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PASSWORD;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PASSWORD_OR_PIN;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PATTERN;
+import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PIN;
 import com.android.server.policy.keyguard.KeyguardServiceDelegate;
 import com.android.server.policy.keyguard.KeyguardStateMonitor.StateCallback;
 import com.android.internal.policy.IKeyguardDismissCallback;
@@ -234,23 +240,36 @@ public class ArielSecurityService extends ArielSystemService {
         return mLPU.isEscrowTokenActive(handle, userId);
     }
 
-     /**
+    /**
      * Change a user's lock credential with a pre-configured escrow token.
      *
      * <p>This method is only available to code running in the system server process itself.
      *
      * @param credential The new credential to be set
-     * @param type Credential type: password / pattern / none.
-     * @param requestedQuality the requested password quality by DevicePolicyManager.
-     *        See {@link DevicePolicyManager#getPasswordQuality(android.content.ComponentName)}
      * @param tokenHandle Handle of the escrow token
      * @param token Escrow token
-     * @param userId The user who's lock credential to be changed
+     * @param userHandle The user who's lock credential to be changed
      * @return {@code true} if the operation is successful.
      */
-    public boolean setLockCredentialWithTokenLocked(byte[] credential, int type, int requestedQuality,
+    public boolean setLockCredentialWithTokenLocked(byte[] credential, int type,
             long tokenHandle, byte[] token, int userId) {
-        return mLPU.setLockCredentialWithToken(credential, type, requestedQuality, tokenHandle, token, userId);
+        // todo this implementation only considers PINS, this needs to be updated if we are to support other methods
+        // convert credential to string first
+        Log.d(TAG, "We only support PIN for now!");
+        LockscreenCredential lockCredential;
+        if(type == CREDENTIAL_TYPE_NONE) {
+            // no pin to be set, will clear lock screen protection
+            lockCredential = LockscreenCredential.createNone();
+
+        } else if(type == CREDENTIAL_TYPE_PIN) {
+            // create a pin
+            CharSequence newPin = new String(credential);
+            lockCredential = LockscreenCredential.createPin(newPin);    
+        } else {
+            // abort, we do not support anything else yet
+            return false;
+        }
+        return mLPU.setLockCredentialWithToken(lockCredential, tokenHandle, token, userId);
     }
 
     /* Service */
@@ -294,10 +313,9 @@ public class ArielSecurityService extends ArielSystemService {
         }
 
         @Override
-        public boolean setLockCredentialWithToken(byte[] credential, int type, int requestedQuality,
-        long tokenHandle, byte[] token, int userId) {
+        public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId) {
             enforceSecurityPermission();
-            return setLockCredentialWithTokenLocked(credential, type, requestedQuality, tokenHandle, token, userId);
+            return setLockCredentialWithTokenLocked(credential, type, tokenHandle, token, userId);
         }
 
     };

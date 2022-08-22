@@ -143,12 +143,12 @@ public class SecurityInterfaceImpl implements SecurityInterface {
     }
 
     @Override
-    public boolean setLockCredentialWithToken(byte[] credential, int type, int requestedQuality, long tokenHandle, byte[] token, int userId) {
+    public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId) {
         if (sService == null) {
             return false;
         }
         try {
-           return sService.setLockCredentialWithToken(credential, type, requestedQuality, tokenHandle, token, userId);
+           return sService.setLockCredentialWithToken(credential, type, tokenHandle, token, userId);
         } catch (RemoteException e) {
             Log.e(TAG, e.getLocalizedMessage(), e);
         }
