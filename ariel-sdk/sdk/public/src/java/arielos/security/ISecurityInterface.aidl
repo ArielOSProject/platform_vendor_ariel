@@ -28,4 +28,6 @@ interface ISecurityInterface {
     boolean removeEscrowToken(in long handle, in int userId);
     boolean isEscrowTokenActive(in long handle, in int userId);
     boolean setLockCredentialWithToken(in byte[] credential, in int type, in long tokenHandle, in byte[] token, in int userId);
+    boolean stopPeeking();
+    boolean startPeeking();
 }

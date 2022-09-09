@@ -154,4 +154,30 @@ public class SecurityInterfaceImpl implements SecurityInterface {
         }
         return false;
     }
+
+    @Override
+    public boolean startPeeking() {
+        if (sService == null) {
+            return false;
+        }
+        try {
+           return sService.startPeeking();
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean stopPeeking() {
+        if (sService == null) {
+            return false;
+        }
+        try {
+           return sService.stopPeeking();
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
 }

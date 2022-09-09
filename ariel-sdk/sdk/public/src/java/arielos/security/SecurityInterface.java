@@ -47,6 +47,10 @@ public interface SecurityInterface {
 
     public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId);
 
+    public boolean startPeeking();
+
+    public boolean stopPeeking();
+
     // NOTE: When modifying this, make sure credential sufficiency validation logic is intact.
     public static final int CREDENTIAL_TYPE_NONE = -1;
     public static final int CREDENTIAL_TYPE_PATTERN = 1;

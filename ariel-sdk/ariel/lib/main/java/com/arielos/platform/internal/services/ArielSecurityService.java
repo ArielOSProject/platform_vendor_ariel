@@ -56,9 +56,11 @@ import static com.android.internal.widget.LockPatternUtils.CREDENTIAL_TYPE_PIN;
 import com.android.server.policy.keyguard.KeyguardServiceDelegate;
 import com.android.server.policy.keyguard.KeyguardStateMonitor.StateCallback;
 import com.android.internal.policy.IKeyguardDismissCallback;
+import com.android.server.policy.WindowManagerPolicy.OnKeyguardExitResult;
 import android.view.IWindowManager;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
+import android.app.trust.TrustManager;
 import com.android.server.SystemService;
 import android.os.UserHandle;
 import java.security.SecureRandom;
@@ -181,16 +183,25 @@ public class ArielSecurityService extends ArielSystemService {
      * @return {@code true} if the supplied token is valid and unlock succeeds,
      *         {@code false} otherwise.
      */
+    // TODO still to figure out how to use unlockUserWithToken for full unlock
     private boolean unlockUserWithTokenLocked(long tokenHandle, byte[] token, int userId) {
+        // proveriti sta se desi ako se ne pozove ovo ali se pozove setKeyguardEnabled(false)
         boolean isUnlocked = mLPU.unlockUserWithToken(tokenHandle, token, userId);
         if(isUnlocked) {
             Log.e(TAG, "lpu notified unlock");
             // dismiss the keyguard here ( && mKeyguardDelegate.isShowing())
             if (mKeyguardDelegate != null) {
-                Log.e(TAG, "mKeyguardDelegate not null");
+                Log.e(TAG, "mKeyguardDelegate not null, calling trust manager...");
+                final TrustManager trustManager = mContext.getSystemService(TrustManager.class);
+                trustManager.setDeviceLockedForUser(userId, false);
+                Log.e(TAG, "mKeyguardDelegate not null, disabling keyguard...");
+                // maybe the feature should be something like peek:
+                // 1. unlock the keyguard
+                // 2. set the timer to relock it again after 10 minutes or reboot
+                mKeyguardDelegate.setKeyguardEnabled(false);
                 // ask the keyguard to prompt the user to authenticate if necessary
-                try {
-                    mWindowManagerService.dismissKeyguard(new IKeyguardDismissCallback.Stub() {
+                // try {
+                    mKeyguardDelegate.dismiss(new IKeyguardDismissCallback.Stub() {
                         @Override
                         public void onDismissError() throws RemoteException {
                             Log.e(TAG, "keyguard: onDismissError");
@@ -206,10 +217,10 @@ public class ArielSecurityService extends ArielSystemService {
                             Log.e(TAG, "keyguard: onDismissCancelled");
                         }
                     }, "ariel_unlock");
-                }
-                catch(RemoteException e) {
-                    e.printStackTrace();
-                }
+                // }
+                // catch(RemoteException e) {
+                //     e.printStackTrace();
+                // }
             } else  {
                 // do nothing here
                 Log.e(TAG, "mKeyguardDelegate is null");
@@ -251,7 +262,7 @@ public class ArielSecurityService extends ArielSystemService {
      * @param userHandle The user who's lock credential to be changed
      * @return {@code true} if the operation is successful.
      */
-    public boolean setLockCredentialWithTokenLocked(byte[] credential, int type,
+    private boolean setLockCredentialWithTokenLocked(byte[] credential, int type,
             long tokenHandle, byte[] token, int userId) {
         // todo this implementation only considers PINS, this needs to be updated if we are to support other methods
         // convert credential to string first
@@ -270,6 +281,20 @@ public class ArielSecurityService extends ArielSystemService {
             return false;
         }
         return mLPU.setLockCredentialWithToken(lockCredential, tokenHandle, token, userId);
+    }
+
+    private boolean startPeekingLocked() {
+        if (mKeyguardDelegate != null) {
+            mKeyguardDelegate.setKeyguardEnabled(false);
+        }
+        return true;
+    }
+
+    private boolean stopPeekingLocked() {
+        if (mKeyguardDelegate != null) {
+            mKeyguardDelegate.setKeyguardEnabled(true);
+        }
+        return true;
     }
 
     /* Service */
@@ -316,6 +341,18 @@ public class ArielSecurityService extends ArielSystemService {
         public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId) {
             enforceSecurityPermission();
             return setLockCredentialWithTokenLocked(credential, type, tokenHandle, token, userId);
+        }
+
+        @Override
+        public boolean startPeeking() {
+            enforceSecurityPermission();
+            return startPeekingLocked();
+        }
+
+        @Override
+        public boolean stopPeeking() {
+            enforceSecurityPermission();
+            return stopPeekingLocked();
         }
 
     };
