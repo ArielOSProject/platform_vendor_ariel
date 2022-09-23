@@ -26,11 +26,11 @@ PRODUCT_COPY_FILES += \
 
 # REMOVE FROM RELEASE BULDS, ALLOWS
 # LOGCAT TO START FROM BEGINNING!!!!!!!!!!
-PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
-   ro.adb.secure=0 \
-   ro.debuggable=1 \
-   ro.secure=0 \
-   persist.sys.usb.config=adb
+# PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+#    ro.adb.secure=0 \
+#    ro.debuggable=1 \
+#    ro.secure=0 \
+#    persist.sys.usb.config=adb
 
 # Bootanimation
 #PRODUCT_PACKAGES += \
@@ -43,11 +43,15 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
 # GAPPS_VARIANT := mini
 # $(call inherit-product, vendor/google/build/opengapps-packages.mk)
 
-# Lineage Platform Library
+# Ariel Platform Library
 PRODUCT_PACKAGES += \
     com.arielos.platform-res \
     com.arielos.platform \
     com.arielos.platform.xml
+
+PRODUCT_PACKAGES += \
+    ArielSettingsProvider \
+    arielsettings
 
 include vendor/ariel/sepolicy/sepolicy.mk
 
