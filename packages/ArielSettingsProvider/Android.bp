@@ -30,6 +30,9 @@ android_app {
     required: [
         "privapp_whitelist_com.arielos.arielsettings",
     ],
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
 }
 
 prebuilt_etc {

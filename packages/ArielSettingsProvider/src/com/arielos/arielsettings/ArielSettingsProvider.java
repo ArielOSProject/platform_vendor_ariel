@@ -57,7 +57,7 @@ import java.util.regex.Pattern;
  */
 public class ArielSettingsProvider extends ContentProvider {
     public static final String TAG = "ArielSettingsProvider";
-    private static final boolean LOCAL_LOGV = false;
+    private static final boolean LOCAL_LOGV = true;
 
     private static final boolean USER_CHECK_THROWS = true;
 
@@ -724,7 +724,10 @@ public class ArielSettingsProvider extends ContentProvider {
         final int notifyTarget = isGlobal ? UserHandle.USER_ALL : userId;
         final long oldId = Binder.clearCallingIdentity();
         try {
-            getContext().getContentResolver().notifyChange(uri, null, true, notifyTarget);
+            // NOTIFY_SYNC_TO_NETWORK flag used as it was true in initial implementation
+            // NOTIFY_NO_DELAY flag is used so that we dont have a delay when notifying in background
+            getContext().getContentResolver().notifyChange(uri, null, 
+                ContentResolver.NOTIFY_SYNC_TO_NETWORK | ContentResolver.NOTIFY_NO_DELAY, notifyTarget);
         } finally {
             Binder.restoreCallingIdentity(oldId);
         }

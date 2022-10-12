@@ -1,0 +1,3 @@
+-keepclassmembers class arielos.providers.ArielSettings {
+    public <fields>;
+}

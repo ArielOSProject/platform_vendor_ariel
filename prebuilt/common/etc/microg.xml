@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8' standalone='yes' ?>
 <map>
     <set name="location_backends">
-        <string>org.fitchfamily.android.dejavu/org.fitchfamily.android.dejavu.BackendService/c8a2e9bccf597c2fb6dc66bee293fc13f2fc47ec77bc6b2b0d52c11f51192ab8</string>
+        <string>org.fitchfamily.android.dejavu/org.fitchfamily.android.dejavu.BackendService/57ce4befc98f6ee1b24f955c86896c34deefff4d7282305c1011bcef51c836ff</string>
         <string>org.microg.nlp.backend.ichnaea/org.microg.nlp.backend.ichnaea.BackendService/6ad8bcb1300536d2157d144f6b77cb09551048bd78aaf91522c4ab12ec2c526d</string>
     </set>
     <set name="geocoder_backends">

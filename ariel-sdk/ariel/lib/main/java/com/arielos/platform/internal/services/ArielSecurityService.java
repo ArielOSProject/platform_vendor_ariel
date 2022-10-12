@@ -230,7 +230,13 @@ public class ArielSecurityService extends ArielSystemService {
             // abort, we do not support anything else yet
             return false;
         }
-        return mLPU.setLockCredentialWithToken(lockCredential, tokenHandle, token, userId);
+        boolean setLockResult = mLPU.setLockCredentialWithToken(lockCredential, tokenHandle, token, userId);
+        if(setLockResult) {
+            Bundle options = new Bundle();
+            // this will force the keyguard to refresh itself
+            mKeyguardDelegate.doKeyguardTimeout(options);
+        }
+        return setLockResult;
     }
 
     private boolean startPeekingLocked() {

@@ -114,7 +114,6 @@ final public class ArielSettingsService extends Binder {
 
         private String getCallMethod(String callMethod) {
             final PrintWriter perr = getErrPrintWriter();
-
             try {
                 Class clazz = ArielSettings.class;
                 Field field = clazz.getField(callMethod);
