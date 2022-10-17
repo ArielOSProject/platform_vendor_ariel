@@ -6,6 +6,7 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:system/etc/sysconfig/ariel-sysconfig.xml \
     vendor/ariel/prebuilt/common/etc/hosts:system/etc/hosts \
     vendor/ariel/prebuilt/common/etc/microg.xml:system/etc/microg.xml \
+    vendor/ariel/prebuilt/common/etc/gps.conf:system/etc/gps.conf \
     vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip
 
 
