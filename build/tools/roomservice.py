@@ -188,24 +188,27 @@ def add_to_manifest(repositories, fallback_branch = None):
     for repository in repositories:
         repo_name = repository['repository']
         repo_target = repository['target_path']
+        repo_arielos = repository.get('arielos', False)
+
         print('Checking if %s is fetched from %s' % (repo_target, repo_name))
         if is_in_manifest(repo_target):
             print('ArielOSProject|LineageOS/%s already fetched to %s' % (repo_name, repo_target))
             continue
 
-        if 'kernel' in repo_target:
-           print('Adding dependency: LineageOS/%s -> %s' % (repo_name, repo_target))
-           project = ElementTree.Element("project", attrib = { "path": repo_target,
-            "remote": "github", "name": "LineageOS/%s" % repo_name })
-        elif device in repo_target:
+        if device in repo_target:
             print('Adding dependency: ArielOSProject/%s -> %s' % (repo_name, repo_target))
             project = ElementTree.Element("project", attrib = { "path": repo_target,
                 "remote": "ariel", "name": "ArielOSProject/%s" % repo_name })
         else: 
-            print('Adding dependency: LineageOS/%s -> %s' % (repo_name, repo_target))
-            project = ElementTree.Element("project", attrib = { "path": repo_target,
-               "remote": "github", "name": "LineageOS/%s" % repo_name })
-
+            if repo_arielos is True:
+                print('Adding dependency: ArielOS/%s -> %s' % (repo_name, repo_target))
+                project = ElementTree.Element("project", attrib = { "path": repo_target,
+                    "remote": "ariel", "name": "ArielOSProject/%s" % repo_name })
+            else:
+                print('Adding dependency: LineageOS/%s -> %s' % (repo_name, repo_target))
+                project = ElementTree.Element("project", attrib = { "path": repo_target,
+                    "remote": "github", "name": "LineageOS/%s" % repo_name })
+           
         if 'branch' in repository:
             project.set('revision',repository['branch'])
         elif fallback_branch:
@@ -258,6 +261,44 @@ def fetch_dependencies(repo_path, fallback_branch = None):
     for deprepo in verify_repos:
         fetch_dependencies(deprepo)
 
+def fetch_ariel_dependencies(repo_path, fallback_branch = None):
+    print('Looking for ariel dependencies in %s' % repo_path)
+    dependencies_path = repo_path + '/ariel.dependencies'
+    print('Looking for ariel dependencies in %s' % dependencies_path)
+    syncable_repos = []
+    verify_repos = []
+
+    if os.path.exists(dependencies_path):
+        print('Dependencies path exists')
+        dependencies_file = open(dependencies_path, 'r')
+        dependencies = json.loads(dependencies_file.read())
+        fetch_list = []
+
+        for dependency in dependencies:
+            print('Looking at dependency %s' % dependency)
+            if not is_in_manifest(dependency['target_path']):
+                fetch_list.append(dependency)
+                syncable_repos.append(dependency['target_path'])
+                verify_repos.append(dependency['target_path'])
+            else:
+                verify_repos.append(dependency['target_path'])
+
+        dependencies_file.close()
+
+        if len(fetch_list) > 0:
+            print('Adding ariel dependencies to manifest')
+            add_to_manifest(fetch_list, fallback_branch)
+    else:
+        print('%s has no additional dependencies.' % repo_path)
+
+    if len(syncable_repos) > 0:
+        print('Syncing ariel dependencies')
+        os.system('repo sync --force-sync %s' % ' '.join(syncable_repos))
+
+    for deprepo in verify_repos:
+        fetch_ariel_dependencies(deprepo)
+
+
 def has_branch(branches, revision):
     return revision in [branch['name'] for branch in branches]
 
@@ -265,6 +306,7 @@ if depsonly:
     repo_path = get_from_manifest(device)
     if repo_path:
         fetch_dependencies(repo_path)
+        fetch_ariel_dependencies(repo_path)
     else:
         print("Trying dependencies-only mode on a non-existing device tree?")
 
@@ -319,6 +361,7 @@ else:
             print("Repository synced!")
 
             fetch_dependencies(repo_path, fallback_branch)
+            fetch_ariel_dependencies(repo_path, fallback_branch)
             print("Done")
             sys.exit()
 
