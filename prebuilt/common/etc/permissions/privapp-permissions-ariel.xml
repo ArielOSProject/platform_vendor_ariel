@@ -28,9 +28,4 @@
         <permission name="android.permission.READ_LOGS"/>
     </privapp-permissions>
 
-    <!-- Unified NLP provider, fakes GMS -->
-    <privapp-permissions package="com.google.android.gms">
-        <permission name="android.permission.INSTALL_LOCATION_PROVIDER"/>
-    </privapp-permissions>
-
 </permissions>

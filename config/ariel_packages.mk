@@ -7,7 +7,7 @@ PRODUCT_PACKAGES += \
   IchnaeaNlpBackend \
   NominatimGeocoderBackend \
   ArielGuardian \
-  SongTube
+  NewPipe
   #NetworkLocation -> this is now part of gms core from microg
   #com.google.android.maps.jar \
 

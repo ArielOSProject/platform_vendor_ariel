@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+LOCAL_PATH := $(call my-dir)
 
 ifeq ($(TARGET_SCREEN_WIDTH),)
     $(warning TARGET_SCREEN_WIDTH is not set, using default value: 1080)
@@ -24,10 +25,10 @@ ifeq ($(TARGET_SCREEN_HEIGHT),)
     TARGET_SCREEN_HEIGHT := 1920
 endif
 
-TARGET_GENERATED_BOOTANIMATION_PRODUCT := $(TARGET_OUT_INTERMEDIATES)/BOOTANIMATION_PRODUCT/bootanimation.zip
+TARGET_GENERATED_BOOTANIMATION_PRODUCT := $(TARGET_OUT_INTERMEDIATES)/BOOTANIMATION_PRODUCT/bootanimation_ariel.zip
 $(TARGET_GENERATED_BOOTANIMATION_PRODUCT): INTERMEDIATES := $(TARGET_OUT_INTERMEDIATES)/BOOTANIMATION_PRODUCT
 $(TARGET_GENERATED_BOOTANIMATION_PRODUCT): $(SOONG_ZIP)
-	@echo "Building bootanimation.zip"
+	@echo "Building bootanimation_ariel.zip"
 	@rm -rf $(dir $@)
 	@mkdir -p $(dir $@)
 	$(hide) tar xfp vendor/ariel/bootanimation/bootanimation.tar -C $(INTERMEDIATES)
@@ -58,9 +59,13 @@ endif
 include $(CLEAR_VARS)
 LOCAL_MODULE := bootanimation_ariel.zip
 LOCAL_MODULE_CLASS := ETC
+LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_PRODUCT)/media
 
 include $(BUILD_SYSTEM)/base_rules.mk
+
+$(LOCAL_BUILT_MODULE): $(TARGET_BOOTANIMATION_PRODUCT)
+	@cp $(TARGET_BOOTANIMATION_PRODUCT) $@
 
 #$(TARGET_OUT)/product/media/bootanimation.zip
 
@@ -68,14 +73,17 @@ include $(BUILD_SYSTEM)/base_rules.mk
 #@cp $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimationX.zip
 #@mv $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimation.zip    $(TARGET_OUT_PRODUCT)/media/bootanimation.zip
 # @cp $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimation.zip
+#@cp $(TARGET_BOOTANIMATION_PRODUCT) $@
 
-$(LOCAL_BUILT_MODULE): $(TARGET_BOOTANIMATION_PRODUCT)
-	$(hide) cp $(TARGET_BOOTANIMATION_PRODUCT) $@
-	$(hide) mkdir -p $(TARGET_OUT_PRODUCT)/media/tmp
-	$(hide) cp $@ $(TARGET_OUT_PRODUCT)/media/tmp/
-	$(hide) touch $(TARGET_OUT_PRODUCT)/media/tmp/bootanimation_ariel.zip
-	$(hide) mv $(TARGET_OUT_PRODUCT)/media/tmp/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimation.zip
-	$(hide) rm -R $(TARGET_OUT_PRODUCT)/media/tmp
+#$(LOCAL_BUILT_MODULE) : $(TARGET_OUT_PRODUCT)/media/XXXXXX.zip
 
-include $(CLEAR_VARS)
-$(shell rm -rvf $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip)
+
+# 	$(hide) cp $(TARGET_BOOTANIMATION_PRODUCT) $@
+# 	$(hide) mkdir -p $(TARGET_OUT_PRODUCT)/media/tmp
+# 	$(hide) cp $@ $(TARGET_OUT_PRODUCT)/media/tmp/
+# 	$(hide) touch $(TARGET_OUT_PRODUCT)/media/tmp/bootanimation_ariel.zip
+# 	$(hide) mv $(TARGET_OUT_PRODUCT)/media/tmp/bootanimation_ariel.zip $(TARGET_OUT_PRODUCT)/media/bootanimation.zip
+# 	$(hide) rm -R $(TARGET_OUT_PRODUCT)/media/tmp
+
+# include $(CLEAR_VARS)
+# $(shell rm -rvf $(TARGET_OUT_PRODUCT)/media/bootanimation_ariel.zip)
