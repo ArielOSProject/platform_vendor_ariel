@@ -17,7 +17,17 @@ PRODUCT_COPY_FILES += \
 
 # Copy .rc files
 PRODUCT_COPY_FILES += \
+    vendor/ariel/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
+    vendor/ariel/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
     vendor/ariel/prebuilt/common/etc/init/init.ariel.rc:system/etc/init/init.ariel.rc
+
+# Backup Tool
+# ArielOS: overwriting LineageOS script which performs a backup of the hosts file.
+# We need to be able to provide a new hosts via OTA so this is the reason why we
+# are replacing the original script. Until we figure out a better way to do it,
+# it stays like this.
+PRODUCT_COPY_FILES += \
+    vendor/ariel/prebuilt/common/bin/50-lineage.sh:$(TARGET_COPY_OUT_SYSTEM)/addon.d/50-lineage.sh
 
 # Make sure data roaming is off!
 # PRODUCT_PROPERTY_OVERRIDES += \
