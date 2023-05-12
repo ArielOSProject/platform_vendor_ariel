@@ -66,7 +66,13 @@ import com.android.server.SystemService;
 import android.os.UserHandle;
 import java.security.SecureRandom;
 import android.util.Log;
+import java.util.List;
 import android.util.Base64;
+import android.hardware.fingerprint.FingerprintManager;
+import android.hardware.face.FaceManager;
+import android.hardware.face.Face;
+import android.content.pm.PackageManager;
+import android.hardware.fingerprint.Fingerprint;
 
 /** @hide **/
 public class ArielSecurityService extends ArielSystemService {
@@ -76,6 +82,35 @@ public class ArielSecurityService extends ArielSystemService {
     private LockPatternUtils mLPU;
     private KeyguardServiceDelegate mKeyguardDelegate;
     private IWindowManager mWindowManagerService;
+    private FingerprintManager mFingerprintManager;
+    private FaceManager mFaceManager;
+
+    private FingerprintManager getFingerprintManagerOrNull(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
+            return (FingerprintManager) context.getSystemService(Context.FINGERPRINT_SERVICE);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean hasFingerprintHardware(Context context) {
+        final FingerprintManager fingerprintManager = getFingerprintManagerOrNull(context);
+        return fingerprintManager != null && fingerprintManager.isHardwareDetected();
+    }
+
+    private FaceManager getFaceManagerOrNull(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FACE)) {
+            return (FaceManager) context.getSystemService(Context.FACE_SERVICE);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean hasFaceHardware(Context context) {
+        final FaceManager faceManager = getFaceManagerOrNull(context);
+        return faceManager != null && faceManager.isHardwareDetected();
+    }
+
 
     public ArielSecurityService(Context context) {
         super(context);
@@ -96,6 +131,8 @@ public class ArielSecurityService extends ArielSystemService {
     @Override
     public void onStart() {
         mLPU = new LockPatternUtils(mContext);
+        mFingerprintManager = getFingerprintManagerOrNull(mContext);
+        mFaceManager = getFaceManagerOrNull(mContext);
         mWindowManagerService = WindowManagerGlobal.getWindowManagerService();
         mKeyguardDelegate = new KeyguardServiceDelegate(mContext,
                 new StateCallback() {
@@ -221,7 +258,10 @@ public class ArielSecurityService extends ArielSystemService {
         if(type == CREDENTIAL_TYPE_NONE) {
             // no pin to be set, will clear lock screen protection
             lockCredential = LockscreenCredential.createNone();
-
+            // remove fingerprints
+            removeFingerprints(userId);
+            // remove faces
+            removeFaces(userId);
         } else if(type == CREDENTIAL_TYPE_PIN) {
             // create a pin
             CharSequence newPin = new String(credential);
@@ -239,6 +279,38 @@ public class ArielSecurityService extends ArielSystemService {
         return setLockResult;
     }
 
+    /**
+     * LineageOS 18+ versions probably have removeAll method within the FingerprintManager
+     * so check that when porting to avoid iteration.
+     */
+    private void removeFingerprints(int userId) {
+        if(hasFingerprintHardware(mContext)) {
+            List<Fingerprint> fingerprints = mFingerprintManager.getEnrolledFingerprints(userId);
+            for(Fingerprint fp : fingerprints) {
+                Log.d(TAG, "Removing fingerprint: "+fp.getName()+"...");
+                mFingerprintManager.remove(fp, userId, new FingerRemovalCallback());
+            }
+        } else {
+            Log.d(TAG, "Fingerprint hardware not present, skipping fingerprint removal.");
+        }
+    }
+
+    /**
+     * LineageOS 18+ versions probably have removeAll method within the FaceManager
+     * so check that when porting to avoid iteration.
+     */
+    private void removeFaces(int userId) {
+        if(hasFaceHardware(mContext)) {
+            List<Face> faces = mFaceManager.getEnrolledFaces(userId);
+            for(Face fc : faces) {
+                Log.d(TAG, "Removing face: "+fc.getName()+"...");
+                mFaceManager.remove(fc, userId, new FaceRemovalCallback());
+            }
+        } else {
+            Log.d(TAG, "Face hardware not present, skipping face removal.");
+        }
+    }
+
     private boolean startPeekingLocked() {
         if (mKeyguardDelegate != null) {
             mKeyguardDelegate.setKeyguardEnabled(false);
@@ -252,6 +324,30 @@ public class ArielSecurityService extends ArielSystemService {
         }
         return true;
     }
+
+    private class FingerRemovalCallback extends FingerprintManager.RemovalCallback {
+        @Override
+        public void onRemovalSucceeded(Fingerprint fingerprint, int remaining) {
+            Log.d(TAG, "Removed fingerprint: "+fingerprint.getName()+", remaining: "+remaining);
+        }
+
+        @Override
+        public void onRemovalError(Fingerprint fp, int errMsgId, CharSequence errString) {
+            Log.d(TAG, "Failed removing fingerprint: "+fp.getName()+", errMsgId: "+errMsgId+", errString: "+errString);
+        }
+    };
+
+    private class FaceRemovalCallback extends FaceManager.RemovalCallback {
+        @Override
+        public void onRemovalSucceeded(Face face, int remaining) {
+            Log.d(TAG, "Removed face: "+face.getName()+", remaining: "+remaining);
+        }
+
+        @Override
+        public void onRemovalError(Face face, int errMsgId, CharSequence errString) {
+            Log.d(TAG, "Failed removing face: "+face.getName()+", errMsgId: "+errMsgId+", errString: "+errString);
+        }
+    };
 
     /* Service */
 
