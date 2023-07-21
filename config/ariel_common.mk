@@ -2,15 +2,15 @@
 #     bootanimation_ariel.zip
 
 PRODUCT_COPY_FILES += \
-    vendor/ariel/prebuilt/common/etc/default-permissions/ariel-permissions.xml:system/etc/default-permissions/ariel-permissions.xml \
-    vendor/ariel/prebuilt/common/etc/permissions/privapp-permissions-ariel.xml:system/etc/permissions/privapp-permissions-ariel.xml \
-    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.android.xml:system/etc/permissions/com.arielos.android.xml \
-    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.security.xml:system/etc/permissions/com.arielos.security.xml \
-    vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:system/etc/sysconfig/ariel-sysconfig.xml \
-    vendor/ariel/prebuilt/common/etc/hosts:system/etc/hosts \
-    vendor/ariel/prebuilt/common/etc/microg.xml:system/etc/microg.xml \
-    vendor/ariel/prebuilt/common/etc/gps.conf:system/etc/gps.conf \
-    vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip
+    vendor/ariel/prebuilt/common/etc/default-permissions/ariel-permissions.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/default-permissions/ariel-permissions.xml \
+    vendor/ariel/prebuilt/common/etc/permissions/privapp-permissions-ariel.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-ariel.xml \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.android.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.android.xml \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.security.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.security.xml \
+    vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/ariel-sysconfig.xml \
+    vendor/ariel/prebuilt/common/etc/hosts:$(TARGET_COPY_OUT_SYSTEM)/etc/hosts \
+    vendor/ariel/prebuilt/common/etc/microg.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/microg.xml \
+    vendor/ariel/prebuilt/common/etc/gps.conf:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/gps.conf
+    #vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip
 
 
 #    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
@@ -19,7 +19,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
     vendor/ariel/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
-    vendor/ariel/prebuilt/common/etc/init/init.ariel.rc:system/etc/init/init.ariel.rc
+    vendor/ariel/prebuilt/common/etc/init/init.ariel.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.ariel.rc
 
 # Backup Tool
 # ArielOS: overwriting LineageOS script which performs a backup of the hosts file.
@@ -62,6 +62,20 @@ PRODUCT_PACKAGES += \
     com.arielos.platform-res \
     com.arielos.platform \
     com.arielos.platform.xml
+
+# This is ArielOS!
+PRODUCT_COPY_FILES += \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.android.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/com.arielos.android.xml
+
+# AOSP has no support of loading framework resources from /system_ext
+# so the SDK has to stay in /system for now
+PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
+    system/framework/oat/%/com.arielos.platform.odex \
+    system/framework/oat/%/com.arielos.platform.vdex \
+    system/framework/com.arielos.platform-res.apk \
+    system/framework/com.arielos.platform.jar \
+    system/etc/permissions/com.arielos.platform.xml \
+    system/etc/microg.xml
 
 PRODUCT_PACKAGES += \
     ArielSettingsProvider \

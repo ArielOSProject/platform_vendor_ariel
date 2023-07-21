@@ -18,6 +18,7 @@ package com.arielos.arielsettings;
 
 import android.app.ActivityManager;
 import android.app.ContentProviderHolder;
+import android.content.AttributionSource;
 import android.content.IContentProvider;
 import android.content.pm.PackageManager;
 import android.os.Binder;
@@ -311,7 +312,9 @@ final public class ArielSettingsService extends Binder {
             try {
                 Bundle arg = new Bundle();
                 arg.putInt(getCallMethod("CALL_METHOD_USER_KEY"), userHandle);
-                Bundle result = provider.call(resolveCallingPackage(), null, ArielSettings.AUTHORITY,
+                final AttributionSource attributionSource = new AttributionSource(
+                        Binder.getCallingUid(), resolveCallingPackage(), /*attributionTag*/ null);
+                Bundle result = provider.call(attributionSource, ArielSettings.AUTHORITY,
                         callListCommand, null, arg);
                 lines.addAll(result.getStringArrayList(ArielSettingsProvider.RESULT_SETTINGS_LIST));
                 Collections.sort(lines);
@@ -339,7 +342,9 @@ final public class ArielSettingsService extends Binder {
             try {
                 Bundle arg = new Bundle();
                 arg.putInt(getCallMethod("CALL_METHOD_USER_KEY"), userHandle);
-                Bundle b = provider.call(resolveCallingPackage(), null, ArielSettings.AUTHORITY,
+                final AttributionSource attributionSource = new AttributionSource(
+                        Binder.getCallingUid(), resolveCallingPackage(), /*attributionTag*/ null);
+                Bundle b = provider.call(attributionSource, ArielSettings.AUTHORITY,
                         callGetCommand, key, arg);
                 if (b != null) {
                     result = b.getPairValue();
@@ -379,7 +384,9 @@ final public class ArielSettingsService extends Binder {
                 if (makeDefault) {
                     arg.putBoolean(getCallMethod("CALL_METHOD_MAKE_DEFAULT_KEY"), true);
                 }
-                provider.call(resolveCallingPackage(), null, ArielSettings.AUTHORITY,
+                final AttributionSource attributionSource = new AttributionSource(
+                        Binder.getCallingUid(), resolveCallingPackage(), /*attributionTag*/ null);
+                provider.call(attributionSource, ArielSettings.AUTHORITY,
                         callPutCommand, key, arg);
             } catch (RemoteException e) {
                 throw new RuntimeException("Failed in IPC", e);
@@ -403,7 +410,9 @@ final public class ArielSettingsService extends Binder {
             try {
                 Bundle arg = new Bundle();
                 arg.putInt(getCallMethod("CALL_METHOD_USER_KEY"), userHandle);
-                Bundle result = provider.call(resolveCallingPackage(), null, ArielSettings.AUTHORITY,
+                final AttributionSource attributionSource = new AttributionSource(
+                        Binder.getCallingUid(), resolveCallingPackage(), /*attributionTag*/ null);
+                Bundle result = provider.call(attributionSource, ArielSettings.AUTHORITY,
                         callDeleteCommand, key, arg);
                 return result.getInt(ArielSettingsProvider.RESULT_ROWS_DELETED);
             } catch (RemoteException e) {
@@ -432,8 +441,9 @@ final public class ArielSettingsService extends Binder {
                 }
                 String packageName = mPackageName != null ? mPackageName : resolveCallingPackage();
                 arg.putInt(getCallMethod("CALL_METHOD_USER_KEY"), userHandle);
-                provider.call(packageName, null, ArielSettings.AUTHORITY,
-                        callResetCommand, null, arg);
+                final AttributionSource attributionSource = new AttributionSource(
+                        Binder.getCallingUid(), resolveCallingPackage(), /*attributionTag*/ null);
+                provider.call(attributionSource, ArielSettings.AUTHORITY, callResetCommand, null, arg);
             } catch (RemoteException e) {
                 throw new RuntimeException("Failed in IPC", e);
             }

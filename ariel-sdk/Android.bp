@@ -20,6 +20,13 @@ android_app {
     sdk_version: "core_platform",
     manifest: "ariel/res/AndroidManifest.xml",
 
+    // Disable dexpreopt and verify_uses_libraries check as the app
+    // contains no Java code to be dexpreopted.
+    enforce_uses_libs: false,
+    dex_preopt: {
+        enabled: false,
+    },
+
     aaptflags: [
         "--auto-add-overlay",
         "--private-symbols",
@@ -68,6 +75,7 @@ library_src = "ariel/lib/main/java"
 java_library {
     name: "com.arielos.platform",
     installable: true,
+    //sdk_version: "core_platform",
     libs: [
         "services",
     ],
@@ -78,6 +86,9 @@ java_library {
         library_src + "/**/*.java",
         ariel_sdk_src + "/**/I*.aidl",
         ariel_sdk_internal_src + "/**/I*.aidl",
+
+        // For the generated R.java and Manifest.java
+        ":com.arielos.platform-res{.aapt.srcjar}",
     ],
 
     // Include aidl files from lineageos.app namespace as well as internal src aidl files
@@ -98,6 +109,9 @@ java_library {
         ariel_sdk_internal_src + "/**/*.java",
         ariel_sdk_src + "/**/I*.aidl",
         ariel_sdk_internal_src + "/**/I*.aidl",
+
+        // For the generated R.java and Manifest.java
+        ":com.arielos.platform-res{.aapt.srcjar}",
     ],
 
     // Include aidl files from lineageos.app namespace as well as internal src aidl files
@@ -121,12 +135,28 @@ java_library {
     srcs: [
         ariel_sdk_src + "/**/*.java",
         ariel_sdk_src + "/**/I*.aidl",
+        // For the generated R.java and Manifest.java
+        ":com.arielos.platform-res{.aapt.srcjar}",
     ],
 
     // Include aidl files from lineageos.app namespace as well as internal src aidl files
     aidl: {
         local_include_dirs: ["sdk/internal/src/java", "sdk/public/src/java"],
     },
+}
+
+// Resources only target for use by core
+// ============================================================
+
+java_library {
+    name: "com.arielos.platform.resources",
+
+    srcs: [
+        // For the generated R.java and Manifest.java
+        ":com.arielos.platform-res{.aapt.srcjar}",
+    ],
+
+    sdk_version: "core_current",
 }
 
 // Copy permission file to /system/etc/permissions

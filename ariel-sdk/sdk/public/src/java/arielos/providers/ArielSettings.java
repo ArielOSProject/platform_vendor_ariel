@@ -34,6 +34,7 @@ import android.util.ArrayMap;
 import android.util.ArraySet;
 import android.util.Log;
 
+import com.android.internal.annotations.GuardedBy;
 import com.android.internal.util.ArrayUtils;
 
 import java.util.ArrayList;
@@ -128,10 +129,33 @@ public final class ArielSettings {
 
     // endregion
 
+    private static final class ContentProviderHolder {
+        private final Object mLock = new Object();
+
+        private final Uri mUri;
+        @GuardedBy("mLock")
+        private IContentProvider mContentProvider;
+
+        public ContentProviderHolder(Uri uri) {
+            mUri = uri;
+        }
+
+        public IContentProvider getProvider(ContentResolver contentResolver) {
+            synchronized (mLock) {
+                if (mContentProvider == null) {
+                    mContentProvider = contentResolver
+                            .acquireProvider(mUri.getAuthority());
+                }
+                return mContentProvider;
+            }
+        }
+    }
+
     // Thread-safe.
     private static class NameValueCache {
         private final String mVersionSystemProperty;
         private final Uri mUri;
+        private final ContentProviderHolder mProviderHolder;
 
         private static final String[] SELECT_VALUE_PROJECTION =
                 new String[] { Settings.NameValueTable.VALUE };
@@ -141,31 +165,18 @@ public final class ArielSettings {
         private final HashMap<String, String> mValues = new HashMap<String, String>();
         private long mValuesVersion = 0;
 
-        // Initially null; set lazily and held forever.  Synchronized on 'this'.
-        private IContentProvider mContentProvider = null;
-
         // The method we'll call (or null, to not use) on the provider
         // for the fast path of retrieving settings.
         private final String mCallGetCommand;
         private final String mCallSetCommand;
 
         public NameValueCache(String versionSystemProperty, Uri uri,
-                String getCommand, String setCommand) {
+                String getCommand, String setCommand, ContentProviderHolder providerHolder) {
             mVersionSystemProperty = versionSystemProperty;
             mUri = uri;
             mCallGetCommand = getCommand;
             mCallSetCommand = setCommand;
-        }
-
-        private IContentProvider lazyGetProvider(ContentResolver cr) {
-            IContentProvider cp;
-            synchronized (this) {
-                cp = mContentProvider;
-                if (cp == null) {
-                    cp = mContentProvider = cr.acquireProvider(mUri.getAuthority());
-                }
-            }
-            return cp;
+            mProviderHolder = providerHolder;
         }
 
         /**
@@ -182,9 +193,9 @@ public final class ArielSettings {
                 Bundle arg = new Bundle();
                 arg.putString(Settings.NameValueTable.VALUE, value);
                 arg.putInt(CALL_METHOD_USER_KEY, userId);
-                IContentProvider cp = lazyGetProvider(cr);
-                cp.call(cr.getPackageName(), cr.getAttributionTag(),
-                        AUTHORITY, mCallSetCommand, name, arg);
+                IContentProvider cp = mProviderHolder.getProvider(cr);
+                cp.call(cr.getAttributionSource(),
+                        mProviderHolder.mUri.getAuthority(), mCallSetCommand, name, arg);
             } catch (RemoteException e) {
                 Log.w(TAG, "Can't set key " + name + " in " + mUri, e);
                 return false;
@@ -208,7 +219,7 @@ public final class ArielSettings {
                 long newValuesVersion = SystemProperties.getLong(mVersionSystemProperty, 0);
 
                 // Our own user's settings data uses a client-side cache
-                synchronized (this) {
+                synchronized (NameValueCache.this) {
                     if (mValuesVersion != newValuesVersion) {
                         if (LOCAL_LOGV || false) {
                             Log.v(TAG, "invalidate [" + mUri.getLastPathSegment() + "]: current "
@@ -217,9 +228,7 @@ public final class ArielSettings {
 
                         mValues.clear();
                         mValuesVersion = newValuesVersion;
-                    }
-
-                    if (mValues.containsKey(name)) {
+                    } else if (mValues.containsKey(name)) {
                         return mValues.get(name);  // Could be null, that's OK -- negative caching
                     }
                 }
@@ -228,7 +237,7 @@ public final class ArielSettings {
                         + " by user " + UserHandle.myUserId() + " so skipping cache");
             }
 
-            IContentProvider cp = lazyGetProvider(cr);
+            IContentProvider cp = mProviderHolder.getProvider(cr);
 
             // Try the fast path first, not using query().  If this
             // fails (alternate Settings provider that doesn't support
@@ -241,13 +250,13 @@ public final class ArielSettings {
                         args = new Bundle();
                         args.putInt(CALL_METHOD_USER_KEY, userId);
                     }
-                    Bundle b = cp.call(cr.getPackageName(), cr.getAttributionTag(),
-                            AUTHORITY, mCallGetCommand, name, args);
+                    Bundle b = cp.call(cr.getAttributionSource(),
+                            mProviderHolder.mUri.getAuthority(), mCallGetCommand, name, args);
                     if (b != null) {
                         String value = b.getPairValue();
                         // Don't update our cache for reads of other users' data
                         if (isSelf) {
-                            synchronized (this) {
+                            synchronized (NameValueCache.this) {
                                 mValues.put(name, value);
                             }
                         } else {
@@ -269,7 +278,7 @@ public final class ArielSettings {
             try {
                 Bundle queryArgs = ContentResolver.createSqlQueryBundle(
                         NAME_EQ_PLACEHOLDER, new String[]{name}, null);
-                c = cp.query(cr.getPackageName(), cr.getAttributionTag(), mUri,
+                c = cp.query(cr.getAttributionSource(), mUri,
                         SELECT_VALUE_PROJECTION, queryArgs, null);
                 if (c == null) {
                     Log.w(TAG, "Can't get key " + name + " from " + mUri);
@@ -277,7 +286,7 @@ public final class ArielSettings {
                 }
 
                 String value = c.moveToNext() ? c.getString(0) : null;
-                synchronized (this) {
+                synchronized (NameValueCache.this) {
                     mValues.put(name, value);
                 }
                 if (LOCAL_LOGV) {
@@ -444,11 +453,15 @@ public final class ArielSettings {
 
         public static final String SYS_PROP_ARIEL_SETTING_VERSION = "sys.ariel_settings_system_version";
 
+        private static final ContentProviderHolder sProviderHolder =
+                new ContentProviderHolder(CONTENT_URI);
+
         private static final NameValueCache sNameValueCache = new NameValueCache(
                 SYS_PROP_ARIEL_SETTING_VERSION,
                 CONTENT_URI,
                 CALL_METHOD_GET_SYSTEM,
-                CALL_METHOD_PUT_SYSTEM);
+                CALL_METHOD_PUT_SYSTEM,
+                sProviderHolder);
 
         /** @hide */
         protected static final ArraySet<String> MOVED_TO_SECURE;
@@ -841,11 +854,15 @@ public final class ArielSettings {
 
         public static final String SYS_PROP_ARIEL_SETTING_VERSION = "sys.ariel_settings_secure_version";
 
+        private static final ContentProviderHolder sProviderHolder =
+                new ContentProviderHolder(CONTENT_URI);
+
         private static final NameValueCache sNameValueCache = new NameValueCache(
                 SYS_PROP_ARIEL_SETTING_VERSION,
                 CONTENT_URI,
                 CALL_METHOD_GET_SECURE,
-                CALL_METHOD_PUT_SECURE);
+                CALL_METHOD_PUT_SECURE,
+                sProviderHolder);
 
         /** @hide */
         protected static final ArraySet<String> MOVED_TO_GLOBAL;
@@ -1249,11 +1266,15 @@ public final class ArielSettings {
 
         public static final String SYS_PROP_ARIEL_SETTING_VERSION = "sys.ariel_settings_global_version";
 
+        private static final ContentProviderHolder sProviderHolder =
+                new ContentProviderHolder(CONTENT_URI);
+
         private static final NameValueCache sNameValueCache = new NameValueCache(
                 SYS_PROP_ARIEL_SETTING_VERSION,
                 CONTENT_URI,
                 CALL_METHOD_GET_GLOBAL,
-                CALL_METHOD_PUT_GLOBAL);
+                CALL_METHOD_PUT_GLOBAL,
+                sProviderHolder);
 
         // region Methods
 
