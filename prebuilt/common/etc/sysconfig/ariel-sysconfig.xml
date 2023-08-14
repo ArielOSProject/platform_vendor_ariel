@@ -25,6 +25,8 @@
     <system-user-whitelisted-app package="com.ariel.guardian" />
     <allow-ignore-location-settings package="com.ariel.guardian" />
     <allow-unthrottled-location package="com.ariel.guardian" />
+    <bg-restriction-exemption package="com.ariel.guardian" />
+    <hidden-api-whitelisted-app package="com.ariel.guardian" />
 
     <!-- Microg -->
     <allow-in-power-save-except-idle package="com.google.android.apps.turbo" />
