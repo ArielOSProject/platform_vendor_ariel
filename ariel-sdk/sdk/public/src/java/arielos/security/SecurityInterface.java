@@ -42,7 +42,7 @@ public interface SecurityInterface {
     public long getLockoutAttemptDeadline(int userId);
 
     public boolean removeEscrowToken(long handle, int userId);
-    
+
     public boolean isEscrowTokenActive(long handle, int userId);
 
     public boolean setLockCredentialWithToken(byte[] credential, int type, long tokenHandle, byte[] token, int userId);
@@ -50,6 +50,12 @@ public interface SecurityInterface {
     public boolean startPeeking();
 
     public boolean stopPeeking();
+
+    public void registerKeyguardStateListener(IKeyguardStateCallback callback);
+
+    public void unregisterKeyguardStateListener(IKeyguardStateCallback callback);
+
+    public boolean isKeyguardShowing();
 
     // NOTE: When modifying this, make sure credential sufficiency validation logic is intact.
     public static final int CREDENTIAL_TYPE_NONE = -1;

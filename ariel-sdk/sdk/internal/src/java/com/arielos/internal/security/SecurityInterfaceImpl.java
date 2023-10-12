@@ -26,6 +26,7 @@ import arielos.app.ArielContextConstants;
 import arielos.security.SecurityInterface;
 import arielos.security.ISecurityInterface;
 import arielos.security.IEscrowTokenStateChangeCallback;
+import arielos.security.IKeyguardStateCallback;
 
 public class SecurityInterfaceImpl implements SecurityInterface {
 
@@ -128,7 +129,7 @@ public class SecurityInterfaceImpl implements SecurityInterface {
         }
         return false;
     }
-    
+
     @Override
     public boolean isEscrowTokenActive(long handle, int userId) {
         if (sService == null) {
@@ -180,4 +181,42 @@ public class SecurityInterfaceImpl implements SecurityInterface {
         }
         return false;
     }
+
+    @Override
+    public void registerKeyguardStateListener(IKeyguardStateCallback callback) {
+        if (sService == null) {
+            return;
+        }
+        try {
+           sService.registerKeyguardStateListener(callback);
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+    }
+
+    @Override
+    public void unregisterKeyguardStateListener(IKeyguardStateCallback callback) {
+        if (sService == null) {
+            return;
+        }
+        try {
+           sService.unregisterKeyguardStateListener(callback);
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+    }
+
+    @Override
+    public boolean isKeyguardShowing() {
+        if (sService == null) {
+            return false;
+        }
+        try {
+           return sService.isKeyguardShowing();
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
+
 }
