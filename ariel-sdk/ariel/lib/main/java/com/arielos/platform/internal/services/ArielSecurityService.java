@@ -37,6 +37,7 @@ import android.os.Bundle;
 import arielos.app.ArielContextConstants;
 import arielos.security.ISecurityInterface;
 import arielos.security.IEscrowTokenStateChangeCallback;
+import arielos.security.IKeyguardStateCallback;
 import arielos.security.SecurityInterface;
 import com.arielos.platform.internal.ArielSystemService;
 
@@ -44,6 +45,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import com.android.internal.widget.LockPatternUtils;
@@ -84,6 +86,8 @@ public class ArielSecurityService extends ArielSystemService {
     private IWindowManager mWindowManagerService;
     private FingerprintManager mFingerprintManager;
     private FaceManager mFaceManager;
+
+    private ArrayList<IKeyguardStateCallback> mKeyguardStateListeners = new ArrayList();
 
     private FingerprintManager getFingerprintManagerOrNull(Context context) {
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
@@ -138,12 +142,28 @@ public class ArielSecurityService extends ArielSystemService {
                 new StateCallback() {
                     @Override
                     public void onTrustedChanged() {
-                        // doing nothing here
+                        Log.d(TAG, "onTrustChanged() callback");
                     }
 
                     @Override
                     public void onShowingChanged() {
-                        // doing nothing here
+                        Log.d(TAG, "onShowingChanged() callback");
+                        Log.d(TAG, "keyguard.isShowing = "+mKeyguardDelegate.isShowing());
+                        Log.d(TAG, "keyguard.isTrusted = "+mKeyguardDelegate.isTrusted());
+                        Log.d(TAG, "keyguard.hasKeyguard = "+mKeyguardDelegate.hasKeyguard());
+                        Log.d(TAG, "keyguard.isSecure = "+mKeyguardDelegate.isSecure(0));
+                        mKeyguardStateListeners.forEach(callback -> {
+                            try {
+                                if(mKeyguardDelegate.isShowing()) {
+                                    callback.onKeyguardDisplayed();
+                                } else {
+                                    callback.onKeyguardDismissed();
+                                }
+                            }
+                            catch(RemoteException e) {
+                                e.printStackTrace();
+                            }
+                        });
                     }
                 });
     }
@@ -186,7 +206,7 @@ public class ArielSecurityService extends ArielSystemService {
                     e.printStackTrace();
                 }
             }
-        }); 
+        });
     }
 
       /**
@@ -265,7 +285,7 @@ public class ArielSecurityService extends ArielSystemService {
         } else if(type == CREDENTIAL_TYPE_PIN) {
             // create a pin
             CharSequence newPin = new String(credential);
-            lockCredential = LockscreenCredential.createPin(newPin);    
+            lockCredential = LockscreenCredential.createPin(newPin);
         } else {
             // abort, we do not support anything else yet
             return false;
@@ -323,6 +343,21 @@ public class ArielSecurityService extends ArielSystemService {
             mKeyguardDelegate.setKeyguardEnabled(true);
         }
         return true;
+    }
+
+    private void registerKeyguardStateListenerLocked(IKeyguardStateCallback callback) {
+        mKeyguardStateListeners.add(callback);
+    }
+
+    private void unregisterKeyguardStateListenerLocked(IKeyguardStateCallback callback) {
+        mKeyguardStateListeners.remove(callback);
+    }
+
+    private boolean isKeyguardShowingLocked() {
+        if (mKeyguardDelegate != null) {
+            return mKeyguardDelegate.isShowing();
+        }
+        return false;
     }
 
     private class FingerRemovalCallback extends FingerprintManager.RemovalCallback {
@@ -405,6 +440,24 @@ public class ArielSecurityService extends ArielSystemService {
         public boolean stopPeeking() {
             enforceSecurityPermission();
             return stopPeekingLocked();
+        }
+
+        @Override
+        public void registerKeyguardStateListener(IKeyguardStateCallback callback) {
+            enforceSecurityPermission();
+            registerKeyguardStateListenerLocked(callback);
+        }
+
+        @Override
+        public void unregisterKeyguardStateListener(IKeyguardStateCallback callback) {
+            enforceSecurityPermission();
+            unregisterKeyguardStateListenerLocked(callback);
+        }
+
+        @Override
+        public boolean isKeyguardShowing() {
+            enforceSecurityPermission();
+            return isKeyguardShowingLocked();
         }
 
     };
