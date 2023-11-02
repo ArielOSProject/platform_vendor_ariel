@@ -57,36 +57,4 @@
         <permission name="android.permission.REQUEST_DELETE_PACKAGES" fixed="true"/>
     </exception>
 
-    <!-- microg GMS Core -->
-    <exception
-            package="com.google.android.gms">
-        <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
-        <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
-        <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
-        <permission name="android.permission.FAKE_PACKAGE_SIGNATURE" fixed="true"/>
-        <permission name="android.permission.INSTALL_LOCATION_PROVIDER" fixed="true"/>
-    </exception>
-
-    <!-- Fake store -->
-    <exception
-            package="com.android.vending">
-        <permission name="android.permission.FAKE_PACKAGE_SIGNATURE" fixed="true"/>
-    </exception>
-
-    <exception
-            package="org.fitchfamily.android.dejavu">
-        <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
-        <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
-        <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
-    </exception>
-
-    <!-- Mozilla NLP backend -->
-    <exception
-            package="org.microg.nlp.backend.ichnaea">
-        <permission name="android.permission.ACCESS_FINE_LOCATION" fixed="true"/>
-        <permission name="android.permission.ACCESS_COARSE_LOCATION" fixed="true"/>
-        <permission name="android.permission.ACCESS_BACKGROUND_LOCATION" fixed="true"/>
-        <permission name="android.permission.READ_PHONE_STATE" fixed="true"/>
-    </exception>
-
 </exceptions>
