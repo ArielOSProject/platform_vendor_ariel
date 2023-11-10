@@ -1,0 +1,216 @@
+// Signature format: 2.0
+package arielos.providers {
+
+  public final class ArielSettings {
+    ctor public ArielSettings();
+    field public static final String AUTHORITY = "arielsettings";
+  }
+
+  public static class ArielSettings.ArielSettingNotFoundException extends android.util.AndroidException {
+    ctor public ArielSettings.ArielSettingNotFoundException(String);
+  }
+
+  public static final class ArielSettings.Global extends android.provider.Settings.NameValueTable {
+    ctor public ArielSettings.Global();
+    method public static float getFloat(android.content.ContentResolver, String, float);
+    method public static float getFloat(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static int getInt(android.content.ContentResolver, String, int);
+    method public static int getInt(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static long getLong(android.content.ContentResolver, String, long);
+    method public static long getLong(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static String getString(android.content.ContentResolver, String);
+    method public static String getString(android.content.ContentResolver, String, String);
+    method public static android.net.Uri getUriFor(String);
+    method public static boolean putFloat(android.content.ContentResolver, String, float);
+    method public static boolean putInt(android.content.ContentResolver, String, int);
+    method public static boolean putLong(android.content.ContentResolver, String, long);
+    method public static boolean putString(android.content.ContentResolver, String, String);
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final String SYS_PROP_ARIEL_SETTING_VERSION = "sys.ariel_settings_global_version";
+  }
+
+  public static final class ArielSettings.Secure extends android.provider.Settings.NameValueTable {
+    ctor public ArielSettings.Secure();
+    method public static float getFloat(android.content.ContentResolver, String, float);
+    method public static float getFloat(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static int getInt(android.content.ContentResolver, String, int);
+    method public static int getInt(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static long getLong(android.content.ContentResolver, String, long);
+    method public static long getLong(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static String getString(android.content.ContentResolver, String);
+    method public static String getString(android.content.ContentResolver, String, String);
+    method public static android.net.Uri getUriFor(String);
+    method public static boolean putFloat(android.content.ContentResolver, String, float);
+    method public static boolean putInt(android.content.ContentResolver, String, int);
+    method public static boolean putLong(android.content.ContentResolver, String, long);
+    method public static boolean putString(android.content.ContentResolver, String, String);
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final String SYS_PROP_ARIEL_SETTING_VERSION = "sys.ariel_settings_secure_version";
+  }
+
+  public static final class ArielSettings.System extends android.provider.Settings.NameValueTable {
+    ctor public ArielSettings.System();
+    method public static float getFloat(android.content.ContentResolver, String, float);
+    method public static float getFloat(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static int getInt(android.content.ContentResolver, String, int);
+    method public static int getInt(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static long getLong(android.content.ContentResolver, String, long);
+    method public static long getLong(android.content.ContentResolver, String) throws arielos.providers.ArielSettings.ArielSettingNotFoundException;
+    method public static String getString(android.content.ContentResolver, String);
+    method public static String getString(android.content.ContentResolver, String, String);
+    method public static android.net.Uri getUriFor(String);
+    method public static boolean putFloat(android.content.ContentResolver, String, float);
+    method public static boolean putInt(android.content.ContentResolver, String, int);
+    method public static boolean putLong(android.content.ContentResolver, String, long);
+    method public static boolean putString(android.content.ContentResolver, String, String);
+    field public static final android.net.Uri CONTENT_URI;
+    field public static final String SYS_PROP_ARIEL_SETTING_VERSION = "sys.ariel_settings_system_version";
+  }
+
+}
+
+package arielos.restrictions {
+
+  public interface RestrictionsInterface {
+    method public void disallowDebuggingFeatures(boolean);
+    method public void disallowFactoryReset(boolean);
+  }
+
+  public final class RestrictionsManager {
+    ctor public RestrictionsManager();
+    method public static arielos.restrictions.RestrictionsInterface getInstance(android.content.Context);
+  }
+
+}
+
+package arielos.security {
+
+  public interface IEscrowTokenStateChangeCallback extends android.os.IInterface {
+    method public void onEscrowTokenActivated(long, int) throws android.os.RemoteException;
+    field public static final String DESCRIPTOR = "arielos.security.IEscrowTokenStateChangeCallback";
+  }
+
+  public static class IEscrowTokenStateChangeCallback.Default implements arielos.security.IEscrowTokenStateChangeCallback {
+    ctor public IEscrowTokenStateChangeCallback.Default();
+    method public android.os.IBinder asBinder();
+    method public void onEscrowTokenActivated(long, int) throws android.os.RemoteException;
+  }
+
+  public abstract static class IEscrowTokenStateChangeCallback.Stub extends android.os.Binder implements arielos.security.IEscrowTokenStateChangeCallback {
+    ctor public IEscrowTokenStateChangeCallback.Stub();
+    method public android.os.IBinder asBinder();
+    method public static arielos.security.IEscrowTokenStateChangeCallback asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
+
+  public interface IKeyguardStateCallback extends android.os.IInterface {
+    method public void onKeyguardDismissed() throws android.os.RemoteException;
+    method public void onKeyguardDisplayed() throws android.os.RemoteException;
+    field public static final String DESCRIPTOR = "arielos.security.IKeyguardStateCallback";
+  }
+
+  public static class IKeyguardStateCallback.Default implements arielos.security.IKeyguardStateCallback {
+    ctor public IKeyguardStateCallback.Default();
+    method public android.os.IBinder asBinder();
+    method public void onKeyguardDismissed() throws android.os.RemoteException;
+    method public void onKeyguardDisplayed() throws android.os.RemoteException;
+  }
+
+  public abstract static class IKeyguardStateCallback.Stub extends android.os.Binder implements arielos.security.IKeyguardStateCallback {
+    ctor public IKeyguardStateCallback.Stub();
+    method public android.os.IBinder asBinder();
+    method public static arielos.security.IKeyguardStateCallback asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
+
+  public interface ISecurityInterface extends android.os.IInterface {
+    method public void generateEscrowToken(int, byte[], arielos.security.IEscrowTokenStateChangeCallback) throws android.os.RemoteException;
+    method public long getLockoutAttemptDeadline(int) throws android.os.RemoteException;
+    method public boolean hasPendingEscrowToken(int) throws android.os.RemoteException;
+    method public boolean isEscrowTokenActive(long, int) throws android.os.RemoteException;
+    method public boolean isKeyguardShowing() throws android.os.RemoteException;
+    method public void registerKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
+    method public boolean removeEscrowToken(long, int) throws android.os.RemoteException;
+    method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int) throws android.os.RemoteException;
+    method public long setLockoutAttemptDeadline(int, int) throws android.os.RemoteException;
+    method public boolean startPeeking() throws android.os.RemoteException;
+    method public boolean stopPeeking() throws android.os.RemoteException;
+    method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
+    field public static final String DESCRIPTOR = "arielos.security.ISecurityInterface";
+  }
+
+  public static class ISecurityInterface.Default implements arielos.security.ISecurityInterface {
+    ctor public ISecurityInterface.Default();
+    method public android.os.IBinder asBinder();
+    method public void generateEscrowToken(int, byte[], arielos.security.IEscrowTokenStateChangeCallback) throws android.os.RemoteException;
+    method public long getLockoutAttemptDeadline(int) throws android.os.RemoteException;
+    method public boolean hasPendingEscrowToken(int) throws android.os.RemoteException;
+    method public boolean isEscrowTokenActive(long, int) throws android.os.RemoteException;
+    method public boolean isKeyguardShowing() throws android.os.RemoteException;
+    method public void registerKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
+    method public boolean removeEscrowToken(long, int) throws android.os.RemoteException;
+    method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int) throws android.os.RemoteException;
+    method public long setLockoutAttemptDeadline(int, int) throws android.os.RemoteException;
+    method public boolean startPeeking() throws android.os.RemoteException;
+    method public boolean stopPeeking() throws android.os.RemoteException;
+    method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
+  }
+
+  public abstract static class ISecurityInterface.Stub extends android.os.Binder implements arielos.security.ISecurityInterface {
+    ctor public ISecurityInterface.Stub();
+    method public android.os.IBinder asBinder();
+    method public static arielos.security.ISecurityInterface asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
+
+  public interface SecurityInterface {
+    method public void generateEscrowToken(int, byte[], arielos.security.IEscrowTokenStateChangeCallback);
+    method public long getLockoutAttemptDeadline(int);
+    method public boolean hasPendingEscrowToken(int);
+    method public boolean isEscrowTokenActive(long, int);
+    method public boolean isKeyguardShowing();
+    method public void registerKeyguardStateListener(arielos.security.IKeyguardStateCallback);
+    method public boolean removeEscrowToken(long, int);
+    method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int);
+    method public long setLockoutAttemptDeadline(int, int);
+    method public boolean startPeeking();
+    method public boolean stopPeeking();
+    method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback);
+    field public static final int CREDENTIAL_TYPE_NONE = -1; // 0xffffffff
+    field public static final int CREDENTIAL_TYPE_PASSWORD = 4; // 0x4
+    field public static final int CREDENTIAL_TYPE_PASSWORD_OR_PIN = 2; // 0x2
+    field public static final int CREDENTIAL_TYPE_PATTERN = 1; // 0x1
+    field public static final int CREDENTIAL_TYPE_PIN = 3; // 0x3
+    field public static final String SECURITY_INTERFACE_PERMISSION = "arielos.permission.MANAGE_SECURITY";
+  }
+
+  public final class SecurityManager {
+    ctor public SecurityManager();
+    method public static arielos.security.SecurityInterface getInstance(android.content.Context);
+  }
+
+}
+
+package arielos.statusbar {
+
+  public interface ArielStatusBarInterface {
+    method public void setStatusBarDisabled(boolean);
+  }
+
+  public final class ArielStatusBarManager {
+    ctor public ArielStatusBarManager();
+    method public static arielos.statusbar.ArielStatusBarInterface getInstance(android.content.Context);
+  }
+
+}
+
+package arielos.util {
+
+  public final class ArielUtils {
+    ctor public ArielUtils(android.content.Context);
+    method public boolean isArielGuardian(int);
+    method public boolean isPanicModeActive();
+  }
+
+}
+

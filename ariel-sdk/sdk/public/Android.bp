@@ -1,0 +1,44 @@
+// The Public Platform SDK
+//
+// Public platform SDK provides API access to ArielOS
+// that are otherwise not available through regular Android SDK or
+// are Neon platform specific
+// ============================================================
+
+// When adding new API to the platform SDK, the build system will throw an error
+// stating that the previously generated APIs are not matching. In order to fix this,
+// we need to regenerate the APIs. These are the required commands:
+//
+// m com.arielos.platform.sdk.stubs.source-update-current-api
+// m com.arielos.platform.sdk.stubs.source.system-update-current-api
+// m com.arielos.platform.sdk.stubs.source.test-update-current-api
+
+java_sdk_library {
+    name: "com.arielos.platform.sdk",
+    // to be removed when we figure out how to properly manage
+    // api levels and backward compatibility
+    unsafe_ignore_missing_latest_api: true,
+    // prevents the sdk from being installed on the device,
+    // as we do not need it on the device.
+    // public sdk classes are available to the sytem as
+    // part of com.navico.neon.platform library
+    installable: false,
+    libs: [
+        "com.arielos.platform.internal",
+    ],
+
+    // included as static lib so that we get access to internal
+    // resources (strings, arrays etc.)
+    //static_libs: [
+    //    "com.arielos.platform-res",
+    //],
+
+    srcs: [
+        "src/java/arielos/**/*.java",
+        "src/java/arielos/**/I*.aidl",
+    ],
+
+    aidl: {
+        local_include_dirs: ["src/java"],
+    },
+}

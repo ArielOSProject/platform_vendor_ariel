@@ -17,7 +17,6 @@
 
 package arielos.security;
 
-/** {@hide} */
 interface IKeyguardStateCallback {
     oneway void onKeyguardDisplayed();
     oneway void onKeyguardDismissed();

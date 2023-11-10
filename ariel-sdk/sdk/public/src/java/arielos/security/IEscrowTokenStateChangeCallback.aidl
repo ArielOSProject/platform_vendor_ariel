@@ -17,7 +17,6 @@
 
 package arielos.security;
 
-/** {@hide} */
 interface IEscrowTokenStateChangeCallback {
     oneway void onEscrowTokenActivated(in long handle, in int userid);
 }

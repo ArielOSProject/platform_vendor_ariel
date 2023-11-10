@@ -125,25 +125,25 @@ java_library {
 
 // Included aidl files from lineageos.app namespace
 
-java_library {
-    name: "com.arielos.platform.sdk",
-    required: ["services"],
-    libs: [
-        "com.arielos.platform.internal"
-    ],
-
-    srcs: [
-        ariel_sdk_src + "/**/*.java",
-        ariel_sdk_src + "/**/I*.aidl",
-        // For the generated R.java and Manifest.java
-        ":com.arielos.platform-res{.aapt.srcjar}",
-    ],
-
+//java_library {
+//    name: "com.arielos.platform.sdk",
+//    required: ["services"],
+//    libs: [
+//        "com.arielos.platform.internal"
+//    ],
+//
+//    srcs: [
+//        ariel_sdk_src + "/**/*.java",
+//        ariel_sdk_src + "/**/I*.aidl",
+//        // For the generated R.java and Manifest.java
+//        ":com.arielos.platform-res{.aapt.srcjar}",
+//    ],
+//
     // Include aidl files from lineageos.app namespace as well as internal src aidl files
-    aidl: {
-        local_include_dirs: ["sdk/internal/src/java", "sdk/public/src/java"],
-    },
-}
+ //   aidl: {
+ //       local_include_dirs: ["sdk/internal/src/java", "sdk/public/src/java"],
+ //   },
+//}
 
 // Resources only target for use by core
 // ============================================================

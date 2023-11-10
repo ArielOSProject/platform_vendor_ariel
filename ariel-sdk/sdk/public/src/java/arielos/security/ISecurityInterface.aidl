@@ -20,7 +20,6 @@ package arielos.security;
 import arielos.security.IEscrowTokenStateChangeCallback;
 import arielos.security.IKeyguardStateCallback;
 
-/** {@hide} */
 interface ISecurityInterface {
     void generateEscrowToken(in int userId, in byte[] token, IEscrowTokenStateChangeCallback listener);
     boolean hasPendingEscrowToken(in int userId);
