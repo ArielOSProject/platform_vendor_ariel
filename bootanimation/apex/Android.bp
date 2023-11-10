@@ -4,17 +4,10 @@ prebuilt_etc {
     filename: "bootanimation.zip",
 }
 
-apex_key {
-    name: "ariel_bootanimation.key",
-    public_key: "ariel_bootanimation.avbpubkey",
-    private_key: "ariel_bootanimation.pem",
-}
-
 filegroup {
     name: "com.android.bootanimation-androidManifest",
     srcs: ["AndroidManifest.xml"],
 }
-
 
 apex {
     name: "com.android.bootanimation",
