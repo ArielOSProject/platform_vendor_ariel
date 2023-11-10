@@ -1,0 +1,2 @@
+The Android.mk file here will build a zip file of ArielOS bootanimation. This is not included in the build and the produced zip file should be placed under apex dir,
+since the ArielOS bootanimation is being distributed as an APEX file.

@@ -1,0 +1,10 @@
+Since ArielOS 20.0, ArielOS bootanimation is being distributed as an apex APK. The reason for this is based on the following:
+1. LineageOS bootanimation is now installed at product/media, which is where ArielOS bootanimation was
+2. We did not find a way (yet) to replace the LineageOS bootanimation with ArielOS version at the same location and with the same name of the file
+3. APEX bootanimation takes priority when the system is looking for bootanimations at different locations so ArielOS bootanimation will be picked up before LineageOS. Look at BootAnimation.cpp for more info, but this is the list of files and order is respected:
+static const std::vector<std::string> bootFiles = {
+        APEX_BOOTANIMATION_FILE, playDarkAnim ? PRODUCT_BOOTANIMATION_DARK_FILE : PRODUCT_BOOTANIMATION_FILE,
+        OEM_BOOTANIMATION_FILE, SYSTEM_BOOTANIMATION_FILE
+    };
+
+So the order of priority is APEX -> PRODUCT/MEDIA -> OEM -> SYSTEM

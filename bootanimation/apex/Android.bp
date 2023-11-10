@@ -1,0 +1,30 @@
+prebuilt_etc {
+    name: "com.android.bootanimation_etc",
+    src: "bootanimation.zip",
+    filename: "bootanimation.zip",
+}
+
+apex_key {
+    name: "ariel_bootanimation.key",
+    public_key: "ariel_bootanimation.avbpubkey",
+    private_key: "ariel_bootanimation.pem",
+}
+
+filegroup {
+    name: "com.android.bootanimation-androidManifest",
+    srcs: ["AndroidManifest.xml"],
+}
+
+
+apex {
+    name: "com.android.bootanimation",
+    manifest: "apex_manifest.json",
+    androidManifest: ":com.android.bootanimation-androidManifest",
+    file_contexts: ":com.android.bootanimation-file_contexts",
+    min_sdk_version: "29",
+    prebuilts: [
+        "com.android.bootanimation_etc",
+    ],
+    key: "ariel_bootanimation.key",
+    certificate: "platform",
+}
