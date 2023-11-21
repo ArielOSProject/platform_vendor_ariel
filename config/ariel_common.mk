@@ -6,6 +6,7 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/privapp-permissions-ariel.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-ariel.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.android.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.android.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.security.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.security.xml \
+    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.intentfirewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.intentfirewall.xml \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/ariel-sysconfig.xml \
     vendor/ariel/prebuilt/common/etc/hosts:$(TARGET_COPY_OUT_SYSTEM)/etc/hosts \
     vendor/ariel/prebuilt/common/etc/microg.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/microg.xml \

@@ -54,8 +54,7 @@ public class SecurityInterfaceImpl implements SecurityInterface {
             return sService;
         }
         IBinder b = ServiceManager.getService(ArielContextConstants.ARIEL_SECURITY_INTERFACE);
-        sService = ISecurityInterface.Stub.asInterface(b);
-
+        
         if (b == null) {
             Log.e(TAG, "null service. SAD!");
             return null;

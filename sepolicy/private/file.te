@@ -1,1 +1,3 @@
-#type system_data_ifw, file_type, data_file_type, mlstrustedobject;
+type system_data_ifw, file_type, data_file_type, core_data_file_type;
+#just for reference while working on system_data_ifw
+#type system_data_file, file_type, data_file_type, core_data_file_type;
