@@ -43,6 +43,16 @@ public final class ArielContextConstants {
     public static final String ARIEL_SECURITY_INTERFACE = "arielsecurity";
 
     /**
+     * Use with {@link android.content.Context#getSystemService} to retrieve a
+     * {@link cyanogenmod.app.ArielFirewallManager} for informing the user of
+     * background events.
+     *
+     * @see android.content.Context#getSystemService
+     * @see cyanogenmod.app.ArielFirewallManager
+     */
+    public static final String ARIEL_INTENT_FIREWALL_SERVICE = "arielintentfirewall";
+
+    /**
      * Features supported by the Lineage SDK.
      */
     public static class Features {
@@ -60,5 +70,13 @@ public final class ArielContextConstants {
          */
         @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
         public static final String ARIEL_OS = "com.arielos.android";
+
+        /**
+         * Feature for {@link PackageManager#getSystemAvailableFeatures} and
+         * {@link PackageManager#hasSystemFeature}: The device includes the cm status bar service
+         * utilzed by the cmsdk.
+         */
+        @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
+        public static final String INTENT_FIREWALL = "com.arielos.intentfirewall";
     }
 }
