@@ -43,5 +43,10 @@
     <permission android:name="arielos.permission.WRITE_SECURE_SETTINGS"
                 android:protectionLevel="signature|privileged|development" />
 
+    <!-- Allows an application to interact with Ariel Intent Firewall.
+    <p>Not for use by third-party applications. -->
+    <permission android:name="ariel.permission.INTENT_FIREWALL"
+                android:protectionLevel="signature|privileged|development" />
+
 
 </manifest>
