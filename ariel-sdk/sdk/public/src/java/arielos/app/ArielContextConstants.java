@@ -77,6 +77,6 @@ public final class ArielContextConstants {
          * utilzed by the cmsdk.
          */
         @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
-        public static final String INTENT_FIREWALL = "com.ariel.intentfirewall";
+        public static final String INTENT_FIREWALL = "com.arielos.intentfirewall";
     }
 }

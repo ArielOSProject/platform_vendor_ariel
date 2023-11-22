@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ariel.firewall;
+package com.arielos.internal.firewall;
 
 import android.content.Context;
 import android.os.IBinder;

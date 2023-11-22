@@ -33,5 +33,5 @@ public interface IntentFirewallInterface {
     public boolean enableBroadcast(String broadcast);
 
     public boolean disableBroadcast(String broadcast);
-    
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ariel.platform.internal.services;
+package com.arielos.platform.internal.services;
 
 import android.app.AppGlobals;
 import android.content.Context;
@@ -27,7 +27,7 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import arielos.app.ArielContextConstants;
-import arielos.firewall.IArielIntentFirewallManager;
+import arielos.firewall.IIntentFirewallInterface;
 
 import arielos.platform.Manifest;
 

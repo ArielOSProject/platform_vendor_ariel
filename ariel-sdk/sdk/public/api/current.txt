@@ -1,4 +1,44 @@
 // Signature format: 2.0
+package arielos.firewall {
+
+  public interface IIntentFirewallInterface extends android.os.IInterface {
+    method public boolean disableApp(String) throws android.os.RemoteException;
+    method public boolean disableBroadcast(String) throws android.os.RemoteException;
+    method public boolean enableApp(String) throws android.os.RemoteException;
+    method public boolean enableBroadcast(String) throws android.os.RemoteException;
+    field public static final String DESCRIPTOR = "arielos.firewall.IIntentFirewallInterface";
+  }
+
+  public static class IIntentFirewallInterface.Default implements arielos.firewall.IIntentFirewallInterface {
+    ctor public IIntentFirewallInterface.Default();
+    method public android.os.IBinder asBinder();
+    method public boolean disableApp(String) throws android.os.RemoteException;
+    method public boolean disableBroadcast(String) throws android.os.RemoteException;
+    method public boolean enableApp(String) throws android.os.RemoteException;
+    method public boolean enableBroadcast(String) throws android.os.RemoteException;
+  }
+
+  public abstract static class IIntentFirewallInterface.Stub extends android.os.Binder implements arielos.firewall.IIntentFirewallInterface {
+    ctor public IIntentFirewallInterface.Stub();
+    method public android.os.IBinder asBinder();
+    method public static arielos.firewall.IIntentFirewallInterface asInterface(android.os.IBinder);
+    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
+  }
+
+  public interface IntentFirewallInterface {
+    method public boolean disableApp(String);
+    method public boolean disableBroadcast(String);
+    method public boolean enableApp(String);
+    method public boolean enableBroadcast(String);
+  }
+
+  public final class IntentFirewallManager {
+    ctor public IntentFirewallManager();
+    method public static arielos.firewall.IntentFirewallInterface getInstance(android.content.Context);
+  }
+
+}
+
 package arielos.providers {
 
   public final class ArielSettings {
