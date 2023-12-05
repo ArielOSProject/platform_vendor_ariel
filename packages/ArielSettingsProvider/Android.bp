@@ -22,6 +22,7 @@ android_app {
     certificate: "platform",
     privileged: true,
     platform_apis: true,
+    system_ext_specific: true,
 
     static_libs: [
         "com.arielos.platform.internal",
@@ -40,4 +41,5 @@ prebuilt_etc {
     sub_dir: "permissions",
     src: "privapp_whitelist_com.arielos.arielsettings.xml",
     filename_from_src: true,
+    system_ext_specific: true,
 }
