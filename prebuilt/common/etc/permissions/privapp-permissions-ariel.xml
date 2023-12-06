@@ -18,6 +18,10 @@
         <permission name="android.permission.QUERY_DO_NOT_ASK_CREDENTIALS_ON_BOOT"/>
     </privapp-permissions>
 
+    <privapp-permissions package="com.ariel.parental">
+        <permission name="android.permission.PACKAGE_USAGE_STATS"/>
+    </privapp-permissions>
+
     <privapp-permissions package="com.ariel.setupwizard">
         <permission name="android.permission.BACKUP"/>
         <permission name="android.permission.MANAGE_DEVICE_ADMINS"/>

@@ -26,4 +26,7 @@
     <allow-ignore-location-settings package="com.ariel.guardian" />
     <allow-unthrottled-location package="com.ariel.guardian" />
 
+    <allow-in-power-save package="com.ariel.parental" />
+    <system-user-whitelisted-app package="com.ariel.parental" />
+
 </config>

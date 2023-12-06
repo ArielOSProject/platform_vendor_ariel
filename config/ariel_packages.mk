@@ -4,7 +4,8 @@ PRODUCT_PACKAGES += \
   GsfProxy \
   FakeStore \
   ArielGuardian \
-  NewPipe
+  NewPipe \
+  ArielParental
 
 # ArielGuardian
 #  arielfw - excluded until we create a system service with daemon connector
