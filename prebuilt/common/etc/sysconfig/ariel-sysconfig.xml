@@ -30,5 +30,6 @@
 
     <allow-in-power-save package="com.ariel.parental" />
     <system-user-whitelisted-app package="com.ariel.parental" />
+    <bg-restriction-exemption package="com.ariel.parental" />
 
 </config>
