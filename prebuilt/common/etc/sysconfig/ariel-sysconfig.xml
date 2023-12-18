@@ -32,4 +32,8 @@
     <system-user-whitelisted-app package="com.ariel.parental" />
     <bg-restriction-exemption package="com.ariel.parental" />
 
+    <!-- Required for background operation of Ariel Parental app -->
+    <allow-implicit-broadcast action="android.intent.action.PACKAGE_ADDED" />
+    <allow-implicit-broadcast action="android.intent.action.PACKAGE_REMOVED" />
+
 </config>
