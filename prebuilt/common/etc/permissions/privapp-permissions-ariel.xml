@@ -16,6 +16,8 @@
         <permission name="android.permission.MANAGE_FINGERPRINT"/>
         <permission name="android.permission.STATUS_BAR"/>
         <permission name="android.permission.QUERY_DO_NOT_ASK_CREDENTIALS_ON_BOOT"/>
+        <permission name="android.permission.READ_PHONE_STATE" />
+        <permission name="android.permission.READ_PRIVILEGED_PHONE_STATE" />
     </privapp-permissions>
 
     <privapp-permissions package="com.ariel.parental">
