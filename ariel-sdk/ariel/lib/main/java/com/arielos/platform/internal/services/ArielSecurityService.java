@@ -86,6 +86,7 @@ public class ArielSecurityService extends ArielSystemService {
     private IWindowManager mWindowManagerService;
     private FingerprintManager mFingerprintManager;
     private FaceManager mFaceManager;
+    private Boolean lastKeyguardShowingState = null;
 
     private ArrayList<IKeyguardStateCallback> mKeyguardStateListeners = new ArrayList();
 
@@ -152,18 +153,33 @@ public class ArielSecurityService extends ArielSystemService {
                         Log.d(TAG, "keyguard.isTrusted = "+mKeyguardDelegate.isTrusted());
                         Log.d(TAG, "keyguard.hasKeyguard = "+mKeyguardDelegate.hasKeyguard());
                         Log.d(TAG, "keyguard.isSecure = "+mKeyguardDelegate.isSecure(0));
-                        mKeyguardStateListeners.forEach(callback -> {
-                            try {
-                                if(mKeyguardDelegate.isShowing()) {
-                                    callback.onKeyguardDisplayed();
-                                } else {
-                                    callback.onKeyguardDismissed();
+                        boolean notifyCallbacks = false;
+                        if(lastKeyguardShowingState == null) {
+                            lastKeyguardShowingState = mKeyguardDelegate.isShowing();
+                            notifyCallbacks = true;
+
+                        } else {
+                            if(lastKeyguardShowingState != mKeyguardDelegate.isShowing() ) {
+                                lastKeyguardShowingState = mKeyguardDelegate.isShowing();
+                                notifyCallbacks = true;
+                            } else {
+                                notifyCallbacks = false;
+                            }
+                        }
+                        if (notifyCallbacks) {
+                            mKeyguardStateListeners.forEach(callback -> {
+                                try {
+                                    if(mKeyguardDelegate.isShowing()) {
+                                        callback.onKeyguardDisplayed();
+                                    } else {
+                                        callback.onKeyguardDismissed();
+                                    }
                                 }
-                            }
-                            catch(RemoteException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                                catch(RemoteException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        }
                     }
                 });
     }
