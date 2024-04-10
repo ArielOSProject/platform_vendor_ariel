@@ -9,4 +9,9 @@
     </set>
     <boolean name="checkin_enable_service" value="true" />
     <boolean name="gcm_enable_mcs_service" value="true" />
+    <boolean name="location_wifi_learning" value="true" />
+    <boolean name="location_wifi_moving" value="true" />
+    <boolean name="location_wifi_mls" value="true" />
+    <boolean name="location_cell_mls" value="true" />
+    <boolean name="location_cell_learning" value="true" />
 </map>
