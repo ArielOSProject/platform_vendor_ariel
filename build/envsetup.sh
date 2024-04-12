@@ -1,3 +1,8 @@
+
+# we need to export this as a default fallback branch since device repos, kernels
+# and other dependencies use different format for branch names
+export ROOMSERVICE_BRANCHES=lineage-20
+
 function __print_ariel_functions_help() {
 cat <<EOF
 Additional ArielOS functions:
