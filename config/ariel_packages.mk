@@ -5,7 +5,9 @@ PRODUCT_PACKAGES += \
   FakeStore \
   ArielGuardian \
   NewPipe \
-  ArielParental
+  ArielParental \
+  GoogleContactsSyncAdapter \
+  GoogleCalendarSyncAdapter
 
 # ArielGuardian
 #  arielfw - excluded until we create a system service with daemon connector
