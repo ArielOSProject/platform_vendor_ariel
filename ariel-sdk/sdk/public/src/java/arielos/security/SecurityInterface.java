@@ -26,12 +26,6 @@ import arielos.app.ArielContextConstants;
 import arielos.security.IEscrowTokenStateChangeCallback;
 
 public interface SecurityInterface {
-    /**
-     * Allows an application to use the Trust interface to display trusted
-     * security messages to the user.
-     * This is a system-only permission, user-installed apps cannot use it
-     */
-    public static final String SECURITY_INTERFACE_PERMISSION = "arielos.permission.MANAGE_SECURITY";
 
     public void generateEscrowToken(int userId, byte[] token, IEscrowTokenStateChangeCallback callback);
 
