@@ -40,6 +40,7 @@ import arielos.security.IEscrowTokenStateChangeCallback;
 import arielos.security.IKeyguardStateCallback;
 import arielos.security.SecurityInterface;
 import com.arielos.platform.internal.ArielSystemService;
+import arielos.platform.Manifest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -195,7 +196,7 @@ public class ArielSecurityService extends ArielSystemService {
     /* Public methods implementation */
 
     private void enforceSecurityPermission() {
-        mContext.enforceCallingOrSelfPermission(SecurityInterface.SECURITY_INTERFACE_PERMISSION,
+        mContext.enforceCallingOrSelfPermission(Manifest.permission.MANAGE_SECURITY,
                 "You do not have permissions to use the Security interface");
     }
 

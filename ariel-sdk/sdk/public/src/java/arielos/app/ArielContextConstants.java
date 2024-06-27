@@ -78,5 +78,13 @@ public final class ArielContextConstants {
          */
         @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
         public static final String INTENT_FIREWALL = "com.arielos.intentfirewall";
+
+        /**
+         * Feature for {@link PackageManager#getSystemAvailableFeatures} and
+         * {@link PackageManager#hasSystemFeature}: The device includes the cm status bar service
+         * utilzed by the cmsdk.
+         */
+        @SdkConstant(SdkConstant.SdkConstantType.FEATURE)
+        public static final String FIREWALL = "com.arielos.firewall";
     }
 }

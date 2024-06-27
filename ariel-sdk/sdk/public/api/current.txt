@@ -1,6 +1,19 @@
 // Signature format: 2.0
 package arielos.firewall {
 
+  public interface FirewallInterface {
+    method public void restrictCellular(int, boolean);
+    method public void restrictNetworking(int, boolean);
+    method public void restrictVpn(int, boolean);
+    method public void restrictWifi(int, boolean);
+    field public static final String FIREWALL_INTERFACE_PERMISSION = "ariel.permission.FIREWALL";
+  }
+
+  public final class FirewallManager {
+    ctor public FirewallManager();
+    method public static arielos.firewall.FirewallInterface getInstance(android.content.Context);
+  }
+
   public interface IIntentFirewallInterface extends android.os.IInterface {
     method public boolean disableApp(String) throws android.os.RemoteException;
     method public boolean disableBroadcast(String) throws android.os.RemoteException;
@@ -221,7 +234,6 @@ package arielos.security {
     field public static final int CREDENTIAL_TYPE_PASSWORD_OR_PIN = 2; // 0x2
     field public static final int CREDENTIAL_TYPE_PATTERN = 1; // 0x1
     field public static final int CREDENTIAL_TYPE_PIN = 3; // 0x3
-    field public static final String SECURITY_INTERFACE_PERMISSION = "arielos.permission.MANAGE_SECURITY";
   }
 
   public final class SecurityManager {
