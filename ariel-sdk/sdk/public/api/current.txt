@@ -2,16 +2,28 @@
 package arielos.firewall {
 
   public interface FirewallInterface {
+    method public int getUidPolicy(int);
+    method public int networkPolicyToFirewallPolicy(int);
+    method public void registerListener(arielos.firewall.FirewallPolicyListener);
     method public void restrictCellular(int, boolean);
     method public void restrictNetworking(int, boolean);
     method public void restrictVpn(int, boolean);
     method public void restrictWifi(int, boolean);
-    field public static final String FIREWALL_INTERFACE_PERMISSION = "ariel.permission.FIREWALL";
+    method public void unregisterListener();
+    field public static final int FIREWALL_NONE = 0; // 0x0
+    field public static final int FIREWALL_REJECT_ALL = 262144; // 0x40000
+    field public static final int FIREWALL_REJECT_CELLULAR = 65536; // 0x10000
+    field public static final int FIREWALL_REJECT_VPN = 131072; // 0x20000
+    field public static final int FIREWALL_REJECT_WIFI = 32768; // 0x8000
   }
 
   public final class FirewallManager {
     ctor public FirewallManager();
     method public static arielos.firewall.FirewallInterface getInstance(android.content.Context);
+  }
+
+  public interface FirewallPolicyListener {
+    method public void onUidPoliciesChanged(int, int);
   }
 
   public interface IIntentFirewallInterface extends android.os.IInterface {
