@@ -44,6 +44,16 @@ public interface FirewallInterface {
     public static final int FIREWALL_NONE = 0x0;
 
     /**
+     * Reject access to mobile data from background
+     */
+    public static final int FIREWALL_REJECT_METERED_BACKGROUND = 0x1;
+
+    /**
+     * Allow access to mobile data from background
+     */
+    public static final int FIREWALL_ALLOW_METERED_BACKGROUND = 0x4;
+
+    /**
      * Restricts access to wifi to the provided UID.
      *
      * @param uid can be retrieved using package manager, with package name
@@ -97,5 +107,12 @@ public interface FirewallInterface {
      * Retrieve current UID policy
      */
     public int getUidPolicy(int uid);
+
+    /**
+     * Restricts background usage of mobile data.
+     *
+     * @param uid can be retrieved using package manager, with package name
+     */
+    public void restrictMeteredBackground(int uid, boolean restrict);
 
 }

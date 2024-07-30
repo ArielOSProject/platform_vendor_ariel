@@ -38,6 +38,8 @@ import static android.net.NetworkPolicyManager.POLICY_REJECT_VPN;
 import static android.net.NetworkPolicyManager.POLICY_REJECT_WIFI;
 import static android.net.NetworkPolicyManager.POLICY_REJECT_ALL;
 import static android.net.NetworkPolicyManager.POLICY_NONE;
+import static android.net.NetworkPolicyManager.POLICY_REJECT_METERED_BACKGROUND;
+import static android.net.NetworkPolicyManager.POLICY_ALLOW_METERED_BACKGROUND;
 
 /**
  * ArielOS firewall manager
@@ -176,6 +178,16 @@ public class FirewallInterfaceImpl implements FirewallInterface {
             firewallPolicy |= FirewallInterface.FIREWALL_REJECT_ALL;
         }
 
+        if (policy != 0 && (policy & POLICY_REJECT_METERED_BACKGROUND) == POLICY_REJECT_METERED_BACKGROUND) {
+            policy &= ~POLICY_REJECT_METERED_BACKGROUND;
+            firewallPolicy |= FirewallInterface.FIREWALL_REJECT_METERED_BACKGROUND;
+        }
+
+        if (policy != 0 && (policy & POLICY_ALLOW_METERED_BACKGROUND) == POLICY_ALLOW_METERED_BACKGROUND) {
+            policy &= ~POLICY_ALLOW_METERED_BACKGROUND;
+            firewallPolicy |= FirewallInterface.FIREWALL_ALLOW_METERED_BACKGROUND;
+        }
+
         return firewallPolicy;
     }
 
@@ -196,12 +208,27 @@ public class FirewallInterfaceImpl implements FirewallInterface {
             if((activePolicy & POLICY_REJECT_ALL) == POLICY_REJECT_ALL) {
                 Log.d(TAG, "POLICY_REJECT_ALL active!");
             }
+            if((activePolicy & POLICY_REJECT_METERED_BACKGROUND) == POLICY_REJECT_METERED_BACKGROUND) {
+                Log.d(TAG, "POLICY_REJECT_METERED_BACKGROUND active!");
+            }
 
             Log.d(TAG, "Printing policy from NetworkPolicyManager!");
             String policyToString = NetworkPolicyManager.uidPoliciesToString(activePolicy);
             Log.d(TAG, "Active network manager policy:\n"+policyToString);
         }
         return activePolicy;
+    }
+
+    @Override
+    public void restrictMeteredBackground(int uid, boolean restrict) {
+        mContext.enforceCallingOrSelfPermission(
+                    Manifest.permission.FIREWALL, "You are not allowed to use ArielOS Firewall feature.");
+        if (localLOGV) Log.v(TAG, "Invoking restrictMeteredBackground for uid: "+uid);
+        if (restrict) {
+            networkManager.addUidPolicy(uid, POLICY_REJECT_METERED_BACKGROUND);
+        } else {
+            networkManager.removeUidPolicy(uid, POLICY_REJECT_METERED_BACKGROUND);
+        }
     }
 
 }
