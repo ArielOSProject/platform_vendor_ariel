@@ -38,7 +38,7 @@ public final class ArielUtils {
 
     public boolean isPanicModeActive() {
         try {
-            int panicModeActive = ArielSettings.Secure.getInt(mContext.getContentResolver(), 
+            int panicModeActive = ArielSettings.Secure.getInt(mContext.getContentResolver(),
                                                                 ArielSettings.Secure.PANIC_MODE);
             return panicModeActive == 1;
         } catch(ArielSettingNotFoundException exception) {

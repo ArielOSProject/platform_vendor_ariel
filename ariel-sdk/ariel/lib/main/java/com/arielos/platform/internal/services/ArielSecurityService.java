@@ -37,7 +37,6 @@ import android.os.Bundle;
 import arielos.app.ArielContextConstants;
 import arielos.security.ISecurityInterface;
 import arielos.security.IEscrowTokenStateChangeCallback;
-import arielos.security.IKeyguardStateCallback;
 import arielos.security.SecurityInterface;
 import com.arielos.platform.internal.ArielSystemService;
 import arielos.platform.Manifest;
@@ -88,8 +87,7 @@ public class ArielSecurityService extends ArielSystemService {
     private FingerprintManager mFingerprintManager;
     private FaceManager mFaceManager;
     private Boolean lastKeyguardShowingState = null;
-
-    private ArrayList<IKeyguardStateCallback> mKeyguardStateListeners = new ArrayList();
+    private boolean isLockoutAttemptIndeterminateActive = false;
 
     private FingerprintManager getFingerprintManagerOrNull(Context context) {
         if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
@@ -168,18 +166,17 @@ public class ArielSecurityService extends ArielSystemService {
                             }
                         }
                         if (notifyCallbacks) {
-                            mKeyguardStateListeners.forEach(callback -> {
-                                try {
-                                    if(mKeyguardDelegate.isShowing()) {
-                                        callback.onKeyguardDisplayed();
-                                    } else {
-                                        callback.onKeyguardDismissed();
-                                    }
-                                }
-                                catch(RemoteException e) {
-                                    e.printStackTrace();
-                                }
-                            });
+                            /**
+                             * Instead of using callback listeners (as we have API to register them)
+                             * we moved to broadcasting since callback listeners can throw remote exception
+                             * when binding dies between security service and the security manager. When that
+                             * happens, we have no way of re-activating the bind so we use broadcasts instead
+                             */
+                            if(mKeyguardDelegate.isShowing()) {
+                                broadcastKeyguardStatechange(SecurityInterface.ARIEL_ACTION_PHONE_LOCKED);
+                            } else {
+                                broadcastKeyguardStatechange(SecurityInterface.ARIEL_ACTION_PHONE_UNLOCKED);
+                            }
                         }
                     }
                 });
@@ -198,6 +195,12 @@ public class ArielSecurityService extends ArielSystemService {
     private void enforceSecurityPermission() {
         mContext.enforceCallingOrSelfPermission(Manifest.permission.MANAGE_SECURITY,
                 "You do not have permissions to use the Security interface");
+    }
+
+    private void broadcastKeyguardStatechange(String action) {
+        Log.d(TAG, "broadcastKeyguardStatechange("+action+")");
+        Intent keyguardStateintent = new Intent(action);
+        mContext.sendBroadcastAsUser(keyguardStateintent, UserHandle.CURRENT);
     }
 
     /**
@@ -362,19 +365,22 @@ public class ArielSecurityService extends ArielSystemService {
         return true;
     }
 
-    private void registerKeyguardStateListenerLocked(IKeyguardStateCallback callback) {
-        mKeyguardStateListeners.add(callback);
-    }
-
-    private void unregisterKeyguardStateListenerLocked(IKeyguardStateCallback callback) {
-        mKeyguardStateListeners.remove(callback);
-    }
-
     private boolean isKeyguardShowingLocked() {
         if (mKeyguardDelegate != null) {
             return mKeyguardDelegate.isShowing();
         }
         return false;
+    }
+
+    private void setLockoutAttemptIndeterminateLocked(int userId, boolean isActive) {
+        Log.d(TAG, "setLockoutAttemptIndeterminateLocked, active = "+isActive);
+        isLockoutAttemptIndeterminateActive = isActive;
+        setLockoutAttemptDeadlineLocked(userId, 0);
+    }
+
+    private boolean getLockoutAttemptIndeterminateLocked(int userId) {
+        Log.d(TAG, "getLockoutAttemptIndeterminateLocked, active = "+isLockoutAttemptIndeterminateActive);
+        return isLockoutAttemptIndeterminateActive;
     }
 
     private class FingerRemovalCallback extends FingerprintManager.RemovalCallback {
@@ -460,21 +466,21 @@ public class ArielSecurityService extends ArielSystemService {
         }
 
         @Override
-        public void registerKeyguardStateListener(IKeyguardStateCallback callback) {
-            enforceSecurityPermission();
-            registerKeyguardStateListenerLocked(callback);
-        }
-
-        @Override
-        public void unregisterKeyguardStateListener(IKeyguardStateCallback callback) {
-            enforceSecurityPermission();
-            unregisterKeyguardStateListenerLocked(callback);
-        }
-
-        @Override
         public boolean isKeyguardShowing() {
             enforceSecurityPermission();
             return isKeyguardShowingLocked();
+        }
+
+        @Override
+        public void setLockoutAttemptIndeterminate(int userId, boolean isActive) {
+            enforceSecurityPermission();
+            setLockoutAttemptIndeterminateLocked(userId, isActive);
+        }
+
+        @Override
+        public boolean getLockoutAttemptIndeterminate(int userId) {
+            enforceSecurityPermission();
+            return getLockoutAttemptIndeterminateLocked(userId);
         }
 
     };

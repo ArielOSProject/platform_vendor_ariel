@@ -21,11 +21,29 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.Log;
+import android.annotation.SdkConstant;
+import android.annotation.SdkConstant.SdkConstantType;
+import android.annotation.RequiresPermission;
+import arielos.platform.Manifest;
 
 import arielos.app.ArielContextConstants;
 import arielos.security.IEscrowTokenStateChangeCallback;
 
 public interface SecurityInterface {
+
+    /**
+     * Broadcast Action
+     */
+    @SdkConstant(SdkConstantType.BROADCAST_INTENT_ACTION)
+    @RequiresPermission(Manifest.permission.MANAGE_SECURITY)
+    public static final String ARIEL_ACTION_PHONE_UNLOCKED = "arielos.intent.action.PHONE_UNLOCKED";
+
+    /**
+     * Broadcast Action
+     */
+    @SdkConstant(SdkConstantType.BROADCAST_INTENT_ACTION)
+    @RequiresPermission(Manifest.permission.MANAGE_SECURITY)
+    public static final String ARIEL_ACTION_PHONE_LOCKED = "arielos.intent.action.PHONE_LOCKED";
 
     public void generateEscrowToken(int userId, byte[] token, IEscrowTokenStateChangeCallback callback);
 
@@ -45,11 +63,11 @@ public interface SecurityInterface {
 
     public boolean stopPeeking();
 
-    public void registerKeyguardStateListener(IKeyguardStateCallback callback);
-
-    public void unregisterKeyguardStateListener(IKeyguardStateCallback callback);
-
     public boolean isKeyguardShowing();
+
+    public void setLockoutAttemptIndeterminate(int userId, boolean isActive);
+
+    public boolean getLockoutAttemptIndeterminate(int userId);
 
     // NOTE: When modifying this, make sure credential sufficiency validation logic is intact.
     public static final int CREDENTIAL_TYPE_NONE = -1;

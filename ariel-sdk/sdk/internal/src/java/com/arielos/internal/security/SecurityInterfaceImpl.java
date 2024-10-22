@@ -26,7 +26,6 @@ import arielos.app.ArielContextConstants;
 import arielos.security.SecurityInterface;
 import arielos.security.ISecurityInterface;
 import arielos.security.IEscrowTokenStateChangeCallback;
-import arielos.security.IKeyguardStateCallback;
 
 public class SecurityInterfaceImpl implements SecurityInterface {
 
@@ -54,7 +53,7 @@ public class SecurityInterfaceImpl implements SecurityInterface {
             return sService;
         }
         IBinder b = ServiceManager.getService(ArielContextConstants.ARIEL_SECURITY_INTERFACE);
-        
+
         if (b == null) {
             Log.e(TAG, "null service. SAD!");
             return null;
@@ -182,36 +181,38 @@ public class SecurityInterfaceImpl implements SecurityInterface {
     }
 
     @Override
-    public void registerKeyguardStateListener(IKeyguardStateCallback callback) {
-        if (sService == null) {
-            return;
-        }
-        try {
-           sService.registerKeyguardStateListener(callback);
-        } catch (RemoteException e) {
-            Log.e(TAG, e.getLocalizedMessage(), e);
-        }
-    }
-
-    @Override
-    public void unregisterKeyguardStateListener(IKeyguardStateCallback callback) {
-        if (sService == null) {
-            return;
-        }
-        try {
-           sService.unregisterKeyguardStateListener(callback);
-        } catch (RemoteException e) {
-            Log.e(TAG, e.getLocalizedMessage(), e);
-        }
-    }
-
-    @Override
     public boolean isKeyguardShowing() {
         if (sService == null) {
             return false;
         }
         try {
            return sService.isKeyguardShowing();
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+        return false;
+    }
+
+    @Override
+    public void setLockoutAttemptIndeterminate(int userId, boolean isActive) {
+        if (sService == null) {
+            return;
+        }
+        try {
+           sService.setLockoutAttemptIndeterminate(userId, isActive);
+        } catch (RemoteException e) {
+            Log.e(TAG, e.getLocalizedMessage(), e);
+        }
+        return;
+    }
+
+    @Override
+    public boolean getLockoutAttemptIndeterminate(int userId) {
+        if (sService == null) {
+            return false;
+        }
+        try {
+           return sService.getLockoutAttemptIndeterminate(userId);
         } catch (RemoteException e) {
             Log.e(TAG, e.getLocalizedMessage(), e);
         }

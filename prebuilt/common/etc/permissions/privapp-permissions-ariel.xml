@@ -24,10 +24,14 @@
         <permission name="android.permission.MAINLINE_NETWORK_STACK" />
         <permission name="android.permission.CONNECTIVITY_INTERNAL" />
         <permission name="android.permission.OBSERVE_NETWORK_POLICY" />
+        <!-- This permission is required so that Ariel Parental is exempted from Android Freezer -->
+        <permission name="android.permission.INSTALL_PACKAGES" />
     </privapp-permissions>
 
     <privapp-permissions package="com.ariel.parental">
         <permission name="android.permission.PACKAGE_USAGE_STATS"/>
+        <!-- This permission is required so that Ariel Parental is exempted from Android Freezer -->
+        <permission name="android.permission.INSTALL_PACKAGES" />
     </privapp-permissions>
 
     <privapp-permissions package="com.ariel.setupwizard">

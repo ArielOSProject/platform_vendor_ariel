@@ -6,13 +6,16 @@ package arielos.firewall {
     method public int networkPolicyToFirewallPolicy(int);
     method public void registerListener(arielos.firewall.FirewallPolicyListener);
     method public void restrictCellular(int, boolean);
+    method public void restrictMeteredBackground(int, boolean);
     method public void restrictNetworking(int, boolean);
     method public void restrictVpn(int, boolean);
     method public void restrictWifi(int, boolean);
     method public void unregisterListener();
+    field public static final int FIREWALL_ALLOW_METERED_BACKGROUND = 4; // 0x4
     field public static final int FIREWALL_NONE = 0; // 0x0
     field public static final int FIREWALL_REJECT_ALL = 262144; // 0x40000
     field public static final int FIREWALL_REJECT_CELLULAR = 65536; // 0x10000
+    field public static final int FIREWALL_REJECT_METERED_BACKGROUND = 1; // 0x1
     field public static final int FIREWALL_REJECT_VPN = 131072; // 0x20000
     field public static final int FIREWALL_REJECT_WIFI = 32768; // 0x8000
   }
@@ -191,6 +194,7 @@ package arielos.security {
   public interface ISecurityInterface extends android.os.IInterface {
     method public void generateEscrowToken(int, byte[], arielos.security.IEscrowTokenStateChangeCallback) throws android.os.RemoteException;
     method public long getLockoutAttemptDeadline(int) throws android.os.RemoteException;
+    method public boolean getLockoutAttemptIndeterminate(int) throws android.os.RemoteException;
     method public boolean hasPendingEscrowToken(int) throws android.os.RemoteException;
     method public boolean isEscrowTokenActive(long, int) throws android.os.RemoteException;
     method public boolean isKeyguardShowing() throws android.os.RemoteException;
@@ -198,6 +202,7 @@ package arielos.security {
     method public boolean removeEscrowToken(long, int) throws android.os.RemoteException;
     method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int) throws android.os.RemoteException;
     method public long setLockoutAttemptDeadline(int, int) throws android.os.RemoteException;
+    method public void setLockoutAttemptIndeterminate(int, boolean) throws android.os.RemoteException;
     method public boolean startPeeking() throws android.os.RemoteException;
     method public boolean stopPeeking() throws android.os.RemoteException;
     method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
@@ -209,6 +214,7 @@ package arielos.security {
     method public android.os.IBinder asBinder();
     method public void generateEscrowToken(int, byte[], arielos.security.IEscrowTokenStateChangeCallback) throws android.os.RemoteException;
     method public long getLockoutAttemptDeadline(int) throws android.os.RemoteException;
+    method public boolean getLockoutAttemptIndeterminate(int) throws android.os.RemoteException;
     method public boolean hasPendingEscrowToken(int) throws android.os.RemoteException;
     method public boolean isEscrowTokenActive(long, int) throws android.os.RemoteException;
     method public boolean isKeyguardShowing() throws android.os.RemoteException;
@@ -216,6 +222,7 @@ package arielos.security {
     method public boolean removeEscrowToken(long, int) throws android.os.RemoteException;
     method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int) throws android.os.RemoteException;
     method public long setLockoutAttemptDeadline(int, int) throws android.os.RemoteException;
+    method public void setLockoutAttemptIndeterminate(int, boolean) throws android.os.RemoteException;
     method public boolean startPeeking() throws android.os.RemoteException;
     method public boolean stopPeeking() throws android.os.RemoteException;
     method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
@@ -231,6 +238,7 @@ package arielos.security {
   public interface SecurityInterface {
     method public void generateEscrowToken(int, byte[], arielos.security.IEscrowTokenStateChangeCallback);
     method public long getLockoutAttemptDeadline(int);
+    method public boolean getLockoutAttemptIndeterminate(int);
     method public boolean hasPendingEscrowToken(int);
     method public boolean isEscrowTokenActive(long, int);
     method public boolean isKeyguardShowing();
@@ -238,6 +246,7 @@ package arielos.security {
     method public boolean removeEscrowToken(long, int);
     method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int);
     method public long setLockoutAttemptDeadline(int, int);
+    method public void setLockoutAttemptIndeterminate(int, boolean);
     method public boolean startPeeking();
     method public boolean stopPeeking();
     method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback);
