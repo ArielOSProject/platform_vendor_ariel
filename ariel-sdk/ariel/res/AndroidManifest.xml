@@ -53,5 +53,7 @@
     <permission android:name="ariel.permission.FIREWALL"
         android:protectionLevel="signature|privileged|development" />
 
+    <protected-broadcast android:name="arielos.intent.action.PHONE_LOCKED" />
+    <protected-broadcast android:name="arielos.intent.action.PHONE_UNLOCKED" />
 
 </manifest>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
      Copyright (C) 2015 The CyanogenMod Project
-                   2017-2018 The LineageOS Project
+               (C) 2017 The LineageOS Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,13 +15,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
-    <!-- External Lineage specific core services -->
-    <java-symbol type="array" name="config_externalArielServices" />
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for the LineageOS system components when they are shown to the user. -->
+    <string name="arielos_system_label">ArielOS System</string>
 
-    <!-- Lineage system server -->
-    <java-symbol type="string" name="config_externalArielSystemServer" />
-
-    <java-symbol type="string" name="lockscreen_lockout_message" />
-
+    <string name="lockscreen_lockout_message">Време је за одмор од телефона :)</string>
 </resources>

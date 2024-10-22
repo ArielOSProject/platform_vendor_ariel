@@ -33,4 +33,8 @@
     <allow-implicit-broadcast action="android.intent.action.PACKAGE_ADDED" />
     <allow-implicit-broadcast action="android.intent.action.PACKAGE_REMOVED" />
 
+    <!-- keyguard related broadcasts -->
+    <allow-implicit-broadcast action="arielos.intent.action.PHONE_LOCKED" />
+    <allow-implicit-broadcast action="arielos.intent.action.PHONE_UNLOCKED" />
+
 </config>

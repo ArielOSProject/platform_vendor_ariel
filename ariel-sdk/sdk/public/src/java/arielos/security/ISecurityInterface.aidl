@@ -18,7 +18,6 @@
 package arielos.security;
 
 import arielos.security.IEscrowTokenStateChangeCallback;
-import arielos.security.IKeyguardStateCallback;
 
 /** {@hide} */
 interface ISecurityInterface {
@@ -31,7 +30,7 @@ interface ISecurityInterface {
     boolean setLockCredentialWithToken(in byte[] credential, in int type, in long tokenHandle, in byte[] token, in int userId);
     boolean stopPeeking();
     boolean startPeeking();
-    void registerKeyguardStateListener(IKeyguardStateCallback callback);
-    void unregisterKeyguardStateListener(IKeyguardStateCallback callback);
     boolean isKeyguardShowing();
+    void setLockoutAttemptIndeterminate(in int userId, in boolean isActive);
+    boolean getLockoutAttemptIndeterminate(in int userId);
 }
