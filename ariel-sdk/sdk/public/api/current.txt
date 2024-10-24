@@ -171,26 +171,6 @@ package arielos.security {
     method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
   }
 
-  public interface IKeyguardStateCallback extends android.os.IInterface {
-    method public void onKeyguardDismissed() throws android.os.RemoteException;
-    method public void onKeyguardDisplayed() throws android.os.RemoteException;
-    field public static final String DESCRIPTOR = "arielos.security.IKeyguardStateCallback";
-  }
-
-  public static class IKeyguardStateCallback.Default implements arielos.security.IKeyguardStateCallback {
-    ctor public IKeyguardStateCallback.Default();
-    method public android.os.IBinder asBinder();
-    method public void onKeyguardDismissed() throws android.os.RemoteException;
-    method public void onKeyguardDisplayed() throws android.os.RemoteException;
-  }
-
-  public abstract static class IKeyguardStateCallback.Stub extends android.os.Binder implements arielos.security.IKeyguardStateCallback {
-    ctor public IKeyguardStateCallback.Stub();
-    method public android.os.IBinder asBinder();
-    method public static arielos.security.IKeyguardStateCallback asInterface(android.os.IBinder);
-    method public boolean onTransact(int, android.os.Parcel, android.os.Parcel, int) throws android.os.RemoteException;
-  }
-
   public interface ISecurityInterface extends android.os.IInterface {
     method public void generateEscrowToken(int, byte[], arielos.security.IEscrowTokenStateChangeCallback) throws android.os.RemoteException;
     method public long getLockoutAttemptDeadline(int) throws android.os.RemoteException;
@@ -198,14 +178,12 @@ package arielos.security {
     method public boolean hasPendingEscrowToken(int) throws android.os.RemoteException;
     method public boolean isEscrowTokenActive(long, int) throws android.os.RemoteException;
     method public boolean isKeyguardShowing() throws android.os.RemoteException;
-    method public void registerKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
     method public boolean removeEscrowToken(long, int) throws android.os.RemoteException;
     method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int) throws android.os.RemoteException;
     method public long setLockoutAttemptDeadline(int, int) throws android.os.RemoteException;
     method public void setLockoutAttemptIndeterminate(int, boolean) throws android.os.RemoteException;
     method public boolean startPeeking() throws android.os.RemoteException;
     method public boolean stopPeeking() throws android.os.RemoteException;
-    method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
     field public static final String DESCRIPTOR = "arielos.security.ISecurityInterface";
   }
 
@@ -218,14 +196,12 @@ package arielos.security {
     method public boolean hasPendingEscrowToken(int) throws android.os.RemoteException;
     method public boolean isEscrowTokenActive(long, int) throws android.os.RemoteException;
     method public boolean isKeyguardShowing() throws android.os.RemoteException;
-    method public void registerKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
     method public boolean removeEscrowToken(long, int) throws android.os.RemoteException;
     method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int) throws android.os.RemoteException;
     method public long setLockoutAttemptDeadline(int, int) throws android.os.RemoteException;
     method public void setLockoutAttemptIndeterminate(int, boolean) throws android.os.RemoteException;
     method public boolean startPeeking() throws android.os.RemoteException;
     method public boolean stopPeeking() throws android.os.RemoteException;
-    method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback) throws android.os.RemoteException;
   }
 
   public abstract static class ISecurityInterface.Stub extends android.os.Binder implements arielos.security.ISecurityInterface {
@@ -242,14 +218,14 @@ package arielos.security {
     method public boolean hasPendingEscrowToken(int);
     method public boolean isEscrowTokenActive(long, int);
     method public boolean isKeyguardShowing();
-    method public void registerKeyguardStateListener(arielos.security.IKeyguardStateCallback);
     method public boolean removeEscrowToken(long, int);
     method public boolean setLockCredentialWithToken(byte[], int, long, byte[], int);
     method public long setLockoutAttemptDeadline(int, int);
     method public void setLockoutAttemptIndeterminate(int, boolean);
     method public boolean startPeeking();
     method public boolean stopPeeking();
-    method public void unregisterKeyguardStateListener(arielos.security.IKeyguardStateCallback);
+    field @RequiresPermission(arielos.platform.Manifest.permission.MANAGE_SECURITY) public static final String ARIEL_ACTION_PHONE_LOCKED = "arielos.intent.action.PHONE_LOCKED";
+    field @RequiresPermission(arielos.platform.Manifest.permission.MANAGE_SECURITY) public static final String ARIEL_ACTION_PHONE_UNLOCKED = "arielos.intent.action.PHONE_UNLOCKED";
     field public static final int CREDENTIAL_TYPE_NONE = -1; // 0xffffffff
     field public static final int CREDENTIAL_TYPE_PASSWORD = 4; // 0x4
     field public static final int CREDENTIAL_TYPE_PASSWORD_OR_PIN = 2; // 0x2
