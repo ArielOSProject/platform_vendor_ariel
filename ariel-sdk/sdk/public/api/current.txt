@@ -67,6 +67,16 @@ package arielos.firewall {
 
 }
 
+package arielos.os {
+
+  public final class ArielSystemProperties {
+    method public static String get(android.content.Context, String);
+    method public static void set(android.content.Context, String, String);
+    field public static final String UPDATE_RECOVERY_PROP = "persist.vendor.recovery_update";
+  }
+
+}
+
 package arielos.providers {
 
   public final class ArielSettings {
