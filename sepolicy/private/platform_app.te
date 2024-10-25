@@ -1,0 +1,5 @@
+# Allow ArielGuardian to set recovery update prop
+set_prop(platform_app, recovery_update_prop)
+
+# Allow ArielGuardian to get recovery update prop
+get_prop(platform_app, recovery_update_prop)

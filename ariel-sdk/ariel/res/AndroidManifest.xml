@@ -56,4 +56,14 @@
     <protected-broadcast android:name="arielos.intent.action.PHONE_LOCKED" />
     <protected-broadcast android:name="arielos.intent.action.PHONE_UNLOCKED" />
 
+    <!-- Allows an application to write to secure Neon system settings.
+    <p>Not for use by third-party applications. -->
+    <permission android:name="ariel.permission.READ_SYSTEM_PROPERTIES"
+        android:protectionLevel="signature|privileged" />
+
+    <!-- Allows an application to write to secure Neon system settings.
+    <p>Not for use by third-party applications. -->
+        <permission android:name="ariel.permission.WRITE_SYSTEM_PROPERTIES"
+        android:protectionLevel="signature|privileged" />
+
 </manifest>
