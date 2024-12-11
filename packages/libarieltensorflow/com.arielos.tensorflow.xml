@@ -1,0 +1,4 @@
+<permissions>
+    <library name="com.arielos.tensorflow"
+            file="/system_ext/framework/libarieltensorflow.jar" />
+</permissions>

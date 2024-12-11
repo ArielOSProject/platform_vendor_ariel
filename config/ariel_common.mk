@@ -12,7 +12,9 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/hosts:$(TARGET_COPY_OUT_SYSTEM)/etc/hosts \
     vendor/ariel/prebuilt/common/etc/microg.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/microg.xml \
     vendor/ariel/prebuilt/common/etc/gps.conf:$(TARGET_COPY_OUT_SYSTEM)/etc/gps.conf \
-    vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip
+    vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip \
+    vendor/ariel/prebuilt/common/etc/models/ariel_nsfw_efficientnet_lite4_full_integer.tflite:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/models/ariel_nsfw_efficientnet_lite4_full_integer.tflite \
+    vendor/ariel/prebuilt/common/etc/models/labels.txt:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/models/labels.txt
 
 
 #    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
@@ -30,6 +32,15 @@ PRODUCT_COPY_FILES += \
 # it stays like this.
 PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/bin/50-lineage.sh:$(TARGET_COPY_OUT_SYSTEM)/addon.d/50-lineage.sh
+
+# check if we can use PRODUCT_BOOT_JARS_EXTRA on AOSP 13+
+# on AOSP 11, it does not work properly, so we need to use PRODUCT_BOOT_JARS
+PRODUCT_BOOT_JARS += \
+    libarieltensorflow \
+#     tensorflow-lite-task-vision \
+#     tensorflow-lite-support \
+#     tensorflow-lite-task-base \
+#     tensorflow-ml-image
 
 # Make sure data roaming is off!
 # PRODUCT_PROPERTY_OVERRIDES += \

@@ -1,0 +1,20 @@
+java_library {
+    name: "libarieltensorflow",
+    srcs: ["src/**/*.java"],
+    sdk_version: "system_current",
+    static_libs: [
+        "tensorflowlite_java",
+        "tensorflow-lite-task-vision",
+        "tensorflow-lite-support",
+        "tensorflow-lite-task-base",
+        "tensorflow-ml-image",
+    ],
+    visibility: [
+        "//frameworks/base",
+    ],
+    // check if this should be enabled on AOSP 13+
+    // on AOSP 11, boot classpath does not contain system_ext defined libs
+    //system_ext_specific: true,
+    installable: true,
+    compile_dex: true,
+}

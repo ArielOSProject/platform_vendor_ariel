@@ -29,6 +29,9 @@
     <allow-in-power-save package="com.ariel.parental" />
     <system-user-whitelisted-app package="com.ariel.parental" />
 
+    <allow-in-power-save package="com.ariel.protector" />
+    <system-user-whitelisted-app package="com.ariel.protector" />
+
     <!-- Required for background operation of Ariel Parental app -->
     <allow-implicit-broadcast action="android.intent.action.PACKAGE_ADDED" />
     <allow-implicit-broadcast action="android.intent.action.PACKAGE_REMOVED" />

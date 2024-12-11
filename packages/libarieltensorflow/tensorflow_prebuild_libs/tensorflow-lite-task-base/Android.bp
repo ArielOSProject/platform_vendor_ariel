@@ -1,0 +1,15 @@
+java_import {
+    name: "tensorflow-lite-task-base-0.4.4",
+    jars: ["libs/classes.jar"],
+    sdk_version: "system_current",  // Use system APIs
+}
+
+java_library {
+    name: "tensorflow-lite-task-base",
+    static_libs: ["tensorflow-lite-task-base-0.4.4"], // Link Java classes
+    sdk_version: "system_current",
+    visibility: ["//vendor/ariel/packages/libarieltensorflow",], // Allow usage by other modules
+    compile_dex: true,
+    installable: true,
+    system_ext_specific: true,
+}

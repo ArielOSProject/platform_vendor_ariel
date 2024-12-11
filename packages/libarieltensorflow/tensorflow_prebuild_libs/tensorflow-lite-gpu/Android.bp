@@ -1,0 +1,30 @@
+java_import {
+    name: "tensorflow-lite-gpu-2.16.1",
+    jars: ["libs/classes.jar"],
+    sdk_version: "system_current",  // Use system APIs
+}
+
+cc_prebuilt_library_shared {
+    name: "libtensorflowlite_gpu_jni",
+    shared_libs: ["libc", "libdl", "liblog", "libm", "libEGL", "libGLESv3",],
+    //check_elf_files: false,
+    arch: {
+        arm: {
+            srcs: ["jni/armeabi-v7a/libtensorflowlite_gpu_jni.so"],
+        },
+        arm64: {
+            srcs: ["jni/arm64-v8a/libtensorflowlite_gpu_jni.so"],
+        },
+    },
+}
+
+java_library {
+    name: "tensorflow-lite-gpu",
+    static_libs: ["tensorflow-lite-gpu-2.16.1"], // Link Java classes
+    sdk_version: "system_current",
+    visibility: ["//visibility:public"], // Allow usage by other modules
+    //system_ext_specific: true,
+    installable: true,
+    compile_dex: true,
+}
+
