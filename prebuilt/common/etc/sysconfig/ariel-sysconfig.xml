@@ -37,4 +37,7 @@
     <allow-implicit-broadcast action="arielos.intent.action.PHONE_LOCKED" />
     <allow-implicit-broadcast action="arielos.intent.action.PHONE_UNLOCKED" />
 
+    <allow-in-power-save package="com.ariel.protector" />
+    <system-user-whitelisted-app package="com.ariel.protector" />
+
 </config>
