@@ -7,7 +7,8 @@ PRODUCT_PACKAGES += \
   NewPipe \
   ArielParental \
   GoogleContactsSyncAdapter \
-  GoogleCalendarSyncAdapter
+  GoogleCalendarSyncAdapter \
+  ArielProtector
 
 # ArielGuardian
 #  arielfw - excluded until we create a system service with daemon connector
