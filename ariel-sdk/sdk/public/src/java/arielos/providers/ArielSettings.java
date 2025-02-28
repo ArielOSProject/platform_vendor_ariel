@@ -840,7 +840,7 @@ public final class ArielSettings {
          */
         public static final Map<String, Validator> VALIDATORS =
                 new ArrayMap<String, Validator>();
-        
+
         // endregion
     }
 
@@ -1241,6 +1241,16 @@ public final class ArielSettings {
         public static final Validator PANIC_MODE_VALIDATOR = sBooleanValidator;
 
         /**
+         * Whether to enable Ariel Analytics.
+         * Boolean setting. 0 = no, 1 = yes.
+         * @hide
+         */
+        public static final String ARIEL_ANALYTICS = "ariel_analytics";
+
+        /** @hide */
+        public static final Validator ARIEL_ANALYTICS_VALIDATOR = sBooleanValidator;
+
+        /**
          * Mapping of validators for all secure settings.  This map is used to validate both valid
          * keys as well as validating the values for those keys.
          *
@@ -1253,6 +1263,7 @@ public final class ArielSettings {
                 new ArrayMap<String, Validator>();
         static {
             VALIDATORS.put(PANIC_MODE, PANIC_MODE_VALIDATOR);
+            VALIDATORS.put(ARIEL_ANALYTICS, ARIEL_ANALYTICS_VALIDATOR);
         }
     }
 
