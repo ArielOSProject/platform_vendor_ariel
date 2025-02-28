@@ -46,7 +46,7 @@ public class ArielDatabaseHelper extends SQLiteOpenHelper{
     private static final boolean LOCAL_LOGV = false;
 
     private static final String DATABASE_NAME = "arielsettings.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
 
     public static class ArielTableNames {
@@ -155,6 +155,22 @@ public class ArielDatabaseHelper extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (LOCAL_LOGV) Log.d(TAG, "Upgrading from version: " + oldVersion + " to " + newVersion);
         int upgradeVersion = oldVersion;
+
+        SQLiteStatement stmt = null;
+
+        if (upgradeVersion < 2) {
+            stmt = db.compileStatement("INSERT OR IGNORE INTO secure(name,value)"
+                    + " VALUES(?,?);");
+            db.beginTransaction();
+            try {
+                loadBooleanSetting(stmt, ArielSettings.Secure.ARIEL_ANALYTICS,
+                    R.bool.def_ariel_analytics);
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            upgradeVersion = 2;
+        }
     }
 
     private void moveSettingsToNewTable(SQLiteDatabase db,
@@ -227,7 +243,9 @@ public class ArielDatabaseHelper extends SQLiteOpenHelper{
             // Secure
             loadBooleanSetting(stmt, ArielSettings.Secure.PANIC_MODE,
                     R.bool.def_panic_mode);
-            
+            loadBooleanSetting(stmt, ArielSettings.Secure.ARIEL_ANALYTICS,
+                    R.bool.def_ariel_analytics);
+
         } finally {
             if (stmt != null) stmt.close();
         }

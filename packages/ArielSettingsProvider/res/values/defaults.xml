@@ -21,5 +21,8 @@
          1==on -->
     <bool name="def_panic_mode">false</bool>
 
+     <!-- Default for ArielSettings.Secure.ARIEL_ANALYTICS
+         1==on -->
+    <bool name="def_ariel_analytics">true</bool>
 
 </resources>
