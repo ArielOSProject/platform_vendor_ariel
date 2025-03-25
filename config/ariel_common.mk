@@ -10,7 +10,6 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.firewall.xml \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/ariel-sysconfig.xml \
     vendor/ariel/prebuilt/common/etc/hosts:$(TARGET_COPY_OUT_SYSTEM)/etc/hosts \
-    vendor/ariel/prebuilt/common/etc/microg.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/microg.xml \
     vendor/ariel/prebuilt/common/etc/gps.conf:$(TARGET_COPY_OUT_SYSTEM)/etc/gps.conf \
     vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip
 
