@@ -41,7 +41,7 @@ PRODUCT_COPY_FILES += \
 
 # REMOVE FROM RELEASE BULDS, ALLOWS
 # LOGCAT TO START FROM BEGINNING!!!!!!!!!!
-# PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+# PRODUCT_PROPERTY_OVERRIDES += \
 #    ro.adb.secure=0 \
 #    ro.debuggable=1 \
 #    ro.secure=0 \

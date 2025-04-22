@@ -184,8 +184,10 @@ public class ArielSecurityService extends ArielSystemService {
 
     @Override
     public void onBootPhase(int phase) {
+        Log.d(TAG, "onBootPhase = "+phase);
         // make sure boot completed before doing anything
-        if (phase == SystemService.PHASE_SYSTEM_SERVICES_READY) {
+        if (phase == SystemService.PHASE_BOOT_COMPLETED) {
+            Log.d(TAG, "mKeyguardDelegate.bindService(mContext)");
             mKeyguardDelegate.bindService(mContext);
         }
     }
