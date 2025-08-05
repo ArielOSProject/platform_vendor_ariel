@@ -1,0 +1,41 @@
+cc_prebuilt_binary {
+    name: "dnscrypt-proxy",
+    srcs: ["dnscrypt-proxy"],
+    prefer: true,
+    system_ext_specific: true,
+    installable: true,
+    shared_libs: ["liblog"],
+    strip: {
+        none: true,
+    },
+}
+
+// Install config file to /system_ext/etc/
+prebuilt_etc {
+    name: "dnscrypt-proxy-config",
+    src: "dnscrypt-proxy.toml",
+    sub_dir: "dnscrypt-proxy",
+    filename: "dnscrypt-proxy.toml",
+    installable: true,
+    system_ext_specific: true,
+}
+
+// Install blocklist file to /system_ext/etc/
+prebuilt_etc {
+    name: "dnscrypt-proxy-blocklist",
+    src: "blocked-names.txt",
+    sub_dir: "dnscrypt-proxy",
+    filename: "blocked-names.txt",
+    installable: true,
+    system_ext_specific: true,
+}
+
+// Install init script to /system_ext/etc/init/
+prebuilt_etc {
+    name: "init.dnscrypt",
+    src: "init.dnscrypt.rc",
+    sub_dir: "init",
+    filename: "init.dnscrypt.rc",
+    installable: true,
+    system_ext_specific: true,
+}

@@ -3,3 +3,6 @@ set_prop(platform_app, recovery_update_prop)
 
 # Allow ArielGuardian to get recovery update prop
 get_prop(platform_app, recovery_update_prop)
+
+#============= platform_app ==============
+allow platform_app system_prop:property_service set;

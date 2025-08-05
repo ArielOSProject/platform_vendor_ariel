@@ -1,0 +1,36 @@
+on post-fs-data
+    mkdir /data/misc/dnscrypt_proxy 0700 root root
+
+service dnscrypt_proxy /system_ext/bin/dnscrypt-proxy -config /system_ext/etc/dnscrypt-proxy/dnscrypt-proxy.toml
+    seclabel u:r:dnscrypt_proxy:s0
+    class main
+    user root
+    group root
+    disabled
+    capabilities NET_BIND_SERVICE NET_ADMIN NET_RAW
+
+# Apply all NAT + IPv6 rules at boot
+service iptables-setup /system_ext/bin/iptables_setup
+    class late_start
+    user root
+    group root
+    capabilities NET_ADMIN NET_RAW
+    seclabel u:r:netd:s0
+    oneshot
+    disabled
+
+service iptables-cleanup /system_ext/bin/iptables_setup --flush
+    class late_start
+    user root
+    group root
+    capabilities NET_ADMIN NET_RAW
+    seclabel u:r:netd:s0
+    oneshot
+    disabled
+
+on property:ariel.online=1
+    start iptables-setup
+
+# start dnscrypt_proxy after netd daemon
+on property:init.svc.netd=running
+   start dnscrypt_proxy

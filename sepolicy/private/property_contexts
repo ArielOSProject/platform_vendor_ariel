@@ -1,0 +1,2 @@
+# used by ArielGuardian to notify anyone listening that we got internet connection
+ariel.online    u:object_r:system_prop:s0

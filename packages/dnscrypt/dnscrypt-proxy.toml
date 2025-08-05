@@ -1,0 +1,104 @@
+server_names = ['adguard-dns-family', 'cleanbrowsing-adult', 'cleanbrowsing-family', 'cloudflare-family', 'anon-cs-serbia', 'anon-cs-austria', 'dnscry.pt-anon-frankfurt-ipv4']
+listen_addresses = ['127.0.0.1:55', '[::1]:55']
+
+netprobe_timeout = -1
+# quad9 dns
+netprobe_address = '9.9.9.9:53'
+
+## Bootstrap resolvers
+##
+## These are normal, non-encrypted DNS resolvers, that will be only used
+## for one-shot queries when retrieving the initial resolvers list and if
+## the system DNS configuration doesn't work.
+##
+## No user queries will ever be leaked through these resolvers, and they will
+## not be used after IP addresses of DoH resolvers have been found (if you are
+## using DoH).
+##
+## They will never be used if lists have already been cached, and if the stamps
+## of the configured servers already include IP addresses (which is the case for
+## most of DoH servers, and for all DNSCrypt servers and relays).
+##
+## They will not be used if the configured system DNS works, or after the
+## proxy already has at least one usable secure resolver.
+##
+## Resolvers supporting DNSSEC are recommended, and, if you are using
+## DoH, bootstrap resolvers should ideally be operated by a different entity
+## than the DoH servers you will be using, especially if you have IPv6 enabled.
+##
+## People in China may want to use 114.114.114.114:53 here.
+## Other popular options include 8.8.8.8, 9.9.9.9 and 1.1.1.1.
+##
+## If more than one resolver is specified, they will be tried in sequence.
+##
+## TL;DR: put valid standard resolver addresses here. Your actual queries will
+## not be sent there. If you're using DNSCrypt or Anonymized DNS and your
+## lists are up to date, these resolvers will not even be used.
+
+bootstrap_resolvers = ['9.9.9.11:53', '8.8.8.8:53']
+
+###############################################################################
+#                                DNS Cache                                     #
+###############################################################################
+
+## Enable a DNS cache to reduce latency and outgoing traffic
+cache = true
+
+## Cache size
+cache_size = 4096
+
+## Minimum TTL for cached entries
+cache_min_ttl = 2400
+
+## Maximum TTL for cached entries
+cache_max_ttl = 86400
+
+## Minimum TTL for negatively cached entries
+cache_neg_min_ttl = 60
+
+## Maximum TTL for negatively cached entries
+cache_neg_max_ttl = 600
+
+## Log level (0-6, default: 2 - 0 is very verbose, 6 only contains fatal errors)
+log_level = 2
+log_file = '/data/misc/dnscrypt_proxy/dnscrypt_proxy.log'
+
+[query_log]
+  file = '/data/misc/dnscrypt_proxy/dnscrypt_proxy_query.log'
+  format = 'tsv'
+
+[nx_log]
+  file = '/dev/null'
+  format = 'tsv'
+
+# blacklist is deprecated, use blocked_names
+[blocked_names]
+  blocked_names_file = '/system_ext/etc/dnscrypt-proxy/blocked-names.txt'
+  log_file = '/data/misc/dnscrypt_proxy/dnscrypt_proxy_blocked_names.log'
+
+[sources]
+ [sources.'parental-control']
+   urls = ['https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/parental-control.md', 'https://download.dnscrypt.info/resolvers-list/v3/parental-control.md']
+   cache_file = '/data/misc/dnscrypt_proxy/parental-control.md'
+   minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
+
+#  [sources.'public-resolvers']
+#    urls = ['https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md', 'https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md']
+#    cache_file = 'public-resolvers.md'
+#    minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
+#    refresh_delay = 72
+#    prefix = ''
+
+[sources.relays]
+  urls = [
+    'https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/relays.md',
+    'https://download.dnscrypt.info/resolvers-list/v3/relays.md',
+  ]
+  cache_file = '/data/misc/dnscrypt_proxy/relays.md'
+  minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
+  refresh_delay = 73
+  prefix = ''
+
+#[static]
+#  [static.adguard-family]
+#  stamp = 'sdns://AQMAAAAAAAAAETk0LjE0MC4xNC4xNTo1NDQzILgxXdexS27jIKRw3C7Wsao5jMnlhvhdRUXWuMm1AFq6ITIuZG5zY3J5cHQuZmFtaWx5Lm5zMS5hZGd1YXJkLmNvbQ'

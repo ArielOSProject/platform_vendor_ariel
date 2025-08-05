@@ -2,3 +2,4 @@
 arielintentfirewall     u:object_r:ariel_intent_firewall_service:s0
 arielsecurity           u:object_r:ariel_security_service:s0
 arielsettings           u:object_r:ariel_settings_service:s0
+dnscrypt_proxy          u:object_r:dnscrypt_proxy_service:s0

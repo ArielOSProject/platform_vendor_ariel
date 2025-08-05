@@ -1,6 +1,14 @@
 # PRODUCT_PACKAGES += \
 #     bootanimation_ariel.zip
 
+PRODUCT_PACKAGES += \
+    dnscrypt-proxy \
+    dnscrypt-proxy-config \
+    dnscrypt-proxy-blocklist \
+    init.dnscrypt \
+    ariel_iptables \
+    iptables_setup \
+
 PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/default-permissions/ariel-permissions.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/default-permissions/ariel-permissions.xml \
     vendor/ariel/prebuilt/common/etc/permissions/privapp-permissions-ariel.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/privapp-permissions-ariel.xml \
@@ -9,12 +17,10 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.intentfirewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.intentfirewall.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.firewall.xml \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/ariel-sysconfig.xml \
-    vendor/ariel/prebuilt/common/etc/hosts:$(TARGET_COPY_OUT_SYSTEM)/etc/hosts \
     vendor/ariel/prebuilt/common/etc/gps.conf:$(TARGET_COPY_OUT_SYSTEM)/etc/gps.conf \
-    vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip
-
-
-#    vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
+    vendor/ariel/prebuilt/bootanimation_ariel.zip:${TARGET_COPY_OUT_PRODUCT}/media/bootanimation.zip \
+#   vendor/ariel/prebuilt/common/etc/hosts:$(TARGET_COPY_OUT_SYSTEM)/etc/hosts \
+#   vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
 
 # Copy .rc files
 PRODUCT_COPY_FILES += \

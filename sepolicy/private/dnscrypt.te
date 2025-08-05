@@ -1,0 +1,29 @@
+# dnscrypt-proxy binary
+type dnscrypt_proxy, domain, coredomain, mlstrustedsubject;
+type dnscrypt_proxy_exec, exec_type, file_type, system_file_type;
+
+# dnscrypt-proxy config TOML file
+type dnscrypt_proxy_config, file_type;
+
+allow dnscrypt_proxy self:capability { net_admin net_bind_service net_raw };
+
+# start log file
+type dnscrypt_proxy_data_file, file_type; # Start minimal
+allow dnscrypt_proxy dnscrypt_proxy_data_file:dir { setattr getattr open read append add_name create search rmdir write remove_name }; # Adjust permissions as needed
+allow dnscrypt_proxy dnscrypt_proxy_data_file:file { setattr append create getattr open read write unlink rename }; # Adjust permissions as needed
+
+allow toolbox dnscrypt_proxy_data_file:dir { getattr open read search write add_name };
+allow toolbox dnscrypt_proxy_data_file:file { create getattr open read write unlink }; # Adjust permissions as needed
+# end log file
+
+# allow dnscrypt_proxy to search and read the config files
+allow dnscrypt_proxy dnscrypt_proxy_config:dir { getattr search add_name create remove_name unlink };
+allow dnscrypt_proxy dnscrypt_proxy_config:file { open read getattr write };
+
+init_daemon_domain(dnscrypt_proxy)
+net_domain(dnscrypt_proxy)
+
+#============= dnscrypt_proxy ==============
+allow dnscrypt_proxy proc_net:dir { search read open };
+allow dnscrypt_proxy proc_net:file { open read getattr};
+allow dnscrypt_proxy keychain_data_file:dir search;
