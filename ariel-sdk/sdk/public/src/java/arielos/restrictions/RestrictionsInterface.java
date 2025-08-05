@@ -22,4 +22,10 @@ public interface RestrictionsInterface {
 
     public void disallowDebuggingFeatures(boolean disallow);
 
+    public void disallowConfigVpn(boolean disallow);
+
+    public void disallowConfigPrivateDns(boolean disallow);
+
+    public void disallowAirplaneMode(boolean disallow);
+
 }
