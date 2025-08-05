@@ -2,7 +2,15 @@ PRODUCT_ARTIFACT_PATH_REQUIREMENT_ALLOWED_LIST += \
 	system/apex/com.android.bootanimation.apex
 
 PRODUCT_PACKAGES += \
-    com.android.bootanimation
+    com.android.bootanimation \
+
+PRODUCT_PACKAGES += \
+    dnscrypt-proxy \
+    dnscrypt-proxy-config \
+    dnscrypt-proxy-blocklist \
+    init.dnscrypt \
+    ariel_iptables \
+    iptables_setup \
 
 PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/default-permissions/ariel-permissions.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/default-permissions/ariel-permissions.xml \
@@ -12,23 +20,12 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.intentfirewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.intentfirewall.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.firewall.xml \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/ariel-sysconfig.xml \
-    vendor/ariel/prebuilt/common/etc/hosts:$(TARGET_COPY_OUT_SYSTEM)/etc/hosts \
     vendor/ariel/prebuilt/common/etc/gps.conf:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/gps.conf \
 #   vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
 
 # Copy .rc files
 PRODUCT_COPY_FILES += \
-    vendor/ariel/prebuilt/common/bin/backuptool.sh:install/bin/backuptool.sh \
-    vendor/ariel/prebuilt/common/bin/backuptool.functions:install/bin/backuptool.functions \
     vendor/ariel/prebuilt/common/etc/init/init.ariel.rc:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/init/init.ariel.rc
-
-# Backup Tool
-# ArielOS: overwriting LineageOS script which performs a backup of the hosts file.
-# We need to be able to provide a new hosts via OTA so this is the reason why we
-# are replacing the original script. Until we figure out a better way to do it,
-# it stays like this.
-PRODUCT_COPY_FILES += \
-    vendor/ariel/prebuilt/common/bin/50-lineage.sh:$(TARGET_COPY_OUT_SYSTEM)/addon.d/50-lineage.sh
 
 # Make sure data roaming is off!
 # PRODUCT_PROPERTY_OVERRIDES += \

@@ -1,3 +1,12 @@
 /data/system/ifw(/.*)?              u:object_r:system_data_ifw:s0
-#/system/bin/arielfw                 u:object_r:arielfw_exec:s0
-#/data/(.*)? u:object_r:system_data_file:s0
+
+# dnscrypt-proxy binary file
+/(system_ext|system/system_ext)/bin/dnscrypt-proxy      u:object_r:dnscrypt_proxy_exec:s0
+/(system_ext|system/system_ext)/etc/dnscrypt-proxy(/.*)?     u:object_r:dnscrypt_proxy_config:s0
+
+# dnscrypt-proxy log file
+/data/misc/dnscrypt_proxy(/.*)? u:object_r:dnscrypt_proxy_data_file:s0
+
+# we need iptables binary to avoid selinux rules preventing us from using embedded iptables
+/(system_ext|system/system_ext)/bin/iptables_setup u:object_r:iptables_setup_exec:s0
+/(system_ext|system/system_ext)/bin/ariel_iptables      u:object_r:iptables_setup_exec:s0
