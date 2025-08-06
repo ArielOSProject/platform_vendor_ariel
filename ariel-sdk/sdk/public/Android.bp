@@ -13,6 +13,14 @@
 // m com.arielos.platform.sdk.stubs.source.system-update-current-api
 // m com.arielos.platform.sdk.stubs.source.test-update-current-api
 
+// Currently, java_sdk_library is not building correctly:
+// 1. there is no API tracking because of build failures
+// 2. it produces jar file with classes.dex which we do not know how to use in android studio
+//
+// Because we need class files in android studio, we need to build a stubs package and use that within
+// our project. To fix this, we need to use stubs jar file that is build together with the SDK and it is
+// located here: /media/arielos/arielos-22_2/out/target/common/obj/JAVA_LIBRARIES/com.arielos.platform.sdk_intermediates
+
 java_sdk_library {
     name: "com.arielos.platform.sdk",
     // to be removed when we figure out how to properly manage
@@ -22,7 +30,8 @@ java_sdk_library {
     // as we do not need it on the device.
     // public sdk classes are available to the system as
     // part of com.arielos.platform library
-    //installable: false,
+    // installable: false,
+
     libs: [
         "com.arielos.platform.internal",
     ],
