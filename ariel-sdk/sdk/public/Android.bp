@@ -49,11 +49,15 @@ java_sdk_library {
     api_srcs: [
         "src/java/arielos/**/*.java",
         "src/java/arielos/**/I*.aidl",
+        // For the generated R.java and Manifest.java
+        ":com.arielos.platform-res{.aapt.srcjar}",
     ],
 
     srcs: [
         "src/java/arielos/**/*.java",
         "src/java/arielos/**/I*.aidl",
+        // For the generated R.java and Manifest.java
+        ":com.arielos.platform-res{.aapt.srcjar}",
     ],
 
     aidl: {
