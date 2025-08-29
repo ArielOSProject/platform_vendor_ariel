@@ -31,6 +31,9 @@ service iptables-cleanup /system_ext/bin/iptables_setup --flush
 on property:ariel.online=1
     start iptables-setup
 
+on property:ariel.online=0
+    start iptables-cleanup
+
 # start dnscrypt_proxy after netd daemon
 on property:init.svc.netd=running
    start dnscrypt_proxy
