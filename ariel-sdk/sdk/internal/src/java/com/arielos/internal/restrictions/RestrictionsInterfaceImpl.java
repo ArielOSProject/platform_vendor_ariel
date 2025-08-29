@@ -51,6 +51,28 @@ public class RestrictionsInterfaceImpl implements RestrictionsInterface {
     public void disallowDebuggingFeatures(boolean disallow) {
         Log.i(TAG, "disallowDebuggingFeatures = "+disallow);
         mUserManager.setUserRestriction(UserManager.DISALLOW_DEBUGGING_FEATURES, disallow,
+
+            new UserHandle(UserHandle.myUserId()));
+    }
+
+    @Override
+    public void disallowConfigVpn(boolean disallow) {
+        Log.i(TAG, "disallowConfigVpn = "+disallow);
+        mUserManager.setUserRestriction(UserManager.DISALLOW_CONFIG_VPN, disallow,
+            new UserHandle(UserHandle.myUserId()));
+    }
+
+    @Override
+    public void disallowConfigPrivateDns(boolean disallow) {
+        Log.i(TAG, "disallowConfigPrivateDns = "+disallow);
+        mUserManager.setUserRestriction(UserManager.DISALLOW_CONFIG_PRIVATE_DNS, disallow,
+            new UserHandle(UserHandle.myUserId()));
+    }
+
+    @Override
+    public void disallowAirplaneMode(boolean disallow) {
+        Log.i(TAG, "disallowAirplaneMode = "+disallow);
+        mUserManager.setUserRestriction(UserManager.DISALLOW_AIRPLANE_MODE, disallow,
             new UserHandle(UserHandle.myUserId()));
     }
 

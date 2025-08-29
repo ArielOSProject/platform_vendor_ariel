@@ -1,0 +1,21 @@
+
+cc_binary {
+    name: "iptables_setup",
+    srcs: ["iptables_setup.c"],
+    cflags: ["-Wall", "-O2"],
+    shared_libs: ["liblog"],
+    system_ext_specific: true,
+    //init_rc: ["init_dnscrypt.rc"],  // optional if you want to embed your service definition
+}
+
+// iptables binary
+cc_prebuilt_binary {
+    name: "ariel_iptables",
+    srcs: ["iptables"],
+    prefer: true,
+    system_ext_specific: true,
+    installable: true,
+    strip: {
+        none: true,
+    },
+}

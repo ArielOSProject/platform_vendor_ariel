@@ -1,0 +1,56 @@
+# Declare the iptables_setup domain: a trusted init daemon for firewall setup
+#   - domain: marks it as a first-class SELinux domain
+#   - coredomain: grants default core SELinux rules (files, processes, sockets)
+#   - mlstrustedsubject: allows use of labeled file contexts if needed
+
+# Declare the iptables_setup domain type
+type iptables_setup, domain, coredomain, mlstrustedsubject;
+
+# Label the executable file for the iptables_setup domain
+#   - exec_type: marks it as executable by a domain transition
+#   - file_type/system_file_type: allows it to live under /system_ext/bin
+
+type iptables_setup_exec, exec_type, file_type, system_file_type;
+
+# Give iptables_setup the standard init daemon file-system rules
+#   - init_daemon_domain: pulls in permissions for procfs, sysfs, devfs, etc.
+init_daemon_domain(iptables_setup)
+
+# Grant generic network daemon permissions (e.g., access to netlink sockets)
+net_domain(iptables_setup)
+
+# Auto-transition: when init execs an iptables_setup_exec file, switch to iptables_setup domain
+domain_auto_trans(init, iptables_setup_exec, iptables_setup)
+
+# Allow iptables_setup to connect to the netd Unix socket for coordination
+allow iptables_setup netd:unix_stream_socket connectto;
+
+# Permit creation and socket operations on raw IP sockets (needed for custom netlink rules)
+allow iptables_setup iptables_setup:rawip_socket { create getopt setopt };
+
+# Allow reading attributes of /proc/<pid>/net files to inspect existing rules
+allow iptables_setup proc_net:file getattr;
+
+# Let iptables_setup traverse generic BPF mountpoints if needed
+allow iptables_setup fs_bpf:dir search;
+
+# Grant the NET_ADMIN and NET_RAW capabilities for modifying firewall rules
+allow iptables_setup self:capability { net_admin net_raw };
+
+# Permit standard socket creation and specific UDP/TCP sockets
+allow iptables_setup self:socket        create;
+allow iptables_setup self:udp_socket    create_socket_perms;
+allow iptables_setup self:tcp_socket    create_socket_perms;
+
+# Allow listing, opening, and reading procfs network directories
+allow iptables_setup proc_net:dir  { search read open };
+allow iptables_setup proc_net:file { open read getattr };
+
+# Allow searching keychain data files (if any logs or configs stored there)
+allow iptables_setup keychain_data_file:dir search;
+
+# Allow netd to execute the iptables_setup executable
+#   - map: memory-map the file
+#   - entrypoint/execute(_no_trans): start the process
+#   - read/open/getattr: basic file access
+allow netd iptables_setup_exec:file { map entrypoint execute read open getattr execute_no_trans };
