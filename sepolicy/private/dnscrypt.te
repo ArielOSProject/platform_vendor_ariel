@@ -7,8 +7,11 @@ type dnscrypt_proxy_config, file_type;
 
 allow dnscrypt_proxy self:capability { net_admin net_bind_service net_raw };
 
+#============= dnscrypt_proxy ==============
+allow dnscrypt_proxy toolbox_exec:file { map entrypoint execute open read getattr execute_no_trans };
+
 # start log file
-type dnscrypt_proxy_data_file, file_type; # Start minimal
+type dnscrypt_proxy_data_file, file_type, data_file_type, core_data_file_type; # Start minimal
 allow dnscrypt_proxy dnscrypt_proxy_data_file:dir { setattr getattr open read append add_name create search rmdir write remove_name }; # Adjust permissions as needed
 allow dnscrypt_proxy dnscrypt_proxy_data_file:file { setattr append create getattr open read write unlink rename }; # Adjust permissions as needed
 
