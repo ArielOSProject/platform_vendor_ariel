@@ -25,12 +25,12 @@
     <!-- <string name="updater_server_url" translatable="false">https://ota.arielos.com/a5y17lte/UNOFFICIAL/index.json</string> -->
     <!-- Starting from ArielOS 20.0 and 22.2, the URL path will also include OS version, since we have shipped devices with different versions
       and we can't OTA them from one version to another. So, we have to keep both versions active for one device. Sample URL:
-      https://ota.arielos.com/beyond1lte/22.2/UNOFFICIAL/index.json -->
-    <string name="updater_server_url" translatable="false">https://ota.arielos.com/{device}/22.2/{type}/index.json</string>
+      https://ota.arielos.com/beyond1lte/20.0/UNOFFICIAL/index.json -->
+    <string name="updater_server_url" translatable="false">https://ota.arielos.com/{device}/20.0/{type}/index.json</string>
 
     <string name="header_title_text">ArielOS\n%1$s</string>
     <string name="list_build_version">ArielOS <xliff:g id="version" example="14.1">%1$s</xliff:g></string>
     <string name="list_build_version_date">ArielOS <xliff:g id="version" example="14.1">%1$s</xliff:g> - <xliff:g id="date" example="July 11, 2017">%2$s</xliff:g></string>
 
-    <string name="menu_changelog_url" translatable="false">https://ota.arielos.com/<xliff:g id="device_name">%1$s</xliff:g>/22.2/changes.txt</string>
+    <string name="menu_changelog_url" translatable="false">https://ota.arielos.com/<xliff:g id="device_name">%1$s</xliff:g>/20.0/changes.txt</string>
 </resources>
