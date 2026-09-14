@@ -62,3 +62,49 @@ function addlineageremote()
     git remote add lineage https://github.com/LineageOS/$PFX$PROJECT
     echo "Remote 'lineage' created"
 }
+
+# Guard: bez ovoga bi ponovno source-ovanje omotalo vec omotanu funkciju
+# i dobio bi beskonacnu rekurziju pri prvom pozivu.
+if ! typeset -f _ariel_orig_brunch >/dev/null 2>&1; then
+    if [ -n "$ZSH_VERSION" ]; then
+        functions[_ariel_orig_brunch]=$functions[brunch]
+    else
+        eval "$(declare -f brunch | sed '1s/^brunch/_ariel_orig_brunch/')"
+    fi
+fi
+
+brunch() {
+    export BUILD_NUMBER="$(date -u +%Y%m%d%H%M%S)"
+
+    echo "=== ArielOS build ==="
+    echo "BUILD_NUMBER: ${BUILD_NUMBER}"
+    echo
+
+    _ariel_orig_brunch "$@"
+    local rc=$?
+
+    if [ $rc -eq 0 ]; then
+        local fp="${ANDROID_PRODUCT_OUT}/build_fingerprint.txt"
+        [ -f "$fp" ] && echo && echo "FINGERPRINT: $(cat "$fp")"
+    fi
+    return $rc
+}
+
+# Release build: isto sto i brunch, plus upis u build-history.txt
+function arielbuild() {
+    if [ -z "$1" ]; then
+        echo "usage: arielbuild <target>"
+        return 1
+    fi
+
+    brunch "$1"
+    local rc=$?
+
+    if [ $rc -eq 0 ]; then
+        local fp="${ANDROID_PRODUCT_OUT}/build_fingerprint.txt"
+        echo "${BUILD_NUMBER} $(date -u +%FT%TZ) ${TARGET_PRODUCT:-$1} $(cat "$fp" 2>/dev/null)" \
+            >> "$(gettop)/vendor/ariel/build-history.txt"
+        echo "Upisano u build-history.txt"
+    fi
+    return $rc
+}
