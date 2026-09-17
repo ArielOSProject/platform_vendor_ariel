@@ -9,8 +9,11 @@ service dnscrypt_proxy /system_ext/bin/dnscrypt-proxy -config /system_ext/etc/dn
     disabled
     capabilities NET_BIND_SERVICE NET_ADMIN NET_RAW
 
-# Apply all NAT + IPv6 rules at boot
-service iptables-setup /system_ext/bin/iptables_setup
+# Sync ariel DNS iptables rules with ariel.online:
+#   ariel.online=1  -> apply rules (ariel_dns / ariel_dns6 chains only)
+#   otherwise       -> remove ONLY ariel rules (netd chains are never touched)
+# The binary serializes concurrent runs and re-checks the property when done.
+service iptables-sync /system_ext/bin/iptables_setup --sync
     class late_start
     user root
     group root
@@ -19,21 +22,11 @@ service iptables-setup /system_ext/bin/iptables_setup
     oneshot
     disabled
 
-service iptables-cleanup /system_ext/bin/iptables_setup --flush
-    class late_start
-    user root
-    group root
-    capabilities NET_ADMIN NET_RAW
-    seclabel u:r:netd:s0
-    oneshot
-    disabled
+on property:ariel.online=*
+    start iptables-sync
 
-on property:ariel.online=1
-    start iptables-setup
-
-on property:ariel.online=0
-    start iptables-cleanup
-
-# start dnscrypt_proxy after netd daemon
+# start dnscrypt_proxy after netd daemon;
+# re-sync rules too, because a netd (re)start recreates empty oem_out/oem_fwd chains
 on property:init.svc.netd=running
-   start dnscrypt_proxy
+    start dnscrypt_proxy
+    start iptables-sync
