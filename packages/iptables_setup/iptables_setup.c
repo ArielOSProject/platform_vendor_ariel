@@ -1,26 +1,64 @@
 /*
- * iptables_setup.c - ArielOS DNS redirect rules for dnscrypt-proxy
+ * iptables_setup.c - ArielOS DNS enforcement rules for dnscrypt-proxy
  *
- * Pravila:
- *   - dira ISKLJUCIVO sopstvene lance (ariel_dns, ariel_dns6)
- *   - nikad ne radi -F / -X nad celom tabelom (to brise netd lance: tetherctrl_*, fw_*, bw_*, oem_*)
- *   - IPv6 hook ide preko netd-ovog oem_out (i opciono oem_fwd), ne direktno u OUTPUT
- *   - svi pozivi koriste -w (xtables lock) jer netd paralelno menja tabele
- *   - idempotentno: moze da se pokrene vise puta bez dupliranja jump-ova
+ * Overview
+ * --------
+ * All plain DNS traffic (port 53) originating on the device is forced through
+ * the local dnscrypt-proxy instance, which listens on 127.0.0.1:55 / [::1]:55.
  *
- * Upotreba:
- *   iptables_setup           -> primeni pravila
- *   iptables_setup --flush   -> ukloni SAMO ariel pravila
+ *   IPv4: nat/OUTPUT -> ariel_dns
+ *         Every locally generated DNS packet is REDIRECTed to port 55.
+ *         Only dnscrypt-proxy itself (uid 0) may reach its bootstrap
+ *         resolvers directly.
+ *
+ *   IPv6: filter/OUTPUT -> oem_out -> ariel_dns6
+ *         Plain IPv6 DNS is REJECTed (except dnscrypt-proxy's bootstrap
+ *         resolver), so resolvers fall back to IPv4, where the redirect
+ *         above applies.
+ *
+ *   IPv6: filter/FORWARD -> oem_fwd -> ariel_dns6_fwd
+ *         Hotspot clients sending IPv6 DNS directly to an external server
+ *         are REJECTed.
+ *
+ *   Hotspot clients using the default (DHCP-provided) DNS are covered by the
+ *   IPv4 rule as well: their queries are answered by the tethering dnsmasq,
+ *   which forwards them upstream from the device and therefore passes
+ *   through nat/OUTPUT.
+ *
+ * Design rules
+ * ------------
+ *   - Only chains owned by this tool are created, flushed or deleted
+ *     (ariel_dns, ariel_dns6, ariel_dns6_fwd). Tables are never flushed as a
+ *     whole: netd owns the rest of the ruleset (tethering, firewall,
+ *     bandwidth control) and relies on it being intact.
+ *   - IPv6 rules are attached through netd's OEM hook chains (oem_out,
+ *     oem_fwd), which netd creates for exactly this purpose. nat/OUTPUT has
+ *     no OEM hook and is not used by netd, so ariel_dns is attached there
+ *     directly.
+ *   - Every iptables call uses -w so it waits for the xtables lock instead of
+ *     failing while netd is updating the ruleset.
+ *   - Applying is idempotent: chains are flushed and refilled, and jumps are
+ *     added only if they are not already present.
+ *
+ * Usage
+ * -----
+ *   iptables_setup           apply the rules
+ *   iptables_setup --flush   remove the rules
+ *   iptables_setup --sync    apply or remove according to ariel.online
+ *                            (used by init, see the example at the end)
+ *
+ * All iptables invocations go through the ariel_iptables wrapper, which takes
+ * the tool name ("iptables" / "ip6tables") as its first argument.
  */
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <sys/file.h>
-#include <sys/wait.h>
 #include <sys/system_properties.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 #include <android/log.h>
 
@@ -28,18 +66,50 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,  LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
-#define WRAPPER    "/system_ext/bin/ariel_iptables"
-#define V4         "iptables"
-#define V6         "ip6tables"
+/* ------------------------------------------------------------------------- */
+/* Configuration                                                             */
+/* ------------------------------------------------------------------------- */
 
-#define CHAIN_V4   "ariel_dns"      /* nat tabela  */
-#define CHAIN_V6   "ariel_dns6"     /* filter tabela */
+#define WRAPPER       "/system_ext/bin/ariel_iptables"
+#define V4            "iptables"
+#define V6            "ip6tables"
+
+/* Chains owned by this tool. */
+#define CHAIN_V4      "ariel_dns"       /* nat table,    IPv4 local traffic   */
+#define CHAIN_V6      "ariel_dns6"      /* filter table, IPv6 local traffic   */
+#define CHAIN_V6_FWD  "ariel_dns6_fwd"  /* filter table, IPv6 hotspot clients */
+
+/* Local port dnscrypt-proxy listens on. */
 #define DNSCRYPT_PORT "55"
 
-/* 1 = i hotspot klijenti prolaze kroz IPv6 DNS filter (netd oem_fwd hook) */
+/*
+ * uid of the dnscrypt-proxy process. Only this uid may send DNS directly to
+ * the bootstrap resolvers; dnscrypt-proxy needs that to resolve its upstream
+ * servers before it can serve queries. Any other process querying these
+ * resolvers is handled like all other DNS traffic (redirected on IPv4,
+ * rejected on IPv6).
+ *
+ * dnscrypt-proxy runs as root (init.dnscrypt.rc: "user root", and no
+ * user_name is set in dnscrypt-proxy.toml). Keep this in sync if that
+ * changes, otherwise dnscrypt-proxy cannot bootstrap.
+ */
+#define DNSCRYPT_UID  "0"
+
+/* Property that tells whether DNS enforcement should be active ("1"). */
+#define ONLINE_PROP   "ariel.online"
+
+/* Set to 0 to leave IPv6 DNS of hotspot clients unfiltered. */
 #define ARIEL_FILTER_TETHER_V6 1
 
-/* Fork + exec; vraca exit code ili -1 */
+/* ------------------------------------------------------------------------- */
+/* Command execution                                                         */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Forks and execs argv (argv[0] is the full binary path) and waits for it.
+ * Returns the child's exit code, or -1 if it could not be run or did not
+ * exit normally.
+ */
 static int run_cmd(const char *const argv[]) {
     pid_t pid = fork();
     if (pid < 0) {
@@ -59,13 +129,14 @@ static int run_cmd(const char *const argv[]) {
 }
 
 /*
- * IPT(tool, "-t", "nat", ...) -> WRAPPER tool -w <args>
- * -w ceka xtables lock umesto da odmah padne (netd drzi lock tokom boot-a).
+ * IPT(tool, args...) runs:  ariel_iptables <tool> -w <args...>
+ * and evaluates to the exit code. Use it where a non-zero result is expected
+ * and handled by the caller (existence checks, best-effort cleanup).
  */
 #define IPT(tool, ...) \
     run_cmd((const char *const[]){ WRAPPER, tool, "-w", __VA_ARGS__, NULL })
 
-/* Loguje gresku samo kad je neocekivana */
+/* Same as IPT, but logs an error if the command fails. */
 #define IPT_CHECKED(tool, ...)                                            \
     do {                                                                  \
         int _rc = IPT(tool, __VA_ARGS__);                                 \
@@ -73,17 +144,28 @@ static int run_cmd(const char *const argv[]) {
                            #__VA_ARGS__, _rc);                            \
     } while (0)
 
-/* Napravi lanac ako ne postoji, pa ga isprazni (samo NAS lanac). */
+/* ------------------------------------------------------------------------- */
+/* Chain helpers                                                             */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Makes sure `chain` exists in `table` and is empty.
+ * -N fails with rc=1 if the chain already exists, which is fine.
+ */
 static void ensure_empty_chain(const char *tool, const char *table, const char *chain) {
-    IPT(tool, "-t", table, "-N", chain);            /* rc=1 ako vec postoji: OK */
+    IPT(tool, "-t", table, "-N", chain);
     IPT_CHECKED(tool, "-t", table, "-F", chain);
 }
 
-/* Dodaj "-j target" u parent tacno jednom. first=1 -> na pocetak lanca. */
+/*
+ * Makes sure `parent` contains exactly one "-j target" rule.
+ * The rule is added only if -C reports it missing. With first=1 it is
+ * inserted at the top of `parent`, otherwise appended.
+ */
 static void ensure_jump(const char *tool, const char *table,
                         const char *parent, const char *target, int first) {
     if (IPT(tool, "-t", table, "-C", parent, "-j", target) == 0)
-        return;                                     /* vec postoji */
+        return;
     int rc = first
         ? IPT(tool, "-t", table, "-I", parent, "1", "-j", target)
         : IPT(tool, "-t", table, "-A", parent, "-j", target);
@@ -91,7 +173,11 @@ static void ensure_jump(const char *tool, const char *table,
         LOGE("%s: jump %s -> %s failed (rc=%d)", tool, parent, target, rc);
 }
 
-/* Ukloni SVE kopije "-j target" iz parent lanca (ciscenje duplikata/starih verzija). */
+/*
+ * Removes every "-j target" rule from `parent`. -D deletes one match per
+ * call, so it is repeated until it fails (no more matches, or the chain does
+ * not exist). The loop is bounded as a safety net.
+ */
 static void remove_jumps(const char *tool, const char *table,
                          const char *parent, const char *target) {
     for (int i = 0; i < 16; i++) {
@@ -100,75 +186,134 @@ static void remove_jumps(const char *tool, const char *table,
     }
 }
 
+/* Removes all jumps to `chain` from `parent`, then flushes and deletes it. */
+static void remove_chain(const char *tool, const char *table,
+                         const char *parent, const char *chain) {
+    remove_jumps(tool, table, parent, chain);
+    IPT(tool, "-t", table, "-F", chain);
+    IPT(tool, "-t", table, "-X", chain);
+}
+
+/* ------------------------------------------------------------------------- */
+/* IPv4                                                                      */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * nat/OUTPUT -> ariel_dns
+ *
+ *   1. Bootstrap resolvers (8.8.8.8, 9.9.9.11), dnscrypt-proxy only:
+ *      RETURN, i.e. leave the packet untouched so it reaches the real server.
+ *   2. Everything else to port 53 (UDP and TCP): REDIRECT to dnscrypt-proxy.
+ *
+ * The nat table only evaluates the first packet of a connection; the rest of
+ * the flow follows the same translation via conntrack.
+ *
+ * The jump is inserted at the top of nat/OUTPUT so no other rule can
+ * translate DNS traffic before it.
+ */
 static void apply_v4(void) {
     ensure_empty_chain(V4, "nat", CHAIN_V4);
 
-    /* whitelist bootstrap resolvera (dnscrypt-proxy ih koristi) */
-    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-p", "udp", "-d", "8.8.8.8",  "--dport", "53", "-j", "RETURN");
-    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-p", "tcp", "-d", "8.8.8.8",  "--dport", "53", "-j", "RETURN");
-    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-p", "udp", "-d", "9.9.9.11", "--dport", "53", "-j", "RETURN");
-    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-p", "tcp", "-d", "9.9.9.11", "--dport", "53", "-j", "RETURN");
+    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-m", "owner", "--uid-owner", DNSCRYPT_UID,
+                "-p", "udp", "-d", "8.8.8.8",  "--dport", "53", "-j", "RETURN");
+    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-m", "owner", "--uid-owner", DNSCRYPT_UID,
+                "-p", "tcp", "-d", "8.8.8.8",  "--dport", "53", "-j", "RETURN");
+    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-m", "owner", "--uid-owner", DNSCRYPT_UID,
+                "-p", "udp", "-d", "9.9.9.11", "--dport", "53", "-j", "RETURN");
+    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-m", "owner", "--uid-owner", DNSCRYPT_UID,
+                "-p", "tcp", "-d", "9.9.9.11", "--dport", "53", "-j", "RETURN");
 
-    /* sav ostali DNS -> dnscrypt-proxy */
-    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-p", "udp", "--dport", "53", "-j", "REDIRECT", "--to-ports", DNSCRYPT_PORT);
-    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4, "-p", "tcp", "--dport", "53", "-j", "REDIRECT", "--to-ports", DNSCRYPT_PORT);
+    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4,
+                "-p", "udp", "--dport", "53", "-j", "REDIRECT", "--to-ports", DNSCRYPT_PORT);
+    IPT_CHECKED(V4, "-t", "nat", "-A", CHAIN_V4,
+                "-p", "tcp", "--dport", "53", "-j", "REDIRECT", "--to-ports", DNSCRYPT_PORT);
 
-    /*
-     * nat OUTPUT netd ne koristi (nema oem hook-a), pa je direktan jump OK.
-     * Hotspot DNS ide preko dnsmasq-a na uredjaju (legacy DNS proxy) -> OUTPUT,
-     * tako da su i klijenti pokriveni.
-     */
     ensure_jump(V4, "nat", "OUTPUT", CHAIN_V4, 1);
 }
 
-static void apply_v6(void) {
-    /* migracija: stare verzije su skakale direktno iz filter OUTPUT */
-    remove_jumps(V6, "filter", "OUTPUT", CHAIN_V6);
+/* ------------------------------------------------------------------------- */
+/* IPv6                                                                      */
+/* ------------------------------------------------------------------------- */
 
+/*
+ * filter/OUTPUT -> oem_out -> ariel_dns6   (traffic generated on the device)
+ *
+ *   1. Bootstrap resolver (2001:4860:4860::8888), dnscrypt-proxy only:
+ *      RETURN, so the packet continues through netd's remaining OUTPUT
+ *      chains (firewall, bandwidth) instead of being accepted outright.
+ *   2. Everything else to port 53: REJECT (TCP with a reset) so clients fail
+ *      fast and retry over IPv4.
+ *
+ * filter/FORWARD -> oem_fwd -> ariel_dns6_fwd   (hotspot clients)
+ *
+ *   All port 53 traffic is REJECTed; there is no bootstrap exception.
+ *   This needs its own chain: the owner match used in ariel_dns6 is only
+ *   valid for locally generated packets, and the kernel refuses owner rules
+ *   in any chain that is reachable from FORWARD.
+ *
+ * oem_out is the first chain netd hooks into filter/OUTPUT, and oem_fwd the
+ * first in filter/FORWARD, so these rules are evaluated before netd's own.
+ */
+static void apply_v6(void) {
     ensure_empty_chain(V6, "filter", CHAIN_V6);
 
-    IPT_CHECKED(V6, "-A", CHAIN_V6, "-d", "2001:4860:4860::8888", "-p", "udp", "--dport", "53", "-j", "RETURN");
-    IPT_CHECKED(V6, "-A", CHAIN_V6, "-d", "2001:4860:4860::8888", "-p", "tcp", "--dport", "53", "-j", "RETURN");
+    IPT_CHECKED(V6, "-A", CHAIN_V6, "-m", "owner", "--uid-owner", DNSCRYPT_UID,
+                "-d", "2001:4860:4860::8888", "-p", "udp", "--dport", "53", "-j", "RETURN");
+    IPT_CHECKED(V6, "-A", CHAIN_V6, "-m", "owner", "--uid-owner", DNSCRYPT_UID,
+                "-d", "2001:4860:4860::8888", "-p", "tcp", "--dport", "53", "-j", "RETURN");
     IPT_CHECKED(V6, "-A", CHAIN_V6, "-p", "udp", "--dport", "53", "-j", "REJECT");
-    IPT_CHECKED(V6, "-A", CHAIN_V6, "-p", "tcp", "--dport", "53", "-j", "REJECT", "--reject-with", "tcp-reset");
+    IPT_CHECKED(V6, "-A", CHAIN_V6, "-p", "tcp", "--dport", "53",
+                "-j", "REJECT", "--reject-with", "tcp-reset");
 
-    /*
-     * oem_out je netd-ov OEM hook, prvi u filter OUTPUT (pre fw_/st_/bw_ lanaca).
-     * RETURN (umesto ACCEPT) za whitelist -> netd-ova pravila (firewall, data saver)
-     * i dalje vaze za taj saobracaj.
-     */
     ensure_jump(V6, "filter", "oem_out", CHAIN_V6, 0);
 
 #if ARIEL_FILTER_TETHER_V6
-    /* hotspot klijenti sa IPv6 koji pitaju DNS direktno (mimo dnsmasq-a) */
-    ensure_jump(V6, "filter", "oem_fwd", CHAIN_V6, 0);
+    ensure_empty_chain(V6, "filter", CHAIN_V6_FWD);
+
+    IPT_CHECKED(V6, "-A", CHAIN_V6_FWD, "-p", "udp", "--dport", "53", "-j", "REJECT");
+    IPT_CHECKED(V6, "-A", CHAIN_V6_FWD, "-p", "tcp", "--dport", "53",
+                "-j", "REJECT", "--reject-with", "tcp-reset");
+
+    ensure_jump(V6, "filter", "oem_fwd", CHAIN_V6_FWD, 0);
 #endif
 }
 
-static void flush_ariel(void) {
-    /* v4 */
-    remove_jumps(V4, "nat", "OUTPUT", CHAIN_V4);
-    IPT(V4, "-t", "nat", "-F", CHAIN_V4);
-    IPT(V4, "-t", "nat", "-X", CHAIN_V4);
+/* ------------------------------------------------------------------------- */
+/* Removal                                                                   */
+/* ------------------------------------------------------------------------- */
 
-    /* v6 */
-    remove_jumps(V6, "filter", "OUTPUT",  CHAIN_V6);   /* stare verzije */
-    remove_jumps(V6, "filter", "oem_out", CHAIN_V6);
-    remove_jumps(V6, "filter", "oem_fwd", CHAIN_V6);
-    IPT(V6, "-F", CHAIN_V6);
-    IPT(V6, "-X", CHAIN_V6);
+/*
+ * Detaches and deletes every chain owned by this tool. Nothing else in the
+ * ruleset is touched. Safe to call when the rules are not installed.
+ */
+static void remove_all(void) {
+    remove_chain(V4, "nat",    "OUTPUT",  CHAIN_V4);
+    remove_chain(V6, "filter", "oem_out", CHAIN_V6);
+    remove_chain(V6, "filter", "oem_fwd", CHAIN_V6_FWD);
 }
 
-static int prop_online(void) {
+/* ------------------------------------------------------------------------- */
+/* Property sync                                                             */
+/* ------------------------------------------------------------------------- */
+
+static int enforcement_wanted(void) {
     char val[PROP_VALUE_MAX] = "";
-    __system_property_get("ariel.online", val);
+    __system_property_get(ONLINE_PROP, val);
     return strcmp(val, "1") == 0;
 }
 
 /*
- * --sync: prati ariel.online dok se ne stabilizuje.
- * flock serijalizuje paralelne instance, a petlja hvata promene svojstva
- * koje stignu dok radimo (init "start" ne pokrece servis koji vec radi).
+ * --sync: brings the ruleset in line with ariel.online.
+ *
+ * Locking: init may start this service again while a previous run is still
+ * active. An exclusive flock on our own executable serializes such runs, so
+ * their iptables commands never interleave. If the lock cannot be taken, the
+ * run continues unlocked and logs an error.
+ *
+ * Re-check loop: init ignores "start" for a oneshot service that is still
+ * running, so a property change during a run would otherwise be missed.
+ * After each pass the property is read again, and the work is repeated until
+ * the applied state matches it (bounded as a safety net).
  */
 static void sync_with_property(void) {
     int fd = open("/proc/self/exe", O_RDONLY | O_CLOEXEC);
@@ -177,22 +322,27 @@ static void sync_with_property(void) {
 
     int applied = -1;
     for (int i = 0; i < 8; i++) {
-        int want = prop_online();
+        int want = enforcement_wanted();
         if (want == applied)
             break;
         if (want) {
-            LOGI("sync: ariel.online=1 -> applying ariel DNS rules");
+            LOGI("sync: " ONLINE_PROP "=1, applying DNS rules");
             apply_v4();
             apply_v6();
         } else {
-            LOGI("sync: ariel.online!=1 -> removing ariel DNS rules");
-            flush_ariel();
+            LOGI("sync: " ONLINE_PROP "!=1, removing DNS rules");
+            remove_all();
         }
         applied = want;
     }
 
-    if (fd >= 0) close(fd);   /* oslobadja lock */
+    if (fd >= 0)
+        close(fd);  /* releases the lock */
 }
+
+/* ------------------------------------------------------------------------- */
+/* Entry point                                                               */
+/* ------------------------------------------------------------------------- */
 
 int main(int argc, char *argv[]) {
     const char *mode = argc > 1 ? argv[1] : "";
@@ -200,10 +350,10 @@ int main(int argc, char *argv[]) {
     if (strcmp(mode, "--sync") == 0) {
         sync_with_property();
     } else if (strcmp(mode, "--flush") == 0) {
-        LOGI("removing ariel DNS rules");
-        flush_ariel();
+        LOGI("removing DNS rules");
+        remove_all();
     } else {
-        LOGI("applying ariel DNS rules");
+        LOGI("applying DNS rules");
         apply_v4();
         apply_v6();
     }
@@ -211,7 +361,8 @@ int main(int argc, char *argv[]) {
 }
 
 /*
- * init.dnscrypt.rc (zamena za iptables-setup + iptables-cleanup):
+ * Init integration (init.dnscrypt.rc)
+ * -----------------------------------
  *
  * service iptables-sync /system_ext/bin/iptables_setup --sync
  *     class late_start
@@ -222,11 +373,16 @@ int main(int argc, char *argv[]) {
  *     oneshot
  *     disabled
  *
+ * # Re-sync whenever the enforcement state changes.
  * on property:ariel.online=*
  *     start iptables-sync
  *
- * # netd pri restartu ponovo pravi oem_out/oem_fwd (prazne) -> vrati jump-ove
+ * # A netd (re)start recreates oem_out / oem_fwd empty, so the jumps
+ * # into our chains must be restored.
  * on property:init.svc.netd=running
  *     start dnscrypt_proxy
  *     start iptables-sync
+ *
+ * SELinux: the service runs as netd and takes a flock on this binary, which
+ * requires the "lock" permission on the binary's file type.
  */
