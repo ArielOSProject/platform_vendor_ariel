@@ -104,7 +104,7 @@ function arielbuild() {
         local fp="${ANDROID_PRODUCT_OUT}/build_fingerprint.txt"
         echo "${BUILD_NUMBER} $(date -u +%FT%TZ) ${TARGET_PRODUCT:-$1} $(cat "$fp" 2>/dev/null)" \
             >> "$(gettop)/vendor/ariel/build-history.txt"
-        echo "Upisano u build-history.txt"
+        echo "ArielOS build-history.txt updated!"
     fi
     return $rc
 }
