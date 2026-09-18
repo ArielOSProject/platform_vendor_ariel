@@ -20,6 +20,7 @@ PRODUCT_COPY_FILES += \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.intentfirewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.intentfirewall.xml \
     vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/permissions/com.arielos.firewall.xml \
     vendor/ariel/prebuilt/common/etc/sysconfig/ariel-sysconfig.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/ariel-sysconfig.xml \
+    vendor/ariel/prebuilt/common/etc/sysconfig/default-roles-ariel.xml:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/sysconfig/default-roles-ariel.xml \
     vendor/ariel/prebuilt/common/etc/gps.conf:$(TARGET_COPY_OUT_SYSTEM_EXT)/etc/gps.conf \
 #   vendor/ariel/prebuilt/common/etc/permissions/com.arielos.firewall.xml:system/etc/permissions/com.arielos.firewall.xml \
 
