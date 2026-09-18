@@ -4,10 +4,11 @@ PRODUCT_PACKAGES += \
   GsfProxy \
   MicrogVending \
   ArielGuardian \
-  NewPipe \
   ArielParental \
   GoogleCalendarSyncAdapter \
-  ArielProtector
+  ArielProtector \
+  DuckDuckGo \
+  SkyTubeExtra
 
 # ArielGuardian
 #FakeStore \
