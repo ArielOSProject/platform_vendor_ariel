@@ -56,3 +56,16 @@ brunch() {
     fi
     return $rc
 }
+
+# ArielOS 18.1 only!
+# Host environment fixes for building on newer distributions.
+# The bundled mke2fs (1.45.4) rejects the orphan_file feature that ships
+# enabled by default in /etc/mke2fs.conf on e2fsprogs 1.47+.
+if [ ! -f "$HOME/mke2fs-aosp.conf" ]; then
+  sed 's/,orphan_file//g' /etc/mke2fs.conf > "$HOME/mke2fs-aosp.conf"
+fi
+export MKE2FS_CONFIG="$HOME/mke2fs-aosp.conf"
+
+# soong_ui strips unknown variables from the environment before running
+# ninja, which would otherwise drop MKE2FS_CONFIG.
+export ALLOW_NINJA_ENV=true
