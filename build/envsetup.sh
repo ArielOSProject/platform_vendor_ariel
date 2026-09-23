@@ -23,6 +23,7 @@ function check_product()
     else
         if (echo -n $1 | grep -q -e "^ariel_") ; then
            LINEAGE_BUILD=$(echo -n $1 | sed -e 's/^ariel_//g')
+           export BUILD_NUMBER="$(date -u +%Y%m%d%H%M%S)"
         else
            LINEAGE_BUILD=
         fi
@@ -74,12 +75,6 @@ if ! typeset -f _ariel_orig_brunch >/dev/null 2>&1; then
 fi
 
 brunch() {
-    export BUILD_NUMBER="$(date -u +%Y%m%d%H%M%S)"
-
-    echo "=== ArielOS build ==="
-    echo "BUILD_NUMBER: ${BUILD_NUMBER}"
-    echo
-
     _ariel_orig_brunch "$@"
     local rc=$?
 
@@ -89,3 +84,4 @@ brunch() {
     fi
     return $rc
 }
+
