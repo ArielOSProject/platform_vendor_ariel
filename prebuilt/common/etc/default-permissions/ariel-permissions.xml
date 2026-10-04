@@ -47,6 +47,7 @@
         <permission name="android.permission.WRITE_CALL_LOG" fixed="true"/>
         <!-- This permission is required so that Ariel Parental is exempted from Android Freezer -->
         <permission name="android.permission.INSTALL_PACKAGES" fixed="true"/>
+        <permission name="android.permission.POST_NOTIFICATIONS" fixed="true"/>
     </exception>
 
     <exception
