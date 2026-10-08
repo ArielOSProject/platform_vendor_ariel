@@ -1,7 +1,6 @@
 PRODUCT_PACKAGES += \
   AuroraStore \
   GmsCore \
-  GsfProxy \
   MicrogVending \
   ArielGuardian \
   ArielParental \
