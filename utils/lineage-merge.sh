@@ -112,6 +112,8 @@ while read -r -u3 path || [ -n "$path" ];
                 uptodate+=("${path}");
             else
                 echo " -> Pushing ariel-${ref} to ariel remote...";
+                # repo sync resets the remote to the manifest's https url, push over ssh instead
+                git -C "${path}" remote set-url --push ariel "git@github.com:ArielOSProject/${project}.git"
                 ret=$(git -C "${path}" push ariel "ariel-${ref}:ariel-${ref}" 2>&1 </dev/null);
                 push_rc=$?
                 echo "RET: $ret"
