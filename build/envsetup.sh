@@ -7,7 +7,14 @@ function __print_ariel_functions_help() {
 cat <<EOF
 Additional ArielOS functions:
 - addlineageremote:   Add git remote for LineageOS.
+- ariel_ota_json:     Generate Updater index.json next to the OTA zip in \$OUT.
 EOF
+}
+
+# Generates index.json for the Updater next to the OTA zip (also run after brunch)
+function ariel_ota_json()
+{
+    python3 "$(gettop)/vendor/ariel/build/tools/gen_ota_json.py" "${1:-$ANDROID_PRODUCT_OUT}"
 }
 
 # check to see if the supplied product is one we can build
@@ -81,6 +88,7 @@ brunch() {
     if [ $rc -eq 0 ]; then
         local fp="${ANDROID_PRODUCT_OUT}/build_fingerprint.txt"
         [ -f "$fp" ] && echo && echo "FINGERPRINT: $(cat "$fp")"
+        ariel_ota_json || echo "WARNING: OTA JSON nije generisan"
     fi
     return $rc
 }
