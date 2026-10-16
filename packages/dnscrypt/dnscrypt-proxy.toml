@@ -4,9 +4,10 @@
 ###############################################################################
 
 ## Servers list
-## Using only AdGuard Family to ensure consistent filtering of adult content,
-## gambling, malware, trackers, and ads, while enforcing SafeSearch.
-server_names = ['adguard-dns-family']
+## Multi-server setup (AdGuard, Control D, DNS for Family) ensuring redundancy 
+## and consistent filtering of adult content, gambling, malware, trackers, ads,
+## and proxy/anonymizer sites, while enforcing SafeSearch across search engines.
+server_names = ['adguard-dns-family', 'controld-family', 'dnsforfamily']
 
 ## Security & Privacy Requirements
 ## Ensure that the selected servers support DNSSEC (cryptographic verification)
