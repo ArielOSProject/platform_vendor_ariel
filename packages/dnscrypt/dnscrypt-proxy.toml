@@ -7,7 +7,7 @@
 ## Multi-server setup (AdGuard, Control D, DNS for Family) ensuring redundancy 
 ## and consistent filtering of adult content, gambling, malware, trackers, ads,
 ## and proxy/anonymizer sites, while enforcing SafeSearch across search engines.
-server_names = ['adguard-dns-family', 'controld-family', 'dnsforfamily']
+server_names = ['adguard-dns-family', 'controld-family-friendly', 'dnsforfamily']
 
 ## Security & Privacy Requirements
 ## Ensure that the selected servers support DNSSEC (cryptographic verification)
@@ -80,8 +80,16 @@ log_file = '/data/misc/dnscrypt_proxy/dnscrypt_proxy.log'
    cache_file = '/data/misc/dnscrypt_proxy/parental-control.md'
    minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
 
-## Public/unfiltered resolvers remain disabled to prevent policy bypass
-#[sources.'public-resolvers']
+## Public resolvers list is loaded ONLY because controld-family-friendly (Control D
+## Family) is not part of parental-control.md. No other public resolver is used:
+## server_names above restricts which servers can be selected.
+ [sources.'public-resolvers']
+   urls = [
+     'https://raw.githubusercontent.com/DNSCrypt/dnscrypt-resolvers/master/v3/public-resolvers.md',
+     'https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md'
+   ]
+   cache_file = '/data/misc/dnscrypt_proxy/public-resolvers.md'
+   minisign_key = 'RWQf6LRCGA9i53mlYecO4IzT51TGPpvWucNSCh1CBM0QTaLn73Y7GFO3'
 
 ## Relays for Anonymized DNS (Disabled/Commented out to ensure direct secure connection)
 #[sources.relays]

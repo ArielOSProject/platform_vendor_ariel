@@ -1,6 +1,20 @@
 cc_prebuilt_binary {
     name: "dnscrypt-proxy",
-    srcs: ["dnscrypt-proxy"],
+    // Per-ABI Android builds from the upstream release zips (android_<abi>).
+    arch: {
+        arm: {
+            srcs: ["bin/arm/dnscrypt-proxy"],
+        },
+        arm64: {
+            srcs: ["bin/arm64/dnscrypt-proxy"],
+        },
+        x86: {
+            srcs: ["bin/x86/dnscrypt-proxy"],
+        },
+        x86_64: {
+            srcs: ["bin/x86_64/dnscrypt-proxy"],
+        },
+    },
     prefer: true,
     system_ext_specific: true,
     installable: true,
