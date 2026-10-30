@@ -41,6 +41,19 @@ SKIP_HOSTS = {
     "0.0.0.0",
 }
 
+# Hosts cloaked to restrict.youtube.com (cloaking-rules.txt). dnscrypt-proxy
+# applies a block before cloaking, and a bare domain blocks its subdomains, so
+# neither these hosts nor any parent domain of them may end up in the blocklist.
+NEVER_BLOCK = {
+    "www.youtube.com",
+    "m.youtube.com",
+    "youtubei.googleapis.com",
+    "youtube.googleapis.com",
+    "www.youtube-nocookie.com",
+    "restrict.youtube.com",
+    "restrictmoderate.youtube.com",
+}
+
 # Only lines that redirect to one of these "null" IPs are treated as blocks.
 NULL_IPS = {"0.0.0.0", "127.0.0.1", "::1"}
 
@@ -65,6 +78,11 @@ def extract_source_date(text: str) -> str:
     return "unknown"
 
 
+def is_protected(host: str) -> bool:
+    """True if blocking host would block (or equal) a NEVER_BLOCK name."""
+    return any(n == host or n.endswith("." + host) for n in NEVER_BLOCK)
+
+
 def extract_domains(text: str):
     """Yield unique domains, preserving first-seen order."""
     seen = set()
@@ -83,6 +101,8 @@ def extract_domains(text: str):
         if ip not in NULL_IPS:
             continue
         if host in SKIP_HOSTS or "." not in host:
+            continue
+        if is_protected(host):
             continue
         if host in seen:
             continue
@@ -116,6 +136,7 @@ def main() -> int:
         f"# Unique domains: {len(domains)}",
         "#",
         "# A bare domain blocks that name and all subdomains.",
+        "# YouTube cloaking hosts (and their parents) are never listed.",
         "",
     ]
 
