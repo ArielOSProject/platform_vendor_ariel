@@ -8,6 +8,7 @@ PRODUCT_PACKAGES += \
     dnscrypt-proxy \
     dnscrypt-proxy-config \
     dnscrypt-proxy-blocklist \
+    dnscrypt-proxy-cloaking-rules \
     init.dnscrypt \
     ariel_iptables \
     iptables_setup \

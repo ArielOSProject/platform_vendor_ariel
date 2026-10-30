@@ -44,6 +44,16 @@ prebuilt_etc {
     system_ext_specific: true,
 }
 
+// Install cloaking rules (YouTube Restricted Mode) to /system_ext/etc/
+prebuilt_etc {
+    name: "dnscrypt-proxy-cloaking-rules",
+    src: "cloaking-rules.txt",
+    sub_dir: "dnscrypt-proxy",
+    filename: "cloaking-rules.txt",
+    installable: true,
+    system_ext_specific: true,
+}
+
 // Install init script to /system_ext/etc/init/
 prebuilt_etc {
     name: "init.dnscrypt",
