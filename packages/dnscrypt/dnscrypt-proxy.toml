@@ -48,6 +48,11 @@ cache_neg_max_ttl = 600
 log_level = 3
 log_file = '/data/misc/dnscrypt_proxy/dnscrypt_proxy.log'
 
+## YouTube Restricted Mode: cloak YouTube hosts to restrict.youtube.com.
+## Top-level keys, must stay above the first [section].
+cloaking_rules = '/system_ext/etc/dnscrypt-proxy/cloaking-rules.txt'
+cloak_ttl = 600
+
 [query_log]
   file = '/data/misc/dnscrypt_proxy/dnscrypt_proxy_query.log'
   format = 'tsv'
