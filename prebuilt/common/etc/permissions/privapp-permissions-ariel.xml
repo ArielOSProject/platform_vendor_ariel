@@ -25,6 +25,9 @@
         <permission name="android.permission.MAINLINE_NETWORK_STACK" />
         <permission name="android.permission.CONNECTIVITY_INTERNAL" />
         <permission name="android.permission.OBSERVE_NETWORK_POLICY" />
+        <!-- Block unknown callers: Guardian owns and enforces the enhanced block settings -->
+        <permission name="android.permission.READ_BLOCKED_NUMBERS" />
+        <permission name="android.permission.WRITE_BLOCKED_NUMBERS" />
         <!-- This permission is required so that Ariel Parental is exempted from Android Freezer -->
         <permission name="android.permission.INSTALL_PACKAGES" />
     </privapp-permissions>
