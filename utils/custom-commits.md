@@ -55,3 +55,14 @@ No ArielOS fork found on GitHub (no `ariel-lineage-18.1` branch). Nothing to rec
 | Hash | Date | Subject |
 |---|---|---|
 | 3c416f0 | 2022-03-25 | Ariel: Use our own OTA hosting |
+
+## frameworks/opt/telephony
+| Hash | Date | Subject |
+|---|---|---|
+| dd7da9f44b | 2024-10-22 | ArielOS: Send SMS broadcast to Ariel Guardian even if user is not unlocked |
+| 53c88ad11f | 2026-09-15 | ArielOS: Fix issue with Samsung RIL returning garbage for SMS service center |
+
+## packages/providers/BlockedNumberProvider
+| Hash | Date | Subject |
+|---|---|---|
+| ce81ced | 2026-11-03 | Notify observers when an enhanced block setting changes |
