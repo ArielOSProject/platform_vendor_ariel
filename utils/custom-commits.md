@@ -42,3 +42,4 @@ Note: 0dba679, 2f32c64, 3720c8f and 402c51b touch the same keyguard/biometric/Sy
 |---|---|---|
 | ce81ced | 2026-11-03 | Notify observers when an enhanced block setting changes |
 | 34c41ef | 2026-11-04 | ArielOS: Block unknown SMS senders when ariel_block_unknown_sms is on |
+| b97f6fd | 2026-11-04 | ArielOS: Let Guardian masters through block unknown calls |
