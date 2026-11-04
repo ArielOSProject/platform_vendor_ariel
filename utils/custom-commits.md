@@ -35,8 +35,10 @@ Note: 0dba679, 2f32c64, 3720c8f and 402c51b touch the same keyguard/biometric/Sy
 |---|---|---|
 | dd7da9f44b | 2024-10-22 | ArielOS: Send SMS broadcast to Ariel Guardian even if user is not unlocked |
 | 53c88ad11f | 2026-09-15 | ArielOS: Fix issue with Samsung RIL returning garbage for SMS service center |
+| 4d462e2c95 | 2026-11-04 | ArielOS: Mark incoming SMS block checks for BlockedNumberProvider |
 
 ## packages/providers/BlockedNumberProvider
 | Hash | Date | Subject |
 |---|---|---|
 | ce81ced | 2026-11-03 | Notify observers when an enhanced block setting changes |
+| 34c41ef | 2026-11-04 | ArielOS: Block unknown SMS senders when ariel_block_unknown_sms is on |
