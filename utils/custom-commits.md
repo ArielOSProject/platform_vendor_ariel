@@ -68,3 +68,4 @@ No ArielOS fork found on GitHub (no `ariel-lineage-18.1` branch). Nothing to rec
 |---|---|---|
 | ce81ced | 2026-11-03 | Notify observers when an enhanced block setting changes |
 | 34c41ef | 2026-11-04 | ArielOS: Block unknown SMS senders when ariel_block_unknown_sms is on |
+| b97f6fd | 2026-11-04 | ArielOS: Let Guardian masters through block unknown calls |
