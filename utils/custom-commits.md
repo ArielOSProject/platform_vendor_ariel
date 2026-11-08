@@ -28,6 +28,7 @@ Branches (`ariel-lineage-22.2`, `-20.0`, `-18.1`) intentionally differ in their 
 | 84de0d8ecb2d | 2024-10-22 | ArielOS: Introduce indeterminate lockout, fix issues with refreshing lockout |
 | 4f4996cf5a6a | 2024-10-22 | ArielOS: Clear keyguard |
 | bc4da29ae0fe | 2025-01-15 | Allow spoofing signingInfo for microG Companion/Services (duplicates Lineage; skip) |
+| 47a46fa5270b | 2026-11-08 | ArielOS: make panic mode detection reliable (5 fast taps, AOSP emergency gesture rules) |
 
 Notes:
 - **microG on 18.1 (checked against `lineage/lineage-18.1`):** Lineage 18.1 has its own microG support in `PackageManagerService.java` (`isMicrogSigned()`, `MICROG_FAKE_SIGNATURE`, `fake-signature` metadata; upstream commits 438d9feacfca and ecb003c33be4). ArielOS adds on top:
