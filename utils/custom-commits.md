@@ -31,6 +31,7 @@ Branches (`ariel-lineage-22.2`, `-20.0`, `-18.1`) intentionally differ in their 
 | 2f32c64f139b | 2024-10-22 | ArielOS: Introduce indeterminate lockout (keyguard) |
 | 3720c8f14b48 | 2025-04-22 | ArielOS: Fix biometric service crashing; move Ariel SystemServer init to last step |
 | 402c51b6d435 | 2025-08-05 | ArielOS: Update code base for lineage 22.2 (idmap2, OverlayConfig, androidfw, keyguard, fingerprint) |
+| df2447052ad6 | 2026-11-08 | ArielOS: keep panic mode detection always armed (ignore Emergency SOS toggle) |
 
 Note: 0dba679, 2f32c64, 3720c8f and 402c51b touch the same keyguard/biometric/SystemServer files, so expect conflicts there. 402c51b is a 22.2-specific port and likely needs rework rather than a plain pick for 23.
 
