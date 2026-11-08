@@ -8,6 +8,10 @@ Regenerate for a repo (run in the project dir):
 
 Migrating to a new Lineage version `<new>`: in each project, `git checkout -b ariel-<new> lineage/<new>`, then `git cherry-pick -x <hashes below, in order>`. Resolve conflicts per commit. Run `lineage-merge.sh`-style fetch first so the `lineage` remote has `<new>`. Update this file afterwards with the new hashes.
 
+## Cross-branch sync baseline: 2026-11-03
+
+Branches (`ariel-lineage-22.2`, `-20.0`, `-18.1`) intentionally differ in their older custom commits; a commit missing on one branch is not a bug. When comparing or syncing branches, ignore commits dated before 2026-11-03. Commits from that date on (starting with the block call/SMS work: BlockedNumberProvider `Notify observers when an enhanced block setting changes`, vendor `Grant blocked numbers permissions to Guardian`) must exist on every branch; port them with cherry-pick. Hashes differ per branch, so compare by subject.
+
 ## build/make  (list entry: `build`)
 | Hash | Date | Subject |
 |---|---|---|
