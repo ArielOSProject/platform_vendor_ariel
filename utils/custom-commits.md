@@ -39,11 +39,11 @@ Notes:
 | 1615db9dcc | 2024-10-22 | ArielOS: Send SMS broadcast to Ariel Guardian even if user is not unlocked |
 | f9c880172c | 2025-08-07 | ArielOS: remove duplicate code (follow-up to 1615db9dcc; fold into it when porting) |
 | 1e7400574a | 2026-09-15 | ArielOS: Fix issue with Samsung RIL returning garbage for SMS service center |
-| 4d462e2c95 | 2026-11-04 | ArielOS: Mark incoming SMS block checks for BlockedNumberProvider |
+| c216a8f6ce | 2026-11-04 | ArielOS: Mark incoming SMS block checks for BlockedNumberProvider |
 
 ## packages/providers/BlockedNumberProvider
 | Hash | Date | Subject |
 |---|---|---|
-| ce81ced | 2026-11-03 | Notify observers when an enhanced block setting changes |
-| 34c41ef | 2026-11-04 | ArielOS: Block unknown SMS senders when ariel_block_unknown_sms is on |
-| b97f6fd | 2026-11-04 | ArielOS: Let Guardian masters through block unknown calls |
+| 9c7aee0 | 2026-11-03 | Notify observers when an enhanced block setting changes |
+| 87b7f50 | 2026-11-04 | ArielOS: Block unknown SMS senders when ariel_block_unknown_sms is on |
+| a2f7153 | 2026-11-04 | ArielOS: Let Guardian masters through block unknown calls |
