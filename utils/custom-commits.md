@@ -30,6 +30,7 @@ Branches (`ariel-lineage-22.2`, `-20.0`, `-18.1`) intentionally differ in their 
 | ea66209276ef | 2023-11-21 | IntentFirewall: Support blocking apps and their components using package name |
 | ebc5cd44cbe9 | 2024-10-22 | ArielOS: Introduce indeterminate lockout |
 | 16059d6de105 | 2025-04-22 | Fix biometric service crashing; move Ariel SystemServer init to last step |
+| f02c3457efe9 | 2026-11-08 | ArielOS: keep panic mode detection always armed (ignore Emergency SOS toggle) |
 
 Notes:
 - The branch contains duplicate copies of three commits (identical patch-ids): `cc4f89c6bff5` = `79df6cd83598`, `4fc22ab7cd17` = `be9c01432b9a`, and the microG pair below. Only one copy of each is listed above; skip the twins.
