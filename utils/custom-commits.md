@@ -8,6 +8,10 @@ Regenerate for a repo (run in the project dir):
 
 Then drop commits not authored by you (see "Excluded" below). Migrating to a new Lineage version `<new>`: in each project, `git checkout -b ariel-<new> lineage/<new>`, then `git cherry-pick -x <hashes below, in order>`. Resolve conflicts per commit. Fetch the `lineage` remote first so it has `<new>`. Update this file afterwards with the new hashes.
 
+## Cross-branch sync baseline: 2026-11-03
+
+Branches (`ariel-lineage-22.2`, `-20.0`, `-18.1`) intentionally differ in their older custom commits; a commit missing on one branch is not a bug. When comparing or syncing branches, ignore commits dated before 2026-11-03. Commits from that date on (starting with the block call/SMS work: BlockedNumberProvider `Notify observers when an enhanced block setting changes`, vendor `Grant blocked numbers permissions to Guardian`) must exist on every branch; port them with cherry-pick. Hashes differ per branch, so compare by subject.
+
 ## build/make  (list entry: `build`)
 | Hash | Date | Subject |
 |---|---|---|
@@ -55,3 +59,15 @@ No ArielOS fork found on GitHub (no `ariel-lineage-18.1` branch). Nothing to rec
 | Hash | Date | Subject |
 |---|---|---|
 | 3c416f0 | 2022-03-25 | Ariel: Use our own OTA hosting |
+
+## frameworks/opt/telephony
+| Hash | Date | Subject |
+|---|---|---|
+| 88ba69d2f7 | 2026-11-04 | ArielOS: Mark incoming SMS block checks for BlockedNumberProvider |
+
+## packages/providers/BlockedNumberProvider
+| Hash | Date | Subject |
+|---|---|---|
+| d8a6538 | 2026-11-03 | Notify observers when an enhanced block setting changes |
+| d0457f6 | 2026-11-04 | ArielOS: Block unknown SMS senders when ariel_block_unknown_sms is on |
+| fa6a70e | 2026-11-04 | ArielOS: Let Guardian masters through block unknown calls |
