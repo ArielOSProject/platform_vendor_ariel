@@ -8,6 +8,10 @@ Regenerate for a repo (run in the project dir):
 
 Migrating to a new Lineage version `<new>`: in each project, `git checkout -b ariel-<new> lineage/<new>`, then `git cherry-pick -x <hashes below, in order>`. Resolve conflicts per commit. Fetch the `lineage` remote first so it has `<new>`. Update this file afterwards with the new hashes.
 
+## Cross-branch sync baseline: 2026-11-03
+
+Branches (`ariel-lineage-22.2`, `-20.0`, `-18.1`) intentionally differ in their older custom commits; a commit missing on one branch is not a bug. When comparing or syncing branches, ignore commits dated before 2026-11-03. Commits from that date on (starting with the block call/SMS work: BlockedNumberProvider `Notify observers when an enhanced block setting changes`, vendor `Grant blocked numbers permissions to Guardian`) must exist on every branch; port them with cherry-pick. Hashes differ per branch, so compare by subject.
+
 ## build/make  (list entry: `build`)
 | Hash | Date | Subject |
 |---|---|---|
@@ -39,3 +43,11 @@ Notes:
 | 1615db9dcc | 2024-10-22 | ArielOS: Send SMS broadcast to Ariel Guardian even if user is not unlocked |
 | f9c880172c | 2025-08-07 | ArielOS: remove duplicate code (follow-up to 1615db9dcc; fold into it when porting) |
 | 1e7400574a | 2026-09-15 | ArielOS: Fix issue with Samsung RIL returning garbage for SMS service center |
+| c216a8f6ce | 2026-11-04 | ArielOS: Mark incoming SMS block checks for BlockedNumberProvider |
+
+## packages/providers/BlockedNumberProvider
+| Hash | Date | Subject |
+|---|---|---|
+| 9c7aee0 | 2026-11-03 | Notify observers when an enhanced block setting changes |
+| 87b7f50 | 2026-11-04 | ArielOS: Block unknown SMS senders when ariel_block_unknown_sms is on |
+| a2f7153 | 2026-11-04 | ArielOS: Let Guardian masters through block unknown calls |
