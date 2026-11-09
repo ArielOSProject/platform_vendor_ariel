@@ -15,6 +15,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   3. Prints `WARNING!: MERGE CONFLICT` if the merge reports a conflict. Conflicts are left unresolved in that project for manual resolution and are not pushed.
   4. On a clean merge, pushes `ariel-<ref>` to the `ariel` remote (plain push, no force). Each project is left on `ariel-<ref>`, and a summary of pushed / conflicted / failed projects is printed at the end.
 
+- `lineage-port.sh <ref>` — ports the commits from `custom-commits.md` onto `lineage/<ref>` via `git cherry-pick -x` (no `rm -fr`, no merge). Pauses per project on a conflict and again after the conflict is resolved (review gate); progress is kept in `.port-state/<ref>/` (gitignored). Subcommands: `--dry-run`, `--only <path>`, `--status`, `--approve <path>`, `--approve-all`, `--push`. Hashes listed in `port-skip.txt` are skipped (picked by hand).
+
 ## Running
 
 Run from this directory, since the script does `cd ../../../` to reach the tree root and reads `vendor/ariel/utils/lineage-forked-list` relative to that:
