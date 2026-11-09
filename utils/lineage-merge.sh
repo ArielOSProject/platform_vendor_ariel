@@ -27,6 +27,15 @@ export GIT_TERMINAL_PROMPT=0
 
 cd ../../../ || exit 1
 
+# sync the whole tree first, so the forked projects are fixed up on top of a current manifest state
+echo "";
+echo "=====================================================================";
+echo " -> repo sync (whole tree)";
+if ! repo sync -d -f --force-sync -j"$(nproc)" </dev/null; then
+    echo " -> WARNING!: GLOBAL REPO SYNC FAILED, aborting";
+    exit 1
+fi
+
 pushed=();
 uptodate=();
 conflicts=();
