@@ -149,12 +149,27 @@ while read -r -u3 path || [ -n "$path" ];
         fi
     fi
 
-    # always leave the project on ariel-${ref}
-    if [ "$(git -C "${path}" rev-parse --abbrev-ref HEAD 2>/dev/null)" != "ariel-${ref}" ]; then
-        ret=$(git -C "${path}" checkout "ariel-${ref}" 2>&1);
-        if [ "$(git -C "${path}" rev-parse --abbrev-ref HEAD 2>/dev/null)" != "ariel-${ref}" ]; then
-            echo " -> WARNING!: NOT ON ariel-${ref}";
+    # leave the project on the branch the manifest defines for it, not detached.
+    # skipped while a merge is pending, so the conflict state stays intact for manual resolution
+    if git -C "${path}" rev-parse -q --verify MERGE_HEAD &> /dev/null; then
+        echo " -> merge pending, leaving project as is";
+        continue
+    fi
+    mrev=$(repo forall "${path}" -c 'echo $REPO_RREV' 2>/dev/null </dev/null | tail -n1);
+    mremote=$(repo forall "${path}" -c 'echo $REPO_REMOTE' 2>/dev/null </dev/null | tail -n1);
+    mbranch="${mrev#refs/heads/}";
+    if [ "${mbranch}" == "${mrev}" ] || [ -z "${mbranch}" ]; then
+        echo " -> manifest revision '${mrev}' is not a branch, leaving project as is";
+    else
+        ret=$(git -C "${path}" checkout "${mbranch}" 2>&1 \
+            || git -C "${path}" checkout -B "${mbranch}" "${mremote}/${mbranch}" 2>&1);
+        cur=$(git -C "${path}" rev-parse --abbrev-ref HEAD 2>/dev/null);
+        if [ "${cur}" != "${mbranch}" ]; then
+            echo " -> WARNING!: NOT ON manifest branch ${mbranch}";
             echo "RET: $ret"
+            failed+=("${path} (manifest branch)");
+        else
+            echo " -> On manifest branch ${mbranch}";
         fi
     fi
 
