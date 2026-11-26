@@ -108,30 +108,42 @@ while read -r -u3 path || [ -n "$path" ];
             echo " -> WARNING!: CHECKOUT FAILED";
             failed+=("${path} (checkout)");
         else
-            echo " -> Merging remote: ${url} ${ref}";
-            ret=$(git -C "${path}" merge "lineage/${ref}" --no-edit 2>&1);
-            merge_rc=$?
+            # repo keeps the gitdir, so the local branch can be stale: bring in what is already on the ariel remote
+            echo "Syncing ariel-$ref with ariel/ariel-$ref..."
+            ret=$(git -C "${path}" fetch ariel "+refs/heads/ariel-${ref}:refs/remotes/ariel/ariel-${ref}" 2>&1 </dev/null) \
+                && ret=$(git -C "${path}" merge "ariel/ariel-${ref}" --no-edit 2>&1)
+            ariel_rc=$?
             echo "RET: $ret"
 
-            if [ $merge_rc -ne 0 ]; then
-                echo " -> WARNING!: MERGE CONFLICT";
-                conflicts+=("${path}");
-            elif echo "$ret" | grep -q "Already up to date"; then
-                echo " -> Already up to date, nothing to push";
-                uptodate+=("${path}");
+            if [ $ariel_rc -ne 0 ]; then
+                echo " -> WARNING!: SYNC WITH ariel REMOTE FAILED, not merging lineage";
+                conflicts+=("${path} (ariel remote)");
             else
-                echo " -> Pushing ariel-${ref} to ariel remote...";
-                # repo sync resets the remote to the manifest's https url, push over ssh instead
-                git -C "${path}" remote set-url --push ariel "git@github.com:ArielOSProject/${project}.git"
-                ret=$(git -C "${path}" push ariel "ariel-${ref}:ariel-${ref}" 2>&1 </dev/null);
-                push_rc=$?
+                echo " -> Merging remote: ${url} ${ref}";
+                ret=$(git -C "${path}" merge "lineage/${ref}" --no-edit 2>&1);
+                merge_rc=$?
                 echo "RET: $ret"
-                if [ $push_rc -ne 0 ]; then
-                    echo " -> WARNING!: PUSH FAILED";
-                    failed+=("${path} (push)");
+
+                if [ $merge_rc -ne 0 ]; then
+                    echo " -> WARNING!: MERGE CONFLICT";
+                    conflicts+=("${path}");
+                elif echo "$ret" | grep -q "Already up to date"; then
+                    echo " -> Already up to date, nothing to push";
+                    uptodate+=("${path}");
                 else
-                    echo " -> DONE!";
-                    pushed+=("${path}");
+                    echo " -> Pushing ariel-${ref} to ariel remote...";
+                    # repo sync resets the remote to the manifest's https url, push over ssh instead
+                    git -C "${path}" remote set-url --push ariel "git@github.com:ArielOSProject/${project}.git"
+                    ret=$(git -C "${path}" push ariel "ariel-${ref}:ariel-${ref}" 2>&1 </dev/null);
+                    push_rc=$?
+                    echo "RET: $ret"
+                    if [ $push_rc -ne 0 ]; then
+                        echo " -> WARNING!: PUSH FAILED";
+                        failed+=("${path} (push)");
+                    else
+                        echo " -> DONE!";
+                        pushed+=("${path}");
+                    fi
                 fi
             fi
         fi
