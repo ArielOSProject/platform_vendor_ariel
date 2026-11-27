@@ -40,6 +40,8 @@ pushed=();
 uptodate=();
 conflicts=();
 failed=();
+dev_switched=();
+dev_kept=();
 
 # the list is read on fd 3 so repo/git can't swallow it via stdin
 while read -r -u3 path || [ -n "$path" ];
@@ -175,10 +177,65 @@ while read -r -u3 path || [ -n "$path" ];
 
 done 3< vendor/ariel/utils/lineage-forked-list;
 
+# device source trees (local manifests: device/kernel/hardware/vendor): put them on ariel-<ref> where that branch
+# exists (locally or on the ariel remote), otherwise leave them exactly as they are
+echo "";
+echo "=====================================================================";
+echo " DEVICE TREES -> ariel-${ref} where available";
+while read -r -u3 dpath || [ -n "$dpath" ];
+    do
+
+    # projects from the forked list were handled above
+    if grep -qxF "${dpath}" vendor/ariel/utils/lineage-forked-list; then
+        continue
+    fi
+    if [ ! -d "${dpath}" ] || ! git -C "${dpath}" rev-parse --git-dir &> /dev/null; then
+        continue
+    fi
+
+    have_local=0; have_remote=0;
+    if git -C "${dpath}" remote | grep -qx ariel; then
+        git -C "${dpath}" fetch ariel "+refs/heads/ariel-${ref}:refs/remotes/ariel/ariel-${ref}" &> /dev/null </dev/null \
+            && have_remote=1
+    fi
+    git -C "${dpath}" rev-parse -q --verify "refs/heads/ariel-${ref}" &> /dev/null && have_local=1
+
+    if [ $have_local -eq 0 ] && [ $have_remote -eq 0 ]; then
+        echo " ${dpath}: no ariel-${ref}, leaving as is";
+        dev_kept+=("${dpath}");
+        continue
+    fi
+
+    if [ $have_local -eq 1 ]; then
+        ret=$(git -C "${dpath}" checkout "ariel-${ref}" 2>&1);
+        rc=$?
+        # bring a stale local branch up to date with the ariel remote (fast-forward only)
+        if [ $rc -eq 0 ] && [ $have_remote -eq 1 ]; then
+            git -C "${dpath}" merge --ff-only "ariel/ariel-${ref}" &> /dev/null
+        fi
+    else
+        ret=$(git -C "${dpath}" checkout -B "ariel-${ref}" "ariel/ariel-${ref}" 2>&1);
+        rc=$?
+    fi
+
+    if [ $rc -ne 0 ]; then
+        echo " ${dpath}: WARNING!: CHECKOUT ariel-${ref} FAILED";
+        echo "RET: $ret"
+        failed+=("${dpath} (device checkout)");
+    else
+        echo " ${dpath}: on ariel-${ref}";
+        dev_switched+=("${dpath}");
+    fi
+
+done 3< <(grep -hEo '<project [^>]*path="[^"]+"' .repo/local_manifests/*.xml 2>/dev/null \
+            | sed -e 's/.*path="\([^"]*\)"/\1/' | grep -E '^(device|kernel|hardware|vendor)/' | sort -u);
+
 echo "";
 echo "=====================================================================";
 echo " SUMMARY";
 echo " Merged and pushed: ${pushed[*]:-none}";
 echo " Already up to date: ${uptodate[*]:-none}";
 echo " Merge conflicts (not pushed): ${conflicts[*]:-none}";
+echo " Device trees on ariel-${ref}: ${dev_switched[*]:-none}";
+echo " Device trees left as is (no ariel-${ref}): ${dev_kept[*]:-none}";
 echo " Failed: ${failed[*]:-none}";
